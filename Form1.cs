@@ -2,6 +2,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 using System.Windows.Forms;
 using System;
 using System.Data;
+using wp_uptime_alert.controller;
+using static System.Windows.Forms.Design.AxImporter;
+using System.Security.Policy;
 
 namespace wp_uptime_alert
 {
@@ -9,6 +12,8 @@ namespace wp_uptime_alert
     {
         //correct place
         DataTable dt = new DataTable();
+        Actions action = new Actions();
+
         public Form1()
         {
             InitializeComponent();
@@ -32,7 +37,7 @@ namespace wp_uptime_alert
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
-
+            var site = "";
             string[] removeSpacesFirst = richTextBox1.Lines;
 
             if (!dt.Columns.Contains("site"))
@@ -59,16 +64,35 @@ namespace wp_uptime_alert
                 }
                 else
                 {
-                    string site = removeSpacesFirst[i];
+                    site = removeSpacesFirst[i];
                     //successfully add item to datatable
                     DataRow row = dt.NewRow();
 
                     row["site"] = site;
                     dt.Rows.Add(row);
-
                 }
 
+
+
+
+
             }
+            getRssfeedAndCheckAsync(site);
+
+            //    //foreach (DataRow row in (await rssFeedActive).AsEnumerable())
+            //    //{
+            //    //    if (row[0].GetType() == typeof(int))
+            //    //    {
+            //    //    }
+            //    //}
+
+            //    //formfields.loadProcessText($"debug: {rssFeedActive}", currentFunction_label);
+            //    rssFeedCount.Content = rssFeedActive.Result.Rows.Count.ToString();
+            //    if (rssFeedActive.Result.Rows.Count == 0)
+            //    {
+
+
+            //        
 
             //dt.Rows.Add(row);
 
@@ -113,9 +137,40 @@ namespace wp_uptime_alert
             total_websites_label.Text = dt.Rows.Count.ToString();
         }
 
+        public string cleanRssUrl(string site)
+        {
+
+            var uriWithoutScheme = "";
+            System.Uri uri = new Uri(site);
+            uriWithoutScheme = uri.Host + uri.AbsolutePath;
 
 
-       
+            //site = uriWithoutScheme.Replace("www.", "");
+            site = site.ToLower();
+            if (site.EndsWith("/"))
+            {
+                site = site.Substring(0, site.Length - 1);
+            }
 
+
+
+
+            return site;
+        }
+
+        public async Task getRssfeedAndCheckAsync(string site)
+        {
+
+
+            Task<int> rssFeedActive = action.checkRssFeed(site);
+
+            if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
+            {
+                MessageBox.Show("Value of rss feed is " + rssFeedActive.Result.ToString(), "check");
+
+            }
+
+        }
+        
     }
 }

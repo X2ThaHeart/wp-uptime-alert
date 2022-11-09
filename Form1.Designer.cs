@@ -62,10 +62,13 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 33);
+            this.label1.Margin = new System.Windows.Forms.Padding(3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(350, 15);
+            this.label1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.label1.Size = new System.Drawing.Size(355, 18);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Paste your WordPress website URL into the box below to monitor";
+            this.label1.Text = "Paste your WordPress website URLs into the box below to monitor";
+            //this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
@@ -188,7 +191,8 @@
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(12, 238);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(115, 15);
+            this.label12.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.label12.Size = new System.Drawing.Size(115, 18);
             this.label12.TabIndex = 16;
             this.label12.Text = "Testing Current Site :";
             // 
@@ -205,9 +209,9 @@
             // 
             this.button2.Location = new System.Drawing.Point(441, 171);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(105, 23);
             this.button2.TabIndex = 18;
-            this.button2.Text = "Re-test List";
+            this.button2.Text = "Re-test List Now";
             this.button2.UseVisualStyleBackColor = true;
             // 
             // Form1
