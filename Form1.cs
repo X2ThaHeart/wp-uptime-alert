@@ -5,6 +5,7 @@ using System.Data;
 using wp_uptime_alert.controller;
 using static System.Windows.Forms.Design.AxImporter;
 using System.Security.Policy;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace wp_uptime_alert
 {
@@ -12,6 +13,7 @@ namespace wp_uptime_alert
     {
         //correct place
         DataTable dt = new DataTable();
+        DataTable dtBlacklist = new DataTable();
         Actions action = new Actions();
 
         public Form1()
@@ -37,6 +39,111 @@ namespace wp_uptime_alert
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
+            
+        }
+
+        public string cleanRssUrl(string site)
+        {
+            Uri outUri;
+
+            var uriWithoutScheme = "";
+            if (Uri.TryCreate(site, UriKind.Absolute, out outUri)
+            && (outUri.Scheme == Uri.UriSchemeHttp || outUri.Scheme == Uri.UriSchemeHttps))
+            {
+                uriWithoutScheme = outUri.Host + outUri.AbsolutePath;
+
+
+                //site = uriWithoutScheme.Replace("www.", "");
+                site = site.ToLower();
+                if (site.EndsWith("/"))
+                {
+                    site = site.Substring(0, site.Length - 1);
+                }
+
+
+
+
+                return site;
+            }
+            else
+            {
+                MessageBox.Show("Invalid Site Entered ", "Error");
+                return null;
+
+
+            }
+
+            
+
+        }
+
+        public async Task getRssfeedAndCheckAsync(string site)
+        {
+
+
+            Task<int> rssFeedActive = action.checkRssFeed(site);
+
+            if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
+            {
+                if (rssFeedActive.IsCompleted)
+                {
+                    if (await rssFeedActive == 0)
+                    {
+
+                        if (!dtBlacklist.Columns.Contains("site"))
+                        {
+                            //DataTable dt = new DataTable();
+                            dtBlacklist.Columns.Add("site");
+                            //dtBlacklist.Columns.Add("status");
+                            dtBlacklist.Columns.Add("lastcheckeddate");
+
+                        }
+                        dtBlacklist.Rows.Add(site);
+                        //label for inactive sites list
+                        label7.Text = dtBlacklist.Rows.Count.ToString();
+
+                        string[] Str = new string[2];
+                        ListViewItem newItm;
+                        foreach (DataRow dataRow in dt.Rows)
+                        {
+                            Str[0] = dataRow["site"].ToString();
+                            Str[1] = dataRow["lastcheckeddate"].ToString();
+                            //Str[2] = dataRow["Mobile"].ToString();
+                            newItm = new ListViewItem(Str);
+                            blacklistView.Items.Add(newItm);
+                        }
+
+                        //foreach (DataRow row in dtBlacklist.Rows)
+                        //{
+                        //    ListViewItem item = new ListViewItem(row[0].ToString());
+                        //    MessageBox.Show("inside row for list view  " + item.ToString(), "check");
+
+                        //    for (int i = 1; i < dtBlacklist.Columns.Count; i++)
+                        //    {
+                        //        item.SubItems.Add(row["site"].ToString());
+                        //        item.SubItems.Add(row["status"].ToString());
+                        //        item.SubItems.Add(row["lastcheckeddate"].ToString());
+
+                        //    }
+
+                        //    blacklistView.Items.Add(item);
+
+                        //}
+
+
+
+
+
+
+                    }
+                }
+
+            }
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
             var site = "";
             string[] removeSpacesFirst = richTextBox1.Lines;
 
@@ -57,7 +164,7 @@ namespace wp_uptime_alert
             {
                 //if (!StringIsNewLine(removeSpacesFirst[i]))
 
-                    if (removeSpacesFirst[i] == "\r\n" || removeSpacesFirst[i] == " " || removeSpacesFirst[i] == null || removeSpacesFirst[i].Length == 0)
+                if (removeSpacesFirst[i] == "\r\n" || removeSpacesFirst[i] == " " || removeSpacesFirst[i] == null || removeSpacesFirst[i].Length == 0)
                 {
 
 
@@ -67,9 +174,17 @@ namespace wp_uptime_alert
                     site = removeSpacesFirst[i];
                     //successfully add item to datatable
                     DataRow row = dt.NewRow();
+                    site = cleanRssUrl(site);
+                    if (site == null)
+                    {
 
-                    row["site"] = site;
-                    dt.Rows.Add(row);
+                    }
+                    else
+                    {
+                        row["site"] = site;
+                        dt.Rows.Add(row);
+                    }
+                    
                 }
 
 
@@ -136,41 +251,5 @@ namespace wp_uptime_alert
 
             total_websites_label.Text = dt.Rows.Count.ToString();
         }
-
-        public string cleanRssUrl(string site)
-        {
-
-            var uriWithoutScheme = "";
-            System.Uri uri = new Uri(site);
-            uriWithoutScheme = uri.Host + uri.AbsolutePath;
-
-
-            //site = uriWithoutScheme.Replace("www.", "");
-            site = site.ToLower();
-            if (site.EndsWith("/"))
-            {
-                site = site.Substring(0, site.Length - 1);
-            }
-
-
-
-
-            return site;
-        }
-
-        public async Task getRssfeedAndCheckAsync(string site)
-        {
-
-
-            Task<int> rssFeedActive = action.checkRssFeed(site);
-
-            if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
-            {
-                MessageBox.Show("Value of rss feed is " + rssFeedActive.Result.ToString(), "check");
-
-            }
-
-        }
-        
     }
 }

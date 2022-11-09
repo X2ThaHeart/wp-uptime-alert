@@ -38,7 +38,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.blacklistView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.label3 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -47,6 +48,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -68,15 +70,14 @@
             this.label1.Size = new System.Drawing.Size(355, 18);
             this.label1.TabIndex = 2;
             this.label1.Text = "Paste your WordPress website URLs into the box below to monitor";
-            //this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(255, 238);
+            this.button1.Location = new System.Drawing.Point(223, 239);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(124, 23);
+            this.button1.Size = new System.Drawing.Size(69, 23);
             this.button1.TabIndex = 3;
-            this.button1.Text = "Clear List Complete";
+            this.button1.Text = "Clear List";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // label2
@@ -133,13 +134,21 @@
             this.label7.TabIndex = 9;
             this.label7.Text = "Number";
             // 
-            // listView1
+            // blacklistView
             // 
-            this.listView1.Location = new System.Drawing.Point(414, 239);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(374, 199);
-            this.listView1.TabIndex = 10;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.blacklistView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.blacklistView.FullRowSelect = true;
+            this.blacklistView.Location = new System.Drawing.Point(414, 239);
+            this.blacklistView.Name = "blacklistView";
+            this.blacklistView.Size = new System.Drawing.Size(374, 199);
+            this.blacklistView.TabIndex = 10;
+            this.blacklistView.UseCompatibleStateImageBehavior = false;
+            this.blacklistView.View = System.Windows.Forms.View.List;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Width = 600;
             // 
             // label3
             // 
@@ -214,6 +223,16 @@
             this.button2.Text = "Re-test List Now";
             this.button2.UseVisualStyleBackColor = true;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(313, 239);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(79, 23);
+            this.button3.TabIndex = 19;
+            this.button3.Text = "Start Testing";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -221,6 +240,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
@@ -229,7 +249,7 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.blacklistView);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -257,7 +277,7 @@
         private Label label5;
         private Label label6;
         private Label label7;
-        private ListView listView1;
+        private ListView blacklistView;
         private Label label3;
         private Label label8;
         private Label label9;
@@ -266,5 +286,7 @@
         private Label label12;
         private Label label13;
         private Button button2;
+        private Button button3;
+        private ColumnHeader columnHeader1;
     }
 }
