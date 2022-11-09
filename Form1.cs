@@ -42,40 +42,7 @@ namespace wp_uptime_alert
             
         }
 
-        public string cleanRssUrl(string site)
-        {
-            Uri outUri;
-
-            var uriWithoutScheme = "";
-            if (Uri.TryCreate(site, UriKind.Absolute, out outUri)
-            && (outUri.Scheme == Uri.UriSchemeHttp || outUri.Scheme == Uri.UriSchemeHttps))
-            {
-                uriWithoutScheme = outUri.Host + outUri.AbsolutePath;
-
-
-                //site = uriWithoutScheme.Replace("www.", "");
-                site = site.ToLower();
-                if (site.EndsWith("/"))
-                {
-                    site = site.Substring(0, site.Length - 1);
-                }
-
-
-
-
-                return site;
-            }
-            else
-            {
-                MessageBox.Show("Invalid Site Entered ", "Error");
-                return null;
-
-
-            }
-
-            
-
-        }
+       
 
         public async Task getRssfeedAndCheckAsync(string site)
         {
@@ -100,18 +67,19 @@ namespace wp_uptime_alert
                         }
                         dtBlacklist.Rows.Add(site);
                         //label for inactive sites list
-                        label7.Text = dtBlacklist.Rows.Count.ToString();
 
                         string[] Str = new string[2];
                         ListViewItem newItm;
-                        foreach (DataRow dataRow in dt.Rows)
+                        foreach (DataRow dataRow in dtBlacklist.Rows)
                         {
                             Str[0] = dataRow["site"].ToString();
-                            Str[1] = dataRow["lastcheckeddate"].ToString();
+                            //Str[1] = dataRow["lastcheckeddate"].ToString();
                             //Str[2] = dataRow["Mobile"].ToString();
                             newItm = new ListViewItem(Str);
                             blacklistView.Items.Add(newItm);
+                            label7.Text = dtBlacklist.Rows.Count.ToString();
                         }
+                        
 
                         //foreach (DataRow row in dtBlacklist.Rows)
                         //{
@@ -174,9 +142,10 @@ namespace wp_uptime_alert
                     site = removeSpacesFirst[i];
                     //successfully add item to datatable
                     DataRow row = dt.NewRow();
-                    site = cleanRssUrl(site);
+                    site = action.cleanRssUrl(site);
                     if (site == null)
                     {
+                        MessageBox.Show("Invalid Site Entered ", "Error");
 
                     }
                     else

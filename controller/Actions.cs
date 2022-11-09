@@ -28,5 +28,43 @@ namespace wp_uptime_alert.controller
                 return 0;
             }
         }
+
+
+        public string cleanRssUrl(string site)
+        {
+            Uri outUri;
+
+            var uriWithoutScheme = "";
+            if (Uri.TryCreate(site, UriKind.Absolute, out outUri)
+            && (outUri.Scheme == Uri.UriSchemeHttp || outUri.Scheme == Uri.UriSchemeHttps))
+            {
+                uriWithoutScheme = outUri.Host + outUri.AbsolutePath;
+
+
+                //site = uriWithoutScheme.Replace("www.", "");
+                site = site.ToLower();
+                if (site.EndsWith("/"))
+                {
+                    site = site.Substring(0, site.Length - 1);
+                }
+
+
+
+
+                return site;
+            }
+            else
+            {
+                return null;
+
+
+            }
+
+
+
+        }
+
+
+
     }
 }
