@@ -39,78 +39,14 @@ namespace wp_uptime_alert
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
-            
+
         }
 
        
 
-        public async Task getRssfeedAndCheckAsync(string site)
-        {
+        
 
-
-            Task<int> rssFeedActive = action.checkRssFeed(site);
-
-            if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
-            {
-                if (rssFeedActive.IsCompleted)
-                {
-                    if (await rssFeedActive == 0)
-                    {
-
-                        if (!dtBlacklist.Columns.Contains("site"))
-                        {
-                            //DataTable dt = new DataTable();
-                            dtBlacklist.Columns.Add("site");
-                            //dtBlacklist.Columns.Add("status");
-                            dtBlacklist.Columns.Add("lastcheckeddate");
-
-                        }
-                        dtBlacklist.Rows.Add(site);
-                        //label for inactive sites list
-
-                        string[] Str = new string[2];
-                        ListViewItem newItm;
-                        foreach (DataRow dataRow in dtBlacklist.Rows)
-                        {
-                            Str[0] = dataRow["site"].ToString();
-                            //Str[1] = dataRow["lastcheckeddate"].ToString();
-                            //Str[2] = dataRow["Mobile"].ToString();
-                            newItm = new ListViewItem(Str);
-                            blacklistView.Items.Add(newItm);
-                            label7.Text = dtBlacklist.Rows.Count.ToString();
-                        }
-                        
-
-                        //foreach (DataRow row in dtBlacklist.Rows)
-                        //{
-                        //    ListViewItem item = new ListViewItem(row[0].ToString());
-                        //    MessageBox.Show("inside row for list view  " + item.ToString(), "check");
-
-                        //    for (int i = 1; i < dtBlacklist.Columns.Count; i++)
-                        //    {
-                        //        item.SubItems.Add(row["site"].ToString());
-                        //        item.SubItems.Add(row["status"].ToString());
-                        //        item.SubItems.Add(row["lastcheckeddate"].ToString());
-
-                        //    }
-
-                        //    blacklistView.Items.Add(item);
-
-                        //}
-
-
-
-
-
-
-                    }
-                }
-
-            }
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
+        private async void button3_Click(object sender, EventArgs e)
         {
             var site = "";
             string[] removeSpacesFirst = richTextBox1.Lines;
@@ -142,16 +78,44 @@ namespace wp_uptime_alert
                     site = removeSpacesFirst[i];
                     //successfully add item to datatable
                     DataRow row = dt.NewRow();
-                    site = action.cleanRssUrl(site);
                     if (site == null)
                     {
-                        MessageBox.Show("Invalid Site Entered ", "Error");
+                        //site = action.FirstCleanRssUrl(site);
+
+                        MessageBox.Show("site entered is null ", "Error");
 
                     }
                     else
                     {
-                        row["site"] = site;
-                        dt.Rows.Add(row);
+                        site = action.FirstCleanRssUrl(site);
+
+                        var rsswait = action.getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+
+                        if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
+                        {
+                            if (rsswait.IsCompleted)
+                            {
+                                if (action.UrlValid == true)
+                                {
+
+                                    site = action.cleanUrlFinal(site);
+                                    row["site"] = site;
+                                    dt.Rows.Add(row);
+                                    label5.Text = dt.Rows.Count.ToString(); 
+
+                                    action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
+                                }
+                            }
+
+                                
+                        }
+
+                        
+                        else
+                        {
+                            MessageBox.Show("Invalid Site Entered - last button click window ", "Error");
+
+                        }
                     }
                     
                 }
@@ -159,9 +123,8 @@ namespace wp_uptime_alert
 
 
 
-
             }
-            getRssfeedAndCheckAsync(site);
+            
 
             //    //foreach (DataRow row in (await rssFeedActive).AsEnumerable())
             //    //{
@@ -219,6 +182,9 @@ namespace wp_uptime_alert
 
 
             total_websites_label.Text = dt.Rows.Count.ToString();
+
+            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
+
         }
     }
 }
