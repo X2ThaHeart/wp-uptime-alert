@@ -56,7 +56,7 @@ namespace wp_uptime_alert
                 dt.Clear();
                 //DataTable dt = new DataTable();
                 dt.Columns.Add("site");
-                dt.Columns.Add("lastcheckeddate");
+                dt.Columns.Add("lastcheckedtime");
 
             }
             
@@ -111,6 +111,7 @@ namespace wp_uptime_alert
                                         label5.Text = dt.Rows.Count.ToString();
 
                                         action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
+
                                     }
                                 }
 
@@ -202,7 +203,11 @@ namespace wp_uptime_alert
 
             total_websites_label.Text = dt.Rows.Count.ToString();
 
+            //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
+
+            action.startTestingEachEntryInDataTable(dt, label7, dtBlacklist, blacklistView, label13, lastCheckTime_label);
             action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
+
 
         }
     }

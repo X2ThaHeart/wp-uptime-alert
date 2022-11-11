@@ -3,9 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Numerics;
 using System.Reflection.Metadata;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace wp_uptime_alert.controller
 {
@@ -106,11 +109,12 @@ namespace wp_uptime_alert.controller
 
             foreach (DataRow row in datatable.Rows)
             {
-                foreach (DataColumn column in datatable.Columns)
-                {
-                    //Console.WriteLine(row[column]);
-                    outToLog(row[column].ToString(), richTextBox1_Text);
-                }
+                outToLog(row[0].ToString(), row[1].ToString(), richTextBox1_Text);
+
+                //foreach (DataColumn column in datatable.Columns)
+                //{
+                //    outToLog(row[0].ToString(), row[1].ToString(), richTextBox1_Text);
+                //}
             }
 
 
@@ -118,12 +122,12 @@ namespace wp_uptime_alert.controller
         }
 
 
-        void outToLog(string output, RichTextBox richTextBox1_Text )
+        void outToLog(string output, string? v, RichTextBox richTextBox1_Text )
         {
             //richTextBox1_Text.AppendText(output + "\r\n");
             if (output.Length > 0)
             {
-                richTextBox1_Text.AppendText(output + "\r\n");
+                richTextBox1_Text.AppendText(output + " : " +  v + "\r\n");
                 richTextBox1_Text.ScrollToCaret();
             }
            
@@ -224,10 +228,58 @@ namespace wp_uptime_alert.controller
         }
 
 
-        public void startTestingEachEntryInDataTable(DataTable dt) 
+        public void startTestingEachEntryInDataTable(DataTable dt, Label label7, DataTable dtBlacklist, ListView blacklistView, Label label13, Label lastCheckTime_label) 
         {
+            
             foreach (DataRow row in dt.Rows)
             {
+                string site = row["site"].ToString();
+                DateTime lastModified = new DateTime();
+                //lastModified  = DateTime.UtcNow;
+                //bool alreadyChecked = (bool)row["lastcheckedtime"] ? string.Empty : (string)row["lastcheckedtime"]))
+                var approved_by = (row["lastcheckedtime"].ToString() ?? row["lastcheckedtime"]);
+
+                if (approved_by != "")
+                {
+                    string check = (string)row["lastcheckedtime"];
+                    lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    
+
+                }
+
+
+                //if (dt.AsEnumerable().Any(row => (DateTime)row["lastcheckedtime"] ?? row.Field<DateTime>("lastcheckedtime"))){
+                //    lastModified = (DateTime)row["lastcheckedtime"];
+                //}
+                //else
+                //{
+
+                //}
+
+
+                if (DateTime.Now > lastModified.AddMinutes(3))
+                {
+                    label13.Text = row["site"].ToString();
+                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+
+                    if (UrlValid)
+                    {
+
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
+                        lastCheckTime_label.Text = row["lastcheckedtime"].ToString();
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Waiting for 3 minutes ", "checking");
+                }
 
             }
         }

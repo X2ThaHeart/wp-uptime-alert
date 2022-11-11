@@ -49,6 +49,8 @@
             this.label13 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.lastCheckTime_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -233,6 +235,24 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(12, 298);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(99, 15);
+            this.label14.TabIndex = 20;
+            this.label14.Text = "Last Check Time :";
+            // 
+            // lastCheckTime_label
+            // 
+            this.lastCheckTime_label.AutoSize = true;
+            this.lastCheckTime_label.Location = new System.Drawing.Point(117, 298);
+            this.lastCheckTime_label.Name = "lastCheckTime_label";
+            this.lastCheckTime_label.Size = new System.Drawing.Size(33, 15);
+            this.lastCheckTime_label.TabIndex = 21;
+            this.lastCheckTime_label.Text = "Time";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -240,6 +260,8 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lastCheckTime_label);
+            this.Controls.Add(this.label14);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label13);
@@ -288,5 +310,7 @@
         private Button button2;
         private Button button3;
         private ColumnHeader columnHeader1;
+        private Label label14;
+        private Label lastCheckTime_label;
     }
 }
