@@ -216,11 +216,11 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(441, 171);
+            this.button2.Location = new System.Drawing.Point(441, 210);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(105, 23);
+            this.button2.Size = new System.Drawing.Size(114, 23);
             this.button2.TabIndex = 18;
-            this.button2.Text = "Re-test List Now";
+            this.button2.Text = "Re-test Error Sites";
             this.button2.UseVisualStyleBackColor = true;
             // 
             // button3

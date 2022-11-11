@@ -45,7 +45,7 @@ namespace wp_uptime_alert
        
 
         
-
+        //main start testing button
         private async void button3_Click(object sender, EventArgs e)
         {
             var site = "";
@@ -53,13 +53,13 @@ namespace wp_uptime_alert
 
             if (!dt.Columns.Contains("site"))
             {
+                dt.Clear();
                 //DataTable dt = new DataTable();
                 dt.Columns.Add("site");
-                dt.Columns.Add("status");
                 dt.Columns.Add("lastcheckeddate");
 
             }
-            dt.Clear();
+            
 
 
 
@@ -76,6 +76,7 @@ namespace wp_uptime_alert
                 else
                 {
                     site = removeSpacesFirst[i];
+
                     //successfully add item to datatable
                     DataRow row = dt.NewRow();
                     if (site == null)
@@ -89,34 +90,52 @@ namespace wp_uptime_alert
                     {
                         site = action.FirstCleanRssUrl(site);
 
-                        var rsswait = action.getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+                        DataRow[] filteredRows =
+                        dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site));
 
-                        if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
+                        if (filteredRows.Length == 0)
                         {
-                            if (rsswait.IsCompleted)
+
+                            var rsswait = action.getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+
+                            if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
                             {
-                                if (action.UrlValid == true)
+                                if (rsswait.IsCompleted)
                                 {
+                                    if (action.UrlValid == true)
+                                    {
 
-                                    site = action.cleanUrlFinal(site);
-                                    row["site"] = site;
-                                    dt.Rows.Add(row);
-                                    label5.Text = dt.Rows.Count.ToString(); 
+                                        site = action.cleanUrlFinal(site);
+                                        row["site"] = site;
+                                        dt.Rows.Add(row);
+                                        label5.Text = dt.Rows.Count.ToString();
 
-                                    action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
+                                        action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
+                                    }
                                 }
+
+
                             }
 
-                                
-                        }
 
-                        
+                            else
+                            {
+                                MessageBox.Show("Invalid Site Entered - last button click window ", "Error");
+
+                            }
+                        }
                         else
                         {
-                            MessageBox.Show("Invalid Site Entered - last button click window ", "Error");
+                            MessageBox.Show("Site already exists in table " + (site), "Error");
 
                         }
+
+
                     }
+
+
+
+                                
                     
                 }
 

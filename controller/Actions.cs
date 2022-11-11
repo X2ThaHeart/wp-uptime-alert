@@ -224,5 +224,13 @@ namespace wp_uptime_alert.controller
         }
 
 
+        public void startTestingEachEntryInDataTable(DataTable dt) 
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+
+            }
+        }
+
     }
 }
