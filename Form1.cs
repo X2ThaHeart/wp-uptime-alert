@@ -59,8 +59,15 @@ namespace wp_uptime_alert
                 dt.Columns.Add("lastcheckedtime");
 
             }
-            
 
+            if (!dtBlacklist.Columns.Contains("site"))
+            {
+                dtBlacklist.Clear();
+                //DataTable dt = new DataTable();
+                dtBlacklist.Columns.Add("site");
+                dtBlacklist.Columns.Add("lastcheckedtime");
+
+            }
 
 
 
@@ -79,6 +86,7 @@ namespace wp_uptime_alert
 
                     //successfully add item to datatable
                     DataRow row = dt.NewRow();
+                    DataRow blrow = dtBlacklist.NewRow();
                     if (site == null)
                     {
                         //site = action.FirstCleanRssUrl(site);
@@ -110,14 +118,19 @@ namespace wp_uptime_alert
                                         dt.Rows.Add(row);
                                         label5.Text = dt.Rows.Count.ToString();
 
-                                        action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
 
+                                    }
+
+                                    if (action.urlValid == false)
+                                    {
+                                        site = action.cleanUrlFinal(site);
+                                        blrow["site"] = site;
+                                        dtBlacklist.Rows.Add(blrow);
+                                        label7.Text = dtBlacklist.Rows.Count.ToString();
                                     }
                                 }
 
-
                             }
-
 
                             else
                             {
@@ -131,20 +144,14 @@ namespace wp_uptime_alert
 
                         }
 
-
-                    }
-
-
-
-                                
+                    }                 
                     
                 }
 
-
-
-
             }
-            
+
+            action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
+
 
             //    //foreach (DataRow row in (await rssFeedActive).AsEnumerable())
             //    //{

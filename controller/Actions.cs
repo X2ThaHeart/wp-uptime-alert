@@ -9,6 +9,8 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using ListView = System.Windows.Forms.ListView;
 
 namespace wp_uptime_alert.controller
 {
@@ -137,12 +139,14 @@ namespace wp_uptime_alert.controller
 
         public async Task getRssfeedAndCheckAsync(string site, Label label7, DataTable dtBlacklist, ListView blacklistView)
         {
-
+            UrlValid = false;
 
             Task<int> rssFeedActive = checkRssFeed(site);
-
+            wait(5000);
             if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
             {
+                
+
                 if (rssFeedActive.IsCompleted)
                 {
 
@@ -189,7 +193,7 @@ namespace wp_uptime_alert.controller
                     }
                     else
                     {
-                        MessageBox.Show("Total feed count  " + rssFeedActive.Result.ToString(), "check");
+                        //MessageBox.Show("Total feed count  " + rssFeedActive.Result.ToString(), "check");
 
                         UrlValid = true;
                     }
@@ -214,15 +218,18 @@ namespace wp_uptime_alert.controller
 
         public void updateListViewWithBlackList(DataTable dtBlacklist, ListView blacklistView, Label label7)
         {
+            blacklistView.Items.Clear();
+
             string[] Str = new string[2];
             ListViewItem newItm;
             foreach (DataRow dataRow in dtBlacklist.Rows)
             {
                 Str[0] = dataRow["site"].ToString();
+                Str[1] = dataRow["lastcheckedtime"].ToString();
                 //Str[1] = dataRow["lastcheckeddate"].ToString();
                 //Str[2] = dataRow["Mobile"].ToString();
                 newItm = new ListViewItem(Str);
-                blacklistView.Items.Add(newItm);
+                blacklistView.Items.Add(Str[0] + " : " + Str[1]);
                 label7.Text = dtBlacklist.Rows.Count.ToString();
             }
         }
@@ -260,7 +267,7 @@ namespace wp_uptime_alert.controller
                 //}
 
 
-                if (DateTime.Now > lastModified.AddMinutes(3))
+                if (DateTime.Now > lastModified.AddMinutes(5))
                 {
                     label13.Text = row["site"].ToString();
                     _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
@@ -278,11 +285,37 @@ namespace wp_uptime_alert.controller
                 }
                 else
                 {
-                    MessageBox.Show("Waiting for 3 minutes ", "checking");
+                    MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
                 }
 
             }
         }
+
+
+        public void wait(int milliseconds)
+        {
+            var timer1 = new System.Windows.Forms.Timer();
+            if (milliseconds == 0 || milliseconds < 0) return;
+
+            // Console.WriteLine("start wait timer");
+            timer1.Interval = milliseconds;
+            timer1.Enabled = true;
+            timer1.Start();
+
+            timer1.Tick += (s, e) =>
+            {
+                timer1.Enabled = false;
+                timer1.Stop();
+                // Console.WriteLine("stop wait timer");
+            };
+
+            while (timer1.Enabled)
+            {
+                Application.DoEvents();
+            }
+        }
+
+
 
     }
 }
