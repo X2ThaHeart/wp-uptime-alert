@@ -10,6 +10,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Label = System.Windows.Forms.Label;
 using ListView = System.Windows.Forms.ListView;
@@ -106,7 +107,7 @@ namespace wp_uptime_alert.controller
 
 
 
-        public void cleanInputRefreshDataTableAsInput(DataTable datatable, RichTextBox richTextBox1_Text, DataTable dtBlacklist, ListView blacklistView)
+        public void cleanInputRefreshDataTableAsInput(DataTable datatable, RichTextBox richTextBox1_Text, DataTable dtBlacklist, RichTextBox blacklistRichTextBox)
         {
 
             richTextBox1_Text.Clear();
@@ -121,26 +122,26 @@ namespace wp_uptime_alert.controller
                 //}
             }
 
-            blacklistView.Items.Clear();
+            //blacklistRichTextBox.Clear();
 
-            //for (int i = 0; i < dtBlacklist.Rows.Count; i++)
+            ////for (int i = 0; i < dtBlacklist.Rows.Count; i++)
+            ////{
+            ////    ListViewItem row = new ListViewItem(dtBlacklist.Rows[i][0].ToString());
+            ////    for (int j = 1; j < dtBlacklist.Columns.Count; j++)
+            ////    {
+            ////        row.SubItems.Add(dtBlacklist.Rows[i][j].ToString());
+
+            ////    }
+            ////    blacklistView.Items.Add(row);
+            ////}
+
+
+            //foreach (DataRow row in dtBlacklist.Rows)
             //{
-            //    ListViewItem row = new ListViewItem(dtBlacklist.Rows[i][0].ToString());
-            //    for (int j = 1; j < dtBlacklist.Columns.Count; j++)
-            //    {
-            //        row.SubItems.Add(dtBlacklist.Rows[i][j].ToString());
 
-            //    }
-            //    blacklistView.Items.Add(row);
+            //    blacklistRichTextBox.Add(row[0].ToString());
+
             //}
-
-
-            foreach (DataRow row in dtBlacklist.Rows)
-            {
-
-                blacklistView.Items.Add(row[0].ToString());
-
-            }
 
         }
 
@@ -209,7 +210,7 @@ namespace wp_uptime_alert.controller
 
 
 
-        public async Task getRssfeedAndCheckAsync(string site, Label label7, DataTable dtBlacklist, ListView blacklistView)
+        public async Task getRssfeedAndCheckAsync(string site, Label label7, DataTable dtBlacklist, RichTextBox blacklistRichTextBox)
         {
             UrlValid = false;
 
@@ -288,26 +289,54 @@ namespace wp_uptime_alert.controller
         }
 
 
-        public void updateListViewWithBlackList(DataTable dtBlacklist, ListView blacklistView, Label label7)
+        public void updateListViewWithBlackList(DataTable dtBlacklist, RichTextBox blacklistRichTextBox, Label label7)
         {
-            blacklistView.Items.Clear();
 
-            string[] Str = new string[2];
-            ListViewItem newItm;
-            foreach (DataRow dataRow in dtBlacklist.Rows)
+            blacklistRichTextBox.Clear();
+
+            foreach (DataRow row in dtBlacklist.Rows)
             {
-                Str[0] = dataRow["site"].ToString();
-                Str[1] = dataRow["lastcheckedtime"].ToString();
-                //Str[1] = dataRow["lastcheckeddate"].ToString();
-                //Str[2] = dataRow["Mobile"].ToString();
-                //newItm = new ListViewItem(Str);
-                blacklistView.Items.Add(Str[0] + " : " + Str[1]);
-                label7.Text = dtBlacklist.Rows.Count.ToString();
+                outToLog(row[0].ToString(), row[1].ToString(), blacklistRichTextBox);
+
+                //foreach (DataColumn column in datatable.Columns)
+                //{
+                //    outToLog(row[0].ToString(), row[1].ToString(), richTextBox1_Text);
+                //}
+                blacklistRichTextBox.Rtf = blacklistRichTextBox.Rtf.Replace("@@@", row[0].ToString());
+
             }
+
+
+            blacklistRichTextBox.ReadOnly = true;
+
+
+
+
+
+            //blacklistView.Items.Clear();
+
+            //string[] Str = new string[2];
+            //ListViewItem newItm;
+            //foreach (DataRow dataRow in dtBlacklist.Rows)
+            //{
+            //    Str[0] = dataRow["site"].ToString();
+            //    Str[1] = dataRow["lastcheckedtime"].ToString();
+            //    //Str[1] = dataRow["lastcheckeddate"].ToString();
+            //    //Str[2] = dataRow["Mobile"].ToString();
+            //    //newItm = new ListViewItem(Str);
+            //    blacklistView.Items.Add(Str[0] + " : " + Str[1]);
+            //    label7.Text = dtBlacklist.Rows.Count.ToString();
+
+
+            //    blacklistView.HotTracking = true;
+
+
+
+            //}
         }
 
 
-        public void startTestingEachEntryInBlacklist(DataTable dtBlacklist, Label label7, Label label11, ListView blacklistView)
+        public void startTestingEachEntryInBlacklist(DataTable dtBlacklist, Label label7, Label label11, RichTextBox blacklistRichTextBox)
         {
             foreach (DataRow row in dtBlacklist.Rows)
             {
@@ -344,7 +373,7 @@ namespace wp_uptime_alert.controller
                 {
                     //label13.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistRichTextBox);
 
 
                     if (UrlValid)
@@ -367,7 +396,7 @@ namespace wp_uptime_alert.controller
 
             }
         }
-        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, ListView blacklistView, Label label13, Label label7, Label lastCheckTime_label, Label label11) 
+        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, RichTextBox blacklistRichTextBox, Label label13, Label label7, Label lastCheckTime_label, Label label11) 
         {
             
             foreach (DataRow row in dt.Rows)
@@ -403,7 +432,7 @@ namespace wp_uptime_alert.controller
                 {
                     label13.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistRichTextBox);
 
 
                     if (UrlValid)

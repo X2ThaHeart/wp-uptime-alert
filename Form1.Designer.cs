@@ -38,8 +38,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.blacklistView = new System.Windows.Forms.ListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.label3 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -51,6 +49,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.lastCheckTime_label = new System.Windows.Forms.Label();
+            this.blacklistRichTextBox = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -60,6 +59,7 @@
             this.richTextBox1.Size = new System.Drawing.Size(395, 167);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
+            this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox1_LinkClicked);
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // label1
@@ -135,22 +135,6 @@
             this.label7.Size = new System.Drawing.Size(51, 15);
             this.label7.TabIndex = 9;
             this.label7.Text = "Number";
-            // 
-            // blacklistView
-            // 
-            this.blacklistView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
-            this.blacklistView.FullRowSelect = true;
-            this.blacklistView.Location = new System.Drawing.Point(414, 239);
-            this.blacklistView.Name = "blacklistView";
-            this.blacklistView.Size = new System.Drawing.Size(374, 199);
-            this.blacklistView.TabIndex = 10;
-            this.blacklistView.UseCompatibleStateImageBehavior = false;
-            this.blacklistView.View = System.Windows.Forms.View.List;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Width = 600;
             // 
             // label3
             // 
@@ -253,6 +237,15 @@
             this.lastCheckTime_label.TabIndex = 21;
             this.lastCheckTime_label.Text = "Time";
             // 
+            // blacklistRichTextBox
+            // 
+            this.blacklistRichTextBox.Location = new System.Drawing.Point(423, 240);
+            this.blacklistRichTextBox.Name = "blacklistRichTextBox";
+            this.blacklistRichTextBox.Size = new System.Drawing.Size(365, 198);
+            this.blacklistRichTextBox.TabIndex = 22;
+            this.blacklistRichTextBox.Text = "";
+            this.blacklistRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.blacklistRichTextBox_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -260,6 +253,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.blacklistRichTextBox);
             this.Controls.Add(this.lastCheckTime_label);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.button3);
@@ -271,7 +265,6 @@
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.blacklistView);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -299,7 +292,6 @@
         private Label label5;
         private Label label6;
         private Label label7;
-        private ListView blacklistView;
         private Label label3;
         private Label label8;
         private Label label9;
@@ -309,8 +301,8 @@
         private Label label13;
         private Button button2;
         private Button button3;
-        private ColumnHeader columnHeader1;
         private Label label14;
         private Label lastCheckTime_label;
+        private RichTextBox blacklistRichTextBox;
     }
 }

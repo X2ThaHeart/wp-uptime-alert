@@ -6,6 +6,11 @@ using wp_uptime_alert.controller;
 using static System.Windows.Forms.Design.AxImporter;
 using System.Security.Policy;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics;
+using System.Text;
+using static System.Windows.Forms.LinkLabel;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace wp_uptime_alert
 {
@@ -19,7 +24,7 @@ namespace wp_uptime_alert
         public Form1()
         {
             InitializeComponent();
-            
+
 
 
 
@@ -104,7 +109,7 @@ namespace wp_uptime_alert
                         if (filteredRows.Length == 0)
                         {
 
-                            var rsswait = action.getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+                            var rsswait = action.getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistRichTextBox);
 
                             if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
                             {
@@ -114,6 +119,8 @@ namespace wp_uptime_alert
                                     {
 
                                         site = action.cleanUrlFinal(site);
+
+
                                         row["site"] = site;
                                         dt.Rows.Add(row);
                                         label5.Text = dt.Rows.Count.ToString();
@@ -124,6 +131,10 @@ namespace wp_uptime_alert
                                     if (action.urlValid == false)
                                     {
                                         site = action.cleanUrlFinal(site);
+
+                                        
+
+
                                         blrow["site"] = site;
                                         dtBlacklist.Rows.Add(blrow);
                                         label7.Text = dtBlacklist.Rows.Count.ToString();
@@ -211,14 +222,58 @@ namespace wp_uptime_alert
 
             //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
 
-            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistView, label7, lastCheckTime_label, label11, label13);
-            action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, blacklistView);
+            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistRichTextBox, label7, lastCheckTime_label, label11, label13);
+            action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, blacklistRichTextBox);
 
-            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1, dtBlacklist, blacklistView);
+            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1, dtBlacklist, blacklistRichTextBox);
             //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
-            action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
+            action.updateListViewWithBlackList(dtBlacklist, blacklistRichTextBox, label7);
+            //this makes the whole row a link so not suitable
+            blacklistRichTextBox.DetectUrls = true;
+
+        }
+
+        private void blacklistRichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            var url = e.LinkText;
+            OpenUrl(url);
+        }
 
 
+
+        private void OpenUrl(string url)
+        {
+            try
+            {
+                Process.Start(url);
+            }
+            catch
+            {
+                // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    url = url.Replace("&", "^&");
+                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", url);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", url);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            var url = e.LinkText;
+            OpenUrl(url);
         }
     }
 }
