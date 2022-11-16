@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Emit;
 using System.Reflection.Metadata;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Label = System.Windows.Forms.Label;
 using ListView = System.Windows.Forms.ListView;
 
 namespace wp_uptime_alert.controller
@@ -104,7 +106,7 @@ namespace wp_uptime_alert.controller
 
 
 
-        public void cleanInputRefreshDataTableAsInput(DataTable datatable, RichTextBox richTextBox1_Text)
+        public void cleanInputRefreshDataTableAsInput(DataTable datatable, RichTextBox richTextBox1_Text, DataTable dtBlacklist, ListView blacklistView)
         {
 
             richTextBox1_Text.Clear();
@@ -119,10 +121,80 @@ namespace wp_uptime_alert.controller
                 //}
             }
 
+            blacklistView.Items.Clear();
+
+            //for (int i = 0; i < dtBlacklist.Rows.Count; i++)
+            //{
+            //    ListViewItem row = new ListViewItem(dtBlacklist.Rows[i][0].ToString());
+            //    for (int j = 1; j < dtBlacklist.Columns.Count; j++)
+            //    {
+            //        row.SubItems.Add(dtBlacklist.Rows[i][j].ToString());
+
+            //    }
+            //    blacklistView.Items.Add(row);
+            //}
+
+
+            foreach (DataRow row in dtBlacklist.Rows)
+            {
+
+                blacklistView.Items.Add(row[0].ToString());
+
+            }
+
+        }
+
+
+        void outToLog2(string output, string? v, RichTextBox richTextBox1_Text)
+        {
+            //richTextBox1_Text.AppendText(output + "\r\n");
+            if (output.Length > 0)
+            {
+                richTextBox1_Text.AppendText(output + " : " + v + "\r\n");
+                richTextBox1_Text.ScrollToCaret();
+            }
+
+
+
+
+            //ListViewItem site = new ListViewItem(row[0].ToString(), row[1].ToString());
+
+
+            //for (int i = 1; i < dtBlacklist.Columns.Count; i++)
+            //{
+            //    site.SubItems.Add(row[i].ToString());
+
+            //    // item.Text = row[i].ToString();
+            //}
+            //blacklistView.Items.Add(site);
+
+
 
 
         }
 
+
+
+        //not required really
+        public void cleanBlacklistViewUpdateInput(DataTable dtBlacklist, ListView blacklistView)
+        {
+            
+
+
+            
+
+
+
+
+            //for (int i = 0; i < dtBlacklist.Rows.Count; i++)
+            //{
+                
+            //    blacklistView.Items[i] = dtBlacklist.Rows[i][1].ToString();
+            //}
+                
+
+
+        }
 
         void outToLog(string output, string? v, RichTextBox richTextBox1_Text )
         {
@@ -142,7 +214,7 @@ namespace wp_uptime_alert.controller
             UrlValid = false;
 
             Task<int> rssFeedActive = checkRssFeed(site);
-            wait(5000);
+            wait(3000);
             if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
             {
                 
@@ -228,14 +300,74 @@ namespace wp_uptime_alert.controller
                 Str[1] = dataRow["lastcheckedtime"].ToString();
                 //Str[1] = dataRow["lastcheckeddate"].ToString();
                 //Str[2] = dataRow["Mobile"].ToString();
-                newItm = new ListViewItem(Str);
+                //newItm = new ListViewItem(Str);
                 blacklistView.Items.Add(Str[0] + " : " + Str[1]);
                 label7.Text = dtBlacklist.Rows.Count.ToString();
             }
         }
 
 
-        public void startTestingEachEntryInDataTable(DataTable dt, Label label7, DataTable dtBlacklist, ListView blacklistView, Label label13, Label lastCheckTime_label) 
+        public void startTestingEachEntryInBlacklist(DataTable dtBlacklist, Label label7, Label label11, ListView blacklistView)
+        {
+            foreach (DataRow row in dtBlacklist.Rows)
+            {
+                string site = row["site"].ToString();
+                DateTime lastModified = new DateTime();
+                //lastModified  = DateTime.UtcNow;
+                //bool alreadyChecked = (bool)row["lastcheckedtime"] ? string.Empty : (string)row["lastcheckedtime"]))
+                var approved_by = (row["lastcheckedtime"].ToString() ?? row["lastcheckedtime"]);
+
+                if (approved_by != "")
+                {
+                    string check = (string)row["lastcheckedtime"];
+                    lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    string check = DateTime.Now.ToString("HH:mm");
+                    row["lastcheckedtime"] = check;
+                    lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+
+                }
+
+
+                //if (dt.AsEnumerable().Any(row => (DateTime)row["lastcheckedtime"] ?? row.Field<DateTime>("lastcheckedtime"))){
+                //    lastModified = (DateTime)row["lastcheckedtime"];
+                //}
+                //else
+                //{
+
+                //}
+
+
+                if (DateTime.Now > lastModified.AddMinutes(5))
+                {
+                    //label13.Text = row["site"].ToString();
+                    //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+
+
+                    if (UrlValid)
+                    {
+
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
+                        label11.Text = row["lastcheckedtime"].ToString();
+                    }
+                    else
+                    {
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Waiting for 5 minutes between tests for error sites ", "Checking");
+                    
+                }
+
+            }
+        }
+        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, ListView blacklistView, Label label13, Label label7, Label lastCheckTime_label, Label label11) 
         {
             
             foreach (DataRow row in dt.Rows)
@@ -270,7 +402,9 @@ namespace wp_uptime_alert.controller
                 if (DateTime.Now > lastModified.AddMinutes(5))
                 {
                     label13.Text = row["site"].ToString();
+                    //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
                     _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+
 
                     if (UrlValid)
                     {
@@ -289,6 +423,8 @@ namespace wp_uptime_alert.controller
                 }
 
             }
+
+           
         }
 
 

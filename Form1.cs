@@ -150,7 +150,6 @@ namespace wp_uptime_alert
 
             }
 
-            action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
 
 
             //    //foreach (DataRow row in (await rssFeedActive).AsEnumerable())
@@ -212,8 +211,12 @@ namespace wp_uptime_alert
 
             //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
 
-            action.startTestingEachEntryInDataTable(dt, label7, dtBlacklist, blacklistView, label13, lastCheckTime_label);
-            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
+            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistView, label7, lastCheckTime_label, label11, label13);
+            action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, blacklistView);
+
+            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1, dtBlacklist, blacklistView);
+            //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
+            action.updateListViewWithBlackList(dtBlacklist, blacklistView, label7);
 
 
         }
