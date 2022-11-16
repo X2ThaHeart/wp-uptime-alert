@@ -275,5 +275,20 @@ namespace wp_uptime_alert
             var url = e.LinkText;
             OpenUrl(url);
         }
+
+        private void clearInput_button_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to clear the list?", "Warning", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                richTextBox1.Clear();
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+
+            
+        }
     }
 }

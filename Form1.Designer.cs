@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.clearInput_button = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.total_websites_label = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -50,6 +50,9 @@
             this.label14 = new System.Windows.Forms.Label();
             this.lastCheckTime_label = new System.Windows.Forms.Label();
             this.blacklistRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.clearBlacklist_button = new System.Windows.Forms.Button();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -73,14 +76,15 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Paste your WordPress website URLs into the box below to monitor";
             // 
-            // button1
+            // clearInput_button
             // 
-            this.button1.Location = new System.Drawing.Point(223, 239);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(69, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Clear List";
-            this.button1.UseVisualStyleBackColor = true;
+            this.clearInput_button.Location = new System.Drawing.Point(223, 239);
+            this.clearInput_button.Name = "clearInput_button";
+            this.clearInput_button.Size = new System.Drawing.Size(69, 23);
+            this.clearInput_button.TabIndex = 3;
+            this.clearInput_button.Text = "Clear List";
+            this.clearInput_button.UseVisualStyleBackColor = true;
+            this.clearInput_button.Click += new System.EventHandler(this.clearInput_button_Click);
             // 
             // label2
             // 
@@ -148,7 +152,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(200, 385);
+            this.label8.Location = new System.Drawing.Point(213, 336);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(92, 15);
             this.label8.TabIndex = 12;
@@ -157,7 +161,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(296, 385);
+            this.label9.Location = new System.Drawing.Point(309, 336);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(83, 15);
             this.label9.TabIndex = 13;
@@ -166,7 +170,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(201, 417);
+            this.label10.Location = new System.Drawing.Point(214, 368);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(83, 15);
             this.label10.TabIndex = 14;
@@ -175,7 +179,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(296, 417);
+            this.label11.Location = new System.Drawing.Point(309, 368);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(33, 15);
             this.label11.TabIndex = 15;
@@ -202,7 +206,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(441, 210);
+            this.button2.Location = new System.Drawing.Point(658, 417);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(114, 23);
             this.button2.TabIndex = 18;
@@ -241,10 +245,37 @@
             // 
             this.blacklistRichTextBox.Location = new System.Drawing.Point(423, 240);
             this.blacklistRichTextBox.Name = "blacklistRichTextBox";
-            this.blacklistRichTextBox.Size = new System.Drawing.Size(365, 198);
+            this.blacklistRichTextBox.Size = new System.Drawing.Size(365, 171);
             this.blacklistRichTextBox.TabIndex = 22;
             this.blacklistRichTextBox.Text = "";
             this.blacklistRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.blacklistRichTextBox_LinkClicked);
+            // 
+            // clearBlacklist_button
+            // 
+            this.clearBlacklist_button.Location = new System.Drawing.Point(535, 417);
+            this.clearBlacklist_button.Name = "clearBlacklist_button";
+            this.clearBlacklist_button.Size = new System.Drawing.Size(75, 23);
+            this.clearBlacklist_button.TabIndex = 23;
+            this.clearBlacklist_button.Text = "Clear List";
+            this.clearBlacklist_button.UseVisualStyleBackColor = true;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(214, 396);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(143, 15);
+            this.label15.TabIndex = 24;
+            this.label15.Text = "Error Testing Current Site :";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(214, 425);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(92, 15);
+            this.label16.TabIndex = 25;
+            this.label16.Text = "Website address";
             // 
             // Form1
             // 
@@ -253,6 +284,9 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.clearBlacklist_button);
             this.Controls.Add(this.blacklistRichTextBox);
             this.Controls.Add(this.lastCheckTime_label);
             this.Controls.Add(this.label14);
@@ -271,7 +305,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.total_websites_label);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.clearInput_button);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.richTextBox1);
             this.Name = "Form1";
@@ -285,7 +319,7 @@
 
         private RichTextBox richTextBox1;
         private Label label1;
-        private Button button1;
+        private Button clearInput_button;
         private Label label2;
         private Label total_websites_label;
         private Label label4;
@@ -304,5 +338,8 @@
         private Label label14;
         private Label lastCheckTime_label;
         private RichTextBox blacklistRichTextBox;
+        private Button clearBlacklist_button;
+        private Label label15;
+        private Label label16;
     }
 }
