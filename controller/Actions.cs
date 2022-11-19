@@ -210,7 +210,7 @@ namespace wp_uptime_alert.controller
 
 
 
-        public async Task getRssfeedAndCheckAsync(string site, Label label7, DataTable dtBlacklist, RichTextBox blacklistRichTextBox)
+        public async Task getRssfeedAndCheckAsync(string site, DataTable dtBlacklist, RichTextBox blacklistRichTextBox)
         {
             UrlValid = false;
 
@@ -373,7 +373,7 @@ namespace wp_uptime_alert.controller
                 {
                     //label13.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistRichTextBox);
+                    _ = getRssfeedAndCheckAsync(site, dtBlacklist, blacklistRichTextBox);
 
 
                     if (UrlValid)
@@ -396,7 +396,7 @@ namespace wp_uptime_alert.controller
 
             }
         }
-        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, RichTextBox blacklistRichTextBox, Label label13, Label label7, Label lastCheckTime_label, Label label11) 
+        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, RichTextBox blacklistRichTextBox, Label label13,  Label lastCheckTime_label, Label label11) 
         {
             
             foreach (DataRow row in dt.Rows)
@@ -432,7 +432,7 @@ namespace wp_uptime_alert.controller
                 {
                     label13.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistRichTextBox);
+                    _ = getRssfeedAndCheckAsync(site, dtBlacklist, blacklistRichTextBox);
 
 
                     if (UrlValid)
@@ -493,5 +493,36 @@ namespace wp_uptime_alert.controller
 
         }
 
+        public int calculateErrorWebsites(DataTable dtBlacklist) 
+        {
+
+            int totalBlacklistWebsites = 0;
+
+            totalBlacklistWebsites = dtBlacklist.Rows.Count;
+
+            return totalBlacklistWebsites;
+        }
+
+
+        public int calculateActiveWebsites(DataTable dt) 
+        {
+            int totalActiveWebsites = 0;
+
+            totalActiveWebsites = dt.Rows.Count;
+
+            return totalActiveWebsites;
+        }
+
+
+
+
+        public void updateWebsiteLabels(Label total_websites_label, Label label5, Label label7, DataTable dt, DataTable dtBlacklist)
+        {
+            total_websites_label.Text = calculateTotalWebsites(dt, dtBlacklist).ToString();
+            label7.Text = calculateErrorWebsites(dtBlacklist).ToString();
+            label5.Text = calculateActiveWebsites(dt).ToString();
+
+
+        }
     }
 }

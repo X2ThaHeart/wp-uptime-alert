@@ -109,7 +109,7 @@ namespace wp_uptime_alert
                         if (filteredRows.Length == 0)
                         {
 
-                            var rsswait = action.getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistRichTextBox);
+                            var rsswait = action.getRssfeedAndCheckAsync(site, dtBlacklist, blacklistRichTextBox);
 
                             if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
                             {
@@ -134,10 +134,12 @@ namespace wp_uptime_alert
 
                                         
 
-
+                                        
                                         blrow["site"] = site;
                                         dtBlacklist.Rows.Add(blrow);
                                         label7.Text = dtBlacklist.Rows.Count.ToString();
+                                        //label7.Text = "what is this echo";
+                                        
                                     }
                                 }
 
@@ -218,11 +220,11 @@ namespace wp_uptime_alert
             //messageboxwithdetails.DialogBoxPopup(dt.Rows[1].ToString());
 
 
-            total_websites_label.Text = dt.Rows.Count.ToString();
+            //total_websites_label.Text = dt.Rows.Count.ToString();
 
             //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
 
-            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistRichTextBox, label7, lastCheckTime_label, label11, label13);
+            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistRichTextBox, lastCheckTime_label, label11, label13);
             action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, blacklistRichTextBox);
 
             action.cleanInputRefreshDataTableAsInput(dt, richTextBox1, dtBlacklist, blacklistRichTextBox);
@@ -231,9 +233,12 @@ namespace wp_uptime_alert
             //this makes the whole row a link so not suitable
             blacklistRichTextBox.DetectUrls = true;
 
-            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
 
-            total_websites_label.Text = totalwebsites.ToString();
+            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+
+            //int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+
+            //total_websites_label.Text = totalwebsites.ToString();
 
         }
 
@@ -293,9 +298,8 @@ namespace wp_uptime_alert
             }
 
 
-            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
-            total_websites_label.Text = totalwebsites.ToString();
 
         }
 
@@ -303,16 +307,14 @@ namespace wp_uptime_alert
         //retest error sites second main button
         private void button2_Click(object sender, EventArgs e)
         {
-            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
-            total_websites_label.Text = totalwebsites.ToString();
         }
 
         private void clearBlacklist_button_Click(object sender, EventArgs e)
         {
-            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
-            total_websites_label.Text = totalwebsites.ToString();
 
         }
     }
