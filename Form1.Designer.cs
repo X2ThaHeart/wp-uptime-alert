@@ -212,6 +212,7 @@
             this.button2.TabIndex = 18;
             this.button2.Text = "Re-test Error Sites";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -258,6 +259,7 @@
             this.clearBlacklist_button.TabIndex = 23;
             this.clearBlacklist_button.Text = "Clear List";
             this.clearBlacklist_button.UseVisualStyleBackColor = true;
+            this.clearBlacklist_button.Click += new System.EventHandler(this.clearBlacklist_button_Click);
             // 
             // label15
             // 

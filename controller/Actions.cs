@@ -482,5 +482,16 @@ namespace wp_uptime_alert.controller
 
 
 
+        public int calculateTotalWebsites(DataTable dt, DataTable dtBlacklist)
+        {
+            int totalWebsites = 0;
+
+            totalWebsites = dt.Rows.Count;
+            totalWebsites += dtBlacklist.Rows.Count;
+
+            return totalWebsites;
+
+        }
+
     }
 }

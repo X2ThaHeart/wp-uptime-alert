@@ -231,6 +231,10 @@ namespace wp_uptime_alert
             //this makes the whole row a link so not suitable
             blacklistRichTextBox.DetectUrls = true;
 
+            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+
+            total_websites_label.Text = totalwebsites.ToString();
+
         }
 
         private void blacklistRichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)
@@ -288,7 +292,28 @@ namespace wp_uptime_alert
                 //do something else
             }
 
-            
+
+            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+
+            total_websites_label.Text = totalwebsites.ToString();
+
+        }
+
+
+        //retest error sites second main button
+        private void button2_Click(object sender, EventArgs e)
+        {
+            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+
+            total_websites_label.Text = totalwebsites.ToString();
+        }
+
+        private void clearBlacklist_button_Click(object sender, EventArgs e)
+        {
+            int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
+
+            total_websites_label.Text = totalwebsites.ToString();
+
         }
     }
 }
