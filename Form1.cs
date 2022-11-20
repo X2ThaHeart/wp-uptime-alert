@@ -109,7 +109,7 @@ namespace wp_uptime_alert
                         if (filteredRows.Length == 0)
                         {
 
-                            var rsswait = action.getRssfeedAndCheckAsync(site, dtBlacklist, blacklistRichTextBox);
+                            var rsswait = action.getRssfeedAndCheckAsync(site, dt, dtBlacklist);
 
                             if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
                             {
@@ -224,8 +224,8 @@ namespace wp_uptime_alert
 
             //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
 
-            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistRichTextBox, lastCheckedActive_label,  activeTestingSite_label);
-            action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, blacklistRichTextBox);
+            action.startTestingEachEntryInDataTable(dt, lastCheckedActive_label,  activeTestingSite_label, richTextBox1, dtBlacklist);
+            action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, dt, blacklistRichTextBox);
 
             action.cleanInputRefreshDataTableAsInput(dt, richTextBox1, dtBlacklist, blacklistRichTextBox);
             //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
@@ -291,6 +291,7 @@ namespace wp_uptime_alert
             if (dialogResult == DialogResult.Yes)
             {
                 richTextBox1.Clear();
+                dt.Rows.Clear();
             }
             else if (dialogResult == DialogResult.No)
             {

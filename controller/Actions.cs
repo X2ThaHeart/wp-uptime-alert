@@ -210,7 +210,7 @@ namespace wp_uptime_alert.controller
 
 
 
-        public async Task getRssfeedAndCheckAsync(string site, DataTable dtBlacklist, RichTextBox blacklistRichTextBox)
+        public async Task getRssfeedAndCheckAsync(string site, DataTable dt, DataTable dtBlacklist)
         {
             UrlValid = false;
 
@@ -218,7 +218,7 @@ namespace wp_uptime_alert.controller
             wait(3000);
             if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
             {
-                
+                wait(3000);
 
                 if (rssFeedActive.IsCompleted)
                 {
@@ -226,19 +226,21 @@ namespace wp_uptime_alert.controller
                     if (await rssFeedActive == 0)
                     {
                         //no rss feed has been found so url is invalid add to blacklist
-                        if (!dtBlacklist.Columns.Contains("site"))
+                        if (!dt.Columns.Contains("site"))
                         {
                             //DataTable dt = new DataTable();
                             dtBlacklist.Columns.Add("site");
                             //dtBlacklist.Columns.Add("status");
                             dtBlacklist.Columns.Add("lastcheckeddate");
+                            dtBlacklist.Rows.Add(site);
+                            UrlValid = false;
+
 
                         }
-                        dtBlacklist.Rows.Add(site);
+                        
                         //label for inactive sites list
 
-                        
-                        UrlValid = false;
+
 
 
                         //foreach (DataRow row in dtBlacklist.Rows)
@@ -264,11 +266,15 @@ namespace wp_uptime_alert.controller
 
 
                     }
+                    else if (dt.Columns.Contains("site"))
+                    {
+                        UrlValid = true;
+
+                    }
                     else
                     {
-                        //MessageBox.Show("Total feed count  " + rssFeedActive.Result.ToString(), "check");
+                        UrlValid = false;
 
-                        UrlValid = true;
                     }
 
 
@@ -336,7 +342,7 @@ namespace wp_uptime_alert.controller
         }
 
 
-        public void startTestingEachEntryInBlacklist(DataTable dtBlacklist, Label label7, Label label11, RichTextBox blacklistRichTextBox)
+        public void startTestingEachEntryInBlacklist(DataTable dtBlacklist, Label label7, Label label11, DataTable dt, RichTextBox blacklistRichTextBox)
         {
             foreach (DataRow row in dtBlacklist.Rows)
             {
@@ -373,7 +379,7 @@ namespace wp_uptime_alert.controller
                 {
                     //label13.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, dtBlacklist, blacklistRichTextBox);
+                    _ = getRssfeedAndCheckAsync(site, dt, dtBlacklist);
 
 
                     if (UrlValid)
@@ -390,13 +396,13 @@ namespace wp_uptime_alert.controller
                 }
                 else
                 {
-                    MessageBox.Show("Waiting for 5 minutes between tests for error sites ", "Checking");
+                    //MessageBox.Show("Waiting for 5 minutes between tests for error sites ", "Checking");
                     
                 }
 
             }
         }
-        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, RichTextBox blacklistRichTextBox,  Label lastCheckedActive_label, Label activeTestingSite_label) 
+        public void startTestingEachEntryInDataTable(DataTable dt,  Label lastCheckedActive_label, Label activeTestingSite_label, RichTextBox richTextBox1, DataTable dtBlacklist) 
         {
             
             foreach (DataRow row in dt.Rows)
@@ -432,7 +438,7 @@ namespace wp_uptime_alert.controller
                 {
                     activeTestingSite_label.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, dtBlacklist, blacklistRichTextBox);
+                    _ = getRssfeedAndCheckAsync(site, dt, dtBlacklist);
 
 
                     if (UrlValid)
@@ -440,7 +446,7 @@ namespace wp_uptime_alert.controller
 
                         row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
                         lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
-
+                        
 
                     }
                     else
@@ -450,14 +456,17 @@ namespace wp_uptime_alert.controller
                 }
                 else
                 {
-                    MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
+                    //MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
                 }
+                dt.AcceptChanges();
 
                 activeTestingSite_label.Text = row["site"].ToString();
-            }
-            MessageBox.Show("lastCheckTime_label.Text " + lastCheckedActive_label.Text, "Checking");
 
+                
+
+            }
             
+
         }
 
 
