@@ -224,7 +224,7 @@ namespace wp_uptime_alert
 
             //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
 
-            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistRichTextBox, lastCheckTime_label, label11, label13);
+            action.startTestingEachEntryInDataTable(dt, dtBlacklist, blacklistRichTextBox, lastCheckedActive_label,  activeTestingSite_label);
             action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, blacklistRichTextBox);
 
             action.cleanInputRefreshDataTableAsInput(dt, richTextBox1, dtBlacklist, blacklistRichTextBox);

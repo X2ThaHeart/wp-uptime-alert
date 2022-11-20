@@ -44,15 +44,15 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
-            this.lastCheckTime_label = new System.Windows.Forms.Label();
             this.blacklistRichTextBox = new System.Windows.Forms.RichTextBox();
             this.clearBlacklist_button = new System.Windows.Forms.Button();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
+            this.activeTestingSite_label = new System.Windows.Forms.Label();
+            this.lastCheckedActive_label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -78,7 +78,7 @@
             // 
             // clearInput_button
             // 
-            this.clearInput_button.Location = new System.Drawing.Point(223, 239);
+            this.clearInput_button.Location = new System.Drawing.Point(197, 239);
             this.clearInput_button.Name = "clearInput_button";
             this.clearInput_button.Size = new System.Drawing.Size(69, 23);
             this.clearInput_button.TabIndex = 3;
@@ -195,15 +195,6 @@
             this.label12.TabIndex = 16;
             this.label12.Text = "Testing Current Site :";
             // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(12, 268);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(92, 15);
-            this.label13.TabIndex = 17;
-            this.label13.Text = "Website address";
-            // 
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(658, 417);
@@ -232,15 +223,6 @@
             this.label14.Size = new System.Drawing.Size(99, 15);
             this.label14.TabIndex = 20;
             this.label14.Text = "Last Check Time :";
-            // 
-            // lastCheckTime_label
-            // 
-            this.lastCheckTime_label.AutoSize = true;
-            this.lastCheckTime_label.Location = new System.Drawing.Point(117, 298);
-            this.lastCheckTime_label.Name = "lastCheckTime_label";
-            this.lastCheckTime_label.Size = new System.Drawing.Size(33, 15);
-            this.lastCheckTime_label.TabIndex = 21;
-            this.lastCheckTime_label.Text = "Time";
             // 
             // blacklistRichTextBox
             // 
@@ -273,11 +255,31 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(214, 425);
+            this.label16.Location = new System.Drawing.Point(214, 421);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(92, 15);
+            this.label16.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.label16.Size = new System.Drawing.Size(92, 18);
             this.label16.TabIndex = 25;
             this.label16.Text = "Website address";
+            // 
+            // activeTestingSite_label
+            // 
+            this.activeTestingSite_label.AutoSize = true;
+            this.activeTestingSite_label.Location = new System.Drawing.Point(12, 266);
+            this.activeTestingSite_label.Name = "activeTestingSite_label";
+            this.activeTestingSite_label.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.activeTestingSite_label.Size = new System.Drawing.Size(49, 18);
+            this.activeTestingSite_label.TabIndex = 28;
+            this.activeTestingSite_label.Text = "Website";
+            // 
+            // lastCheckedActive_label
+            // 
+            this.lastCheckedActive_label.AutoSize = true;
+            this.lastCheckedActive_label.Location = new System.Drawing.Point(118, 298);
+            this.lastCheckedActive_label.Name = "lastCheckedActive_label";
+            this.lastCheckedActive_label.Size = new System.Drawing.Size(33, 15);
+            this.lastCheckedActive_label.TabIndex = 29;
+            this.lastCheckedActive_label.Text = "Time";
             // 
             // Form1
             // 
@@ -286,15 +288,15 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lastCheckedActive_label);
+            this.Controls.Add(this.activeTestingSite_label);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.clearBlacklist_button);
             this.Controls.Add(this.blacklistRichTextBox);
-            this.Controls.Add(this.lastCheckTime_label);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.label13);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -334,14 +336,14 @@
         private Label label10;
         private Label label11;
         private Label label12;
-        private Label label13;
         private Button button2;
         private Button button3;
         private Label label14;
-        private Label lastCheckTime_label;
         private RichTextBox blacklistRichTextBox;
         private Button clearBlacklist_button;
         private Label label15;
         private Label label16;
+        private Label activeTestingSite_label;
+        private Label lastCheckedActive_label;
     }
 }

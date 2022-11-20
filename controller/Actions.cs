@@ -396,7 +396,7 @@ namespace wp_uptime_alert.controller
 
             }
         }
-        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, RichTextBox blacklistRichTextBox, Label label13,  Label lastCheckTime_label, Label label11) 
+        public void startTestingEachEntryInDataTable(DataTable dt, DataTable dtBlacklist, RichTextBox blacklistRichTextBox,  Label lastCheckedActive_label, Label activeTestingSite_label) 
         {
             
             foreach (DataRow row in dt.Rows)
@@ -430,7 +430,7 @@ namespace wp_uptime_alert.controller
 
                 if (DateTime.Now > lastModified.AddMinutes(5))
                 {
-                    label13.Text = row["site"].ToString();
+                    activeTestingSite_label.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
                     _ = getRssfeedAndCheckAsync(site, dtBlacklist, blacklistRichTextBox);
 
@@ -439,7 +439,9 @@ namespace wp_uptime_alert.controller
                     {
 
                         row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
-                        lastCheckTime_label.Text = row["lastcheckedtime"].ToString();
+                        lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
+
+
                     }
                     else
                     {
@@ -451,9 +453,11 @@ namespace wp_uptime_alert.controller
                     MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
                 }
 
+                activeTestingSite_label.Text = row["site"].ToString();
             }
+            MessageBox.Show("lastCheckTime_label.Text " + lastCheckedActive_label.Text, "Checking");
 
-           
+            
         }
 
 
