@@ -29,319 +29,318 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.clearInput_button = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.total_websites_label = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.blacklistRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.clearBlacklist_button = new System.Windows.Forms.Button();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.activeTestingSite_label = new System.Windows.Forms.Label();
-            this.lastCheckedActive_label = new System.Windows.Forms.Label();
-            this.autoErrorRetest = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            richTextBox1 = new RichTextBox();
+            label1 = new Label();
+            clearInput_button = new Button();
+            label2 = new Label();
+            total_websites_label = new Label();
+            label4 = new Label();
+            label5 = new Label();
+            label6 = new Label();
+            label7 = new Label();
+            label8 = new Label();
+            label9 = new Label();
+            label10 = new Label();
+            label11 = new Label();
+            label12 = new Label();
+            button2 = new Button();
+            button3 = new Button();
+            label14 = new Label();
+            blacklistRichTextBox = new RichTextBox();
+            clearBlacklist_button = new Button();
+            label15 = new Label();
+            label16 = new Label();
+            activeTestingSite_label = new Label();
+            lastCheckedActive_label = new Label();
+            autoErrorRetest = new CheckBox();
+            button1 = new Button();
+            label13 = new Label();
+            SuspendLayout();
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(12, 64);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(395, 167);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "";
-            this.richTextBox1.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.richTextBox1_LinkClicked);
-            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            richTextBox1.Location = new Point(13, 54);
+            richTextBox1.Name = "richTextBox1";
+            richTextBox1.Size = new Size(536, 154);
+            richTextBox1.TabIndex = 1;
+            richTextBox1.Text = "";
+            richTextBox1.LinkClicked += richTextBox1_LinkClicked;
+            richTextBox1.TextChanged += richTextBox1_TextChanged;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 33);
-            this.label1.Margin = new System.Windows.Forms.Padding(3);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.label1.Size = new System.Drawing.Size(355, 18);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Paste your WordPress website URLs into the box below to monitor";
+            label1.AutoSize = true;
+            label1.Location = new Point(12, 30);
+            label1.Margin = new Padding(3);
+            label1.Name = "label1";
+            label1.Padding = new Padding(0, 0, 0, 3);
+            label1.Size = new Size(355, 18);
+            label1.TabIndex = 2;
+            label1.Text = "Paste your WordPress website URLs into the box below to monitor";
             // 
             // clearInput_button
             // 
-            this.clearInput_button.Location = new System.Drawing.Point(197, 239);
-            this.clearInput_button.Name = "clearInput_button";
-            this.clearInput_button.Size = new System.Drawing.Size(69, 23);
-            this.clearInput_button.TabIndex = 3;
-            this.clearInput_button.Text = "Clear List";
-            this.clearInput_button.UseVisualStyleBackColor = true;
-            this.clearInput_button.Click += new System.EventHandler(this.clearInput_button_Click);
+            clearInput_button.Location = new Point(676, 147);
+            clearInput_button.Name = "clearInput_button";
+            clearInput_button.Size = new Size(69, 23);
+            clearInput_button.TabIndex = 3;
+            clearInput_button.Text = "Clear List";
+            clearInput_button.UseVisualStyleBackColor = true;
+            clearInput_button.Click += clearInput_button_Click;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(440, 67);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(88, 15);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Total Websites :";
+            label2.AutoSize = true;
+            label2.Location = new Point(452, 9);
+            label2.Name = "label2";
+            label2.Size = new Size(88, 15);
+            label2.TabIndex = 4;
+            label2.Text = "Total Websites :";
             // 
             // total_websites_label
             // 
-            this.total_websites_label.AutoSize = true;
-            this.total_websites_label.Location = new System.Drawing.Point(534, 67);
-            this.total_websites_label.Name = "total_websites_label";
-            this.total_websites_label.Size = new System.Drawing.Size(51, 15);
-            this.total_websites_label.TabIndex = 5;
-            this.total_websites_label.Text = "Number";
+            total_websites_label.AutoSize = true;
+            total_websites_label.Location = new Point(556, 9);
+            total_websites_label.Name = "total_websites_label";
+            total_websites_label.Size = new Size(51, 15);
+            total_websites_label.TabIndex = 5;
+            total_websites_label.Text = "Number";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(441, 102);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 15);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Active Websites :";
+            label4.AutoSize = true;
+            label4.Location = new Point(453, 33);
+            label4.Name = "label4";
+            label4.Size = new Size(96, 15);
+            label4.TabIndex = 6;
+            label4.Text = "Active Websites :";
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(544, 102);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 15);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "Number";
+            label5.AutoSize = true;
+            label5.Location = new Point(556, 33);
+            label5.Name = "label5";
+            label5.Size = new Size(51, 15);
+            label5.TabIndex = 7;
+            label5.Text = "Number";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(441, 136);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(88, 15);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "Website Errors :";
+            label6.AutoSize = true;
+            label6.Location = new Point(636, 9);
+            label6.Name = "label6";
+            label6.Size = new Size(88, 15);
+            label6.TabIndex = 8;
+            label6.Text = "Website Errors :";
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(535, 136);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(51, 15);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Number";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(577, 216);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(211, 15);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "This is the current sites that have errors";
+            label7.AutoSize = true;
+            label7.Location = new Point(739, 9);
+            label7.Name = "label7";
+            label7.Size = new Size(51, 15);
+            label7.TabIndex = 9;
+            label7.Text = "Number";
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(178, 335);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(92, 15);
-            this.label8.TabIndex = 12;
-            this.label8.Text = "Time First Error :";
+            label8.AutoSize = true;
+            label8.Location = new Point(15, 240);
+            label8.Name = "label8";
+            label8.Size = new Size(92, 15);
+            label8.TabIndex = 12;
+            label8.Text = "Time First Error :";
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(274, 335);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(83, 15);
-            this.label9.TabIndex = 13;
-            this.label9.Text = "Date and Time";
+            label9.AutoSize = true;
+            label9.Location = new Point(111, 240);
+            label9.Name = "label9";
+            label9.Size = new Size(83, 15);
+            label9.TabIndex = 13;
+            label9.Text = "Date and Time";
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(179, 362);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(83, 15);
-            this.label10.TabIndex = 14;
-            this.label10.Text = "Last Checked :";
+            label10.AutoSize = true;
+            label10.Location = new Point(16, 267);
+            label10.Name = "label10";
+            label10.Size = new Size(83, 15);
+            label10.TabIndex = 14;
+            label10.Text = "Last Checked :";
             // 
             // label11
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(274, 362);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(33, 15);
-            this.label11.TabIndex = 15;
-            this.label11.Text = "Time";
+            label11.AutoSize = true;
+            label11.Location = new Point(111, 267);
+            label11.Name = "label11";
+            label11.Size = new Size(33, 15);
+            label11.TabIndex = 15;
+            label11.Text = "Time";
             // 
             // label12
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(12, 238);
-            this.label12.Name = "label12";
-            this.label12.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.label12.Size = new System.Drawing.Size(151, 18);
-            this.label12.TabIndex = 16;
-            this.label12.Text = "Testing Current Active Site :";
+            label12.AutoSize = true;
+            label12.Location = new Point(571, 55);
+            label12.Name = "label12";
+            label12.Padding = new Padding(0, 0, 0, 3);
+            label12.Size = new Size(151, 18);
+            label12.TabIndex = 16;
+            label12.Text = "Testing Current Active Site :";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(674, 418);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(114, 23);
-            this.button2.TabIndex = 18;
-            this.button2.Text = "Re-test Error Sites";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            button2.Location = new Point(236, 417);
+            button2.Name = "button2";
+            button2.Size = new Size(114, 23);
+            button2.TabIndex = 18;
+            button2.Text = "Re-test Error Sites";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(313, 239);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(79, 23);
-            this.button3.TabIndex = 19;
-            this.button3.Text = "Start Testing";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            button3.Location = new Point(570, 147);
+            button3.Name = "button3";
+            button3.Size = new Size(79, 23);
+            button3.TabIndex = 19;
+            button3.Text = "Start Testing";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // label14
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(12, 298);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(99, 15);
-            this.label14.TabIndex = 20;
-            this.label14.Text = "Last Check Time :";
+            label14.AutoSize = true;
+            label14.Location = new Point(570, 114);
+            label14.Name = "label14";
+            label14.Size = new Size(99, 15);
+            label14.TabIndex = 20;
+            label14.Text = "Last Check Time :";
             // 
             // blacklistRichTextBox
             // 
-            this.blacklistRichTextBox.Location = new System.Drawing.Point(423, 240);
-            this.blacklistRichTextBox.Name = "blacklistRichTextBox";
-            this.blacklistRichTextBox.Size = new System.Drawing.Size(365, 171);
-            this.blacklistRichTextBox.TabIndex = 22;
-            this.blacklistRichTextBox.Text = "";
-            this.blacklistRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.blacklistRichTextBox_LinkClicked);
+            blacklistRichTextBox.Location = new Point(210, 240);
+            blacklistRichTextBox.Name = "blacklistRichTextBox";
+            blacklistRichTextBox.Size = new Size(578, 171);
+            blacklistRichTextBox.TabIndex = 22;
+            blacklistRichTextBox.Text = "";
+            blacklistRichTextBox.LinkClicked += blacklistRichTextBox_LinkClicked;
             // 
             // clearBlacklist_button
             // 
-            this.clearBlacklist_button.Location = new System.Drawing.Point(585, 418);
-            this.clearBlacklist_button.Name = "clearBlacklist_button";
-            this.clearBlacklist_button.Size = new System.Drawing.Size(75, 23);
-            this.clearBlacklist_button.TabIndex = 23;
-            this.clearBlacklist_button.Text = "Clear List";
-            this.clearBlacklist_button.UseVisualStyleBackColor = true;
-            this.clearBlacklist_button.Click += new System.EventHandler(this.clearBlacklist_button_Click);
+            clearBlacklist_button.Location = new Point(147, 417);
+            clearBlacklist_button.Name = "clearBlacklist_button";
+            clearBlacklist_button.Size = new Size(75, 23);
+            clearBlacklist_button.TabIndex = 23;
+            clearBlacklist_button.Text = "Clear List";
+            clearBlacklist_button.UseVisualStyleBackColor = true;
+            clearBlacklist_button.Click += clearBlacklist_button_Click;
             // 
             // label15
             // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(88, 393);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(143, 15);
-            this.label15.TabIndex = 24;
-            this.label15.Text = "Error Testing Current Site :";
+            label15.AutoSize = true;
+            label15.Location = new Point(15, 303);
+            label15.Name = "label15";
+            label15.Size = new Size(143, 15);
+            label15.TabIndex = 24;
+            label15.Text = "Error Testing Current Site :";
             // 
             // label16
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(88, 418);
-            this.label16.Name = "label16";
-            this.label16.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.label16.Size = new System.Drawing.Size(92, 18);
-            this.label16.TabIndex = 25;
-            this.label16.Text = "Website address";
+            label16.AutoSize = true;
+            label16.Location = new Point(15, 328);
+            label16.Name = "label16";
+            label16.Padding = new Padding(0, 0, 0, 3);
+            label16.Size = new Size(92, 18);
+            label16.TabIndex = 25;
+            label16.Text = "Website address";
             // 
             // activeTestingSite_label
             // 
-            this.activeTestingSite_label.AutoSize = true;
-            this.activeTestingSite_label.Location = new System.Drawing.Point(12, 266);
-            this.activeTestingSite_label.Name = "activeTestingSite_label";
-            this.activeTestingSite_label.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.activeTestingSite_label.Size = new System.Drawing.Size(49, 18);
-            this.activeTestingSite_label.TabIndex = 28;
-            this.activeTestingSite_label.Text = "Website";
+            activeTestingSite_label.AutoSize = true;
+            activeTestingSite_label.Location = new Point(570, 82);
+            activeTestingSite_label.Name = "activeTestingSite_label";
+            activeTestingSite_label.Padding = new Padding(0, 0, 0, 3);
+            activeTestingSite_label.Size = new Size(49, 18);
+            activeTestingSite_label.TabIndex = 28;
+            activeTestingSite_label.Text = "Website";
             // 
             // lastCheckedActive_label
             // 
-            this.lastCheckedActive_label.AutoSize = true;
-            this.lastCheckedActive_label.Location = new System.Drawing.Point(118, 298);
-            this.lastCheckedActive_label.Name = "lastCheckedActive_label";
-            this.lastCheckedActive_label.Size = new System.Drawing.Size(33, 15);
-            this.lastCheckedActive_label.TabIndex = 29;
-            this.lastCheckedActive_label.Text = "Time";
+            lastCheckedActive_label.AutoSize = true;
+            lastCheckedActive_label.Location = new Point(676, 114);
+            lastCheckedActive_label.Name = "lastCheckedActive_label";
+            lastCheckedActive_label.Size = new Size(33, 15);
+            lastCheckedActive_label.TabIndex = 29;
+            lastCheckedActive_label.Text = "Time";
             // 
             // autoErrorRetest
             // 
-            this.autoErrorRetest.AutoSize = true;
-            this.autoErrorRetest.Checked = true;
-            this.autoErrorRetest.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.autoErrorRetest.Location = new System.Drawing.Point(451, 420);
-            this.autoErrorRetest.Name = "autoErrorRetest";
-            this.autoErrorRetest.Size = new System.Drawing.Size(120, 19);
-            this.autoErrorRetest.TabIndex = 30;
-            this.autoErrorRetest.Text = "Auto Retest Errors";
-            this.autoErrorRetest.UseVisualStyleBackColor = true;
+            autoErrorRetest.AutoSize = true;
+            autoErrorRetest.Checked = true;
+            autoErrorRetest.CheckState = CheckState.Checked;
+            autoErrorRetest.Location = new Point(13, 419);
+            autoErrorRetest.Name = "autoErrorRetest";
+            autoErrorRetest.Size = new Size(120, 19);
+            autoErrorRetest.TabIndex = 30;
+            autoErrorRetest.Text = "Auto Retest Errors";
+            autoErrorRetest.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(440, 208);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(79, 23);
-            this.button1.TabIndex = 31;
-            this.button1.Text = "Stop Testing";
-            this.button1.UseVisualStyleBackColor = true;
+            button1.Location = new Point(570, 183);
+            button1.Name = "button1";
+            button1.Size = new Size(79, 23);
+            button1.TabIndex = 31;
+            button1.Text = "Stop Testing";
+            button1.UseVisualStyleBackColor = true;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(210, 222);
+            label13.Name = "label13";
+            label13.Size = new Size(211, 15);
+            label13.TabIndex = 11;
+            label13.Text = "This is the current sites that have errors";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.autoErrorRetest);
-            this.Controls.Add(this.lastCheckedActive_label);
-            this.Controls.Add(this.activeTestingSite_label);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.label15);
-            this.Controls.Add(this.clearBlacklist_button);
-            this.Controls.Add(this.blacklistRichTextBox);
-            this.Controls.Add(this.label14);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.total_websites_label);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.clearInput_button);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.richTextBox1);
-            this.Name = "Form1";
-            this.Text = "Wp Uptime Alert";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackgroundImageLayout = ImageLayout.Stretch;
+            ClientSize = new Size(800, 450);
+            Controls.Add(button1);
+            Controls.Add(autoErrorRetest);
+            Controls.Add(lastCheckedActive_label);
+            Controls.Add(activeTestingSite_label);
+            Controls.Add(label16);
+            Controls.Add(label15);
+            Controls.Add(clearBlacklist_button);
+            Controls.Add(blacklistRichTextBox);
+            Controls.Add(label14);
+            Controls.Add(button3);
+            Controls.Add(button2);
+            Controls.Add(label12);
+            Controls.Add(label11);
+            Controls.Add(label10);
+            Controls.Add(label9);
+            Controls.Add(label8);
+            Controls.Add(label13);
+            Controls.Add(label7);
+            Controls.Add(label6);
+            Controls.Add(label5);
+            Controls.Add(label4);
+            Controls.Add(total_websites_label);
+            Controls.Add(label2);
+            Controls.Add(clearInput_button);
+            Controls.Add(label1);
+            Controls.Add(richTextBox1);
+            Name = "Form1";
+            Text = "Wp Uptime Alert";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -355,7 +354,6 @@
         private Label label5;
         private Label label6;
         private Label label7;
-        private Label label3;
         private Label label8;
         private Label label9;
         private Label label10;
@@ -372,5 +370,6 @@
         private Label lastCheckedActive_label;
         private CheckBox autoErrorRetest;
         private Button button1;
+        private Label label13;
     }
 }

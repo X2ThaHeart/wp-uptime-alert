@@ -95,7 +95,7 @@ namespace wp_uptime_alert.controller
             }
             else
             {
-                return null;
+                return site;
 
 
             }
@@ -107,43 +107,31 @@ namespace wp_uptime_alert.controller
 
 
 
-        public void cleanInputRefreshDataTableAsInput(DataTable datatable, RichTextBox richTextBox1_Text, DataTable dtBlacklist, RichTextBox blacklistRichTextBox)
+        public void cleanInputRefreshDataTableAsInput(DataTable datatable, RichTextBox richTextBox1_Text)
         {
-
             richTextBox1_Text.Clear();
 
             foreach (DataRow row in datatable.Rows)
             {
-                outToLog(row[0].ToString(), row[1].ToString(), richTextBox1_Text);
+                string? site = row.Field<string>("site");
+                string? domainStatus = row.Field<string>("domainstatus");
+                string? wordpressStatus = row.Field<string>("wordpressstatus");
 
-                //foreach (DataColumn column in datatable.Columns)
-                //{
-                //    outToLog(row[0].ToString(), row[1].ToString(), richTextBox1_Text);
-                //}
+                DateTime lastCheckedTime = DateTime.Now;
+                if (row["lastcheckedtime"] != DBNull.Value)
+                {
+                    lastCheckedTime = Convert.ToDateTime(row["lastcheckedtime"]);
+                }
+                string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
+
+                // Add the row data to the RichTextBox
+                string rowText = string.Format("{0,-50} {1,-20} {2,-20} {3}", site, domainStatus, wordpressStatus, lastCheckedTimeText);
+                richTextBox1_Text.AppendText(rowText);
+                richTextBox1_Text.AppendText(Environment.NewLine);
             }
-
-            //blacklistRichTextBox.Clear();
-
-            ////for (int i = 0; i < dtBlacklist.Rows.Count; i++)
-            ////{
-            ////    ListViewItem row = new ListViewItem(dtBlacklist.Rows[i][0].ToString());
-            ////    for (int j = 1; j < dtBlacklist.Columns.Count; j++)
-            ////    {
-            ////        row.SubItems.Add(dtBlacklist.Rows[i][j].ToString());
-
-            ////    }
-            ////    blacklistView.Items.Add(row);
-            ////}
-
-
-            //foreach (DataRow row in dtBlacklist.Rows)
-            //{
-
-            //    blacklistRichTextBox.Add(row[0].ToString());
-
-            //}
-
         }
+
+
 
 
         void outToLog2(string output, string? v, RichTextBox richTextBox1_Text)
@@ -209,89 +197,41 @@ namespace wp_uptime_alert.controller
         }
 
 
-
-        public async Task getRssfeedAndCheckAsync(string site, DataTable dt, DataTable dtBlacklist)
+        //runs after entry in url box
+        public async Task<bool> GetRssfeedAndCheckAsync(string site, DataTable dt, DataTable dtBlacklist, SiteRecord siteRecord)
         {
-            UrlValid = false;
-
-            Task<int> rssFeedActive = checkRssFeed(site);
-            wait(3000);
-            if (await Task.WhenAny(rssFeedActive, Task.Delay(10000)) == rssFeedActive)
-            {
-                wait(3000);
-
-                if (rssFeedActive.IsCompleted)
-                {
-
-                    if (await rssFeedActive == 0)
-                    {
-                        //no rss feed has been found so url is invalid add to blacklist
-                        if (!dt.Columns.Contains("site"))
-                        {
-                            //DataTable dt = new DataTable();
-                            dtBlacklist.Columns.Add("site");
-                            //dtBlacklist.Columns.Add("status");
-                            dtBlacklist.Columns.Add("lastcheckeddate");
-                            dtBlacklist.Rows.Add(site);
-                            UrlValid = false;
-
-
-                        }
-                        
-                        //label for inactive sites list
-
-
-
-
-                        //foreach (DataRow row in dtBlacklist.Rows)
-                        //{
-                        //    ListViewItem item = new ListViewItem(row[0].ToString());
-                        //    MessageBox.Show("inside row for list view  " + item.ToString(), "check");
-
-                        //    for (int i = 1; i < dtBlacklist.Columns.Count; i++)
-                        //    {
-                        //        item.SubItems.Add(row["site"].ToString());
-                        //        item.SubItems.Add(row["status"].ToString());
-                        //        item.SubItems.Add(row["lastcheckeddate"].ToString());
-
-                        //    }
-
-                        //    blacklistView.Items.Add(item);
-
-                        //}
-
-
-
-
-
-
-                    }
-                    else if (dt.Columns.Contains("site"))
-                    {
-                        UrlValid = true;
-
-                    }
-                    else
-                    {
-                        UrlValid = false;
-
-                    }
-
-
-                }
-                else
-                {
-                    UrlValid = false;
-
-                }
-
-            }
-            else
+            try
             {
                 UrlValid = false;
 
-            }
+                // Call checkRssFeed asynchronously
+                int rssFeedResult = await checkRssFeed(site);
 
+                if (rssFeedResult == 0)
+                {
+                    // No RSS feed found, mark the URL as invalid
+                    siteRecord.SiteAddress = site;
+                    UrlValid = false;
+                }
+                else if (dt.Columns.Contains("site"))
+                {
+                    // RSS feed found, mark the URL as valid
+                    UrlValid = true;
+                }
+                else
+                {
+                    // Invalid URL
+                    UrlValid = false;
+                }
+
+                return UrlValid;
+            }
+            catch (Exception ex)
+            {
+                // Log or display the error message
+                Console.WriteLine("Error in getRssfeedAndCheckAsync: " + ex.Message);
+                return false;
+            }
         }
 
 
@@ -342,7 +282,7 @@ namespace wp_uptime_alert.controller
         }
 
 
-        public void startTestingEachEntryInBlacklist(DataTable dtBlacklist, Label label7, Label label11, DataTable dt, RichTextBox blacklistRichTextBox)
+        public async Task startTestingEachEntryInBlacklistAsync(DataTable dtBlacklist, Label label7, Label label11, DataTable dt, RichTextBox blacklistRichTextBox, SiteRecord siteRecord)
         {
             foreach (DataRow row in dtBlacklist.Rows)
             {
@@ -359,9 +299,7 @@ namespace wp_uptime_alert.controller
                 }
                 else
                 {
-                    string check = DateTime.Now.ToString("HH:mm");
-                    row["lastcheckedtime"] = check;
-                    lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                    
 
                 }
 
@@ -379,7 +317,7 @@ namespace wp_uptime_alert.controller
                 {
                     //label13.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, dt, dtBlacklist);
+                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, dtBlacklist, siteRecord);
 
 
                     if (UrlValid)
@@ -402,7 +340,7 @@ namespace wp_uptime_alert.controller
 
             }
         }
-        public void startTestingEachEntryInDataTable(DataTable dt,  Label lastCheckedActive_label, Label activeTestingSite_label, RichTextBox richTextBox1, DataTable dtBlacklist) 
+        public async Task startTestingEachEntryInDataTableAsync(DataTable dt,  Label lastCheckedActive_label, Label activeTestingSite_label, RichTextBox richTextBox1, DataTable dtBlacklist, SiteRecord siteRecord) 
         {
             
             foreach (DataRow row in dt.Rows)
@@ -411,7 +349,9 @@ namespace wp_uptime_alert.controller
                 DateTime lastModified = new DateTime();
                 //lastModified  = DateTime.UtcNow;
                 //bool alreadyChecked = (bool)row["lastcheckedtime"] ? string.Empty : (string)row["lastcheckedtime"]))
-                var approved_by = (row["lastcheckedtime"].ToString() ?? row["lastcheckedtime"]);
+                
+                //in the row check to see if lastcheckedtime var is avaiable, if not
+                var approved_by = (row["lastcheckedtime"].ToString() ?? "");
 
                 if (approved_by != "")
                 {
@@ -420,7 +360,9 @@ namespace wp_uptime_alert.controller
                 }
                 else
                 {
-                    
+                    //lastModified = DateTime.ParseExact(DateTime.Now.ToString("HH:mm"), "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+
+                    //lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 
                 }
 
@@ -438,7 +380,7 @@ namespace wp_uptime_alert.controller
                 {
                     activeTestingSite_label.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    _ = getRssfeedAndCheckAsync(site, dt, dtBlacklist);
+                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, dtBlacklist, siteRecord);
 
 
                     if (UrlValid)

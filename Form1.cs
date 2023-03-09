@@ -11,23 +11,30 @@ using System.Text;
 using static System.Windows.Forms.LinkLabel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace wp_uptime_alert
 {
     public partial class Form1 : Form
     {
-        //correct place
         DataTable dt = new DataTable();
         DataTable dtBlacklist = new DataTable();
         Actions action = new Actions();
+        [NotNull]
+        SiteRecord siterecord;
 
         public Form1()
         {
             InitializeComponent();
 
+            // Set up the dt DataTable
+            dt.Columns.Add("site");
+            dt.Columns.Add("domainstatus");
+            dt.Columns.Add("wordpressstatus");
+            dt.Columns.Add("lastcheckedtime");
 
-
-
+            // Create a new SiteRecord object with the dt DataTable
+            siterecord = new SiteRecord(dt);
         }
 
         static bool StringIsNewLine(string s)
@@ -47,9 +54,9 @@ namespace wp_uptime_alert
 
         }
 
-       
 
-        
+
+
         //main start testing button
         private async void button3_Click(object sender, EventArgs e)
         {
@@ -58,19 +65,24 @@ namespace wp_uptime_alert
 
             if (!dt.Columns.Contains("site"))
             {
+                //test if this clears the whole box each time a new site isn't found of already existing ones.
                 dt.Clear();
+
                 //DataTable dt = new DataTable();
-                dt.Columns.Add("site");
-                dt.Columns.Add("lastcheckedtime");
+                //dt.Columns.Add("site");
+                //dt.Columns.Add("status");
+                //dt.Columns.Add("lastcheckedtime");
 
             }
 
             if (!dtBlacklist.Columns.Contains("site"))
             {
                 dtBlacklist.Clear();
+
                 //DataTable dt = new DataTable();
-                dtBlacklist.Columns.Add("site");
-                dtBlacklist.Columns.Add("lastcheckedtime");
+                //dtBlacklist.Columns.Add("site");
+                //dtBlacklist.Columns.Add("status");
+                //dtBlacklist.Columns.Add("lastcheckedtime");
 
             }
 
@@ -109,56 +121,61 @@ namespace wp_uptime_alert
                         if (filteredRows.Length == 0)
                         {
 
-                            var rsswait = action.getRssfeedAndCheckAsync(site, dt, dtBlacklist);
+                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, dtBlacklist, siterecord);
 
-                            if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
+                            //if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
+                            //{
+                            if (rsswait)
                             {
-                                if (rsswait.IsCompleted)
+                                if (action.UrlValid == true)
                                 {
-                                    if (action.UrlValid == true)
-                                    {
 
-                                        site = action.cleanUrlFinal(site);
+                                    site = action.cleanUrlFinal(site);
 
 
-                                        row["site"] = site;
-                                        dt.Rows.Add(row);
-                                        label5.Text = dt.Rows.Count.ToString();
+                                    row["site"] = site;
+                                    dt.Rows.Add(row);
+                                    label5.Text = dt.Rows.Count.ToString();
 
 
-                                    }
-
-                                    if (action.urlValid == false)
-                                    {
-                                        site = action.cleanUrlFinal(site);
-
-                                        
-
-                                        
-                                        blrow["site"] = site;
-                                        dtBlacklist.Rows.Add(blrow);
-                                        label7.Text = dtBlacklist.Rows.Count.ToString();
-                                        //label7.Text = "what is this echo";
-                                        
-                                    }
                                 }
 
-                            }
+                                if (action.urlValid == false)
+                                {
+                                    site = action.cleanUrlFinal(site);
 
+
+
+
+                                    blrow["site"] = site;
+                                    dtBlacklist.Rows.Add(blrow);
+                                    label7.Text = dtBlacklist.Rows.Count.ToString();
+                                    //label7.Text = "what is this echo";
+
+                                }
+                            }
                             else
                             {
-                                MessageBox.Show("Invalid Site Entered - last button click window ", "Error");
+                                MessageBox.Show("Waiting on RSS feed was invalid ", "Error");
 
                             }
+
                         }
+
                         else
                         {
-                            MessageBox.Show("Site already exists in table " + (site), "Error");
+                            MessageBox.Show("Invalid Site Entered - last button click window ", "Error");
 
                         }
+                        //}
+                        //else
+                        //{
+                        //    MessageBox.Show("Site already exists in table " + (site), "Error");
 
-                    }                 
-                    
+                        //}
+
+                    }
+
                 }
 
             }
@@ -224,10 +241,10 @@ namespace wp_uptime_alert
 
             //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
 
-            action.startTestingEachEntryInDataTable(dt, lastCheckedActive_label,  activeTestingSite_label, richTextBox1, dtBlacklist);
-            action.startTestingEachEntryInBlacklist(dtBlacklist, label7, label11, dt, blacklistRichTextBox);
+            await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, siterecord);
+            await action.startTestingEachEntryInBlacklistAsync(dtBlacklist, label7, label11, dt, blacklistRichTextBox, siterecord);
 
-            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1, dtBlacklist, blacklistRichTextBox);
+            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
             //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
             action.updateListViewWithBlackList(dtBlacklist, blacklistRichTextBox, label7);
             //this makes the whole row a link so not suitable
