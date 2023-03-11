@@ -31,20 +31,15 @@ namespace wp_uptime_alert.controller
             Uri outUri;
 
             if (Uri.TryCreate(site, UriKind.Absolute, out outUri)
-            && (outUri.Scheme == Uri.UriSchemeHttp || outUri.Scheme == Uri.UriSchemeHttps))
+                && (outUri.Scheme == Uri.UriSchemeHttp || outUri.Scheme == Uri.UriSchemeHttps))
             {
-
-                //site = outUri.Host;
-                //site = site.Replace("www.", "");
-
+                string path = string.Join("", outUri.Segments.Skip(1));
+                return path;
             }
 
-
-
-
             return site;
-
         }
+
 
         public async Task<int> checkRssFeed(string urlToCheck)
         {
@@ -408,7 +403,7 @@ namespace wp_uptime_alert.controller
                     if (UrlValid)
                     {
 
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
                         lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
                         
 

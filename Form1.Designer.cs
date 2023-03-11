@@ -54,11 +54,12 @@
             label15 = new Label();
             button4 = new Button();
             button5 = new Button();
+            button6 = new Button();
             SuspendLayout();
             // 
             // richTextBox1
             // 
-            richTextBox1.Location = new Point(13, 33);
+            richTextBox1.Location = new Point(13, 114);
             richTextBox1.Name = "richTextBox1";
             richTextBox1.Size = new Size(190, 156);
             richTextBox1.TabIndex = 1;
@@ -73,9 +74,9 @@
             label1.Margin = new Padding(3);
             label1.Name = "label1";
             label1.Padding = new Padding(0, 0, 0, 3);
-            label1.Size = new Size(355, 18);
+            label1.Size = new Size(403, 18);
             label1.TabIndex = 2;
-            label1.Text = "Paste your WordPress website URLs into the box below to monitor";
+            label1.Text = "Paste your WordPress website URLs into the small box below and click Start";
             // 
             // clearInput_button
             // 
@@ -163,9 +164,9 @@
             // 
             // button3
             // 
-            button3.Location = new Point(214, 56);
+            button3.Location = new Point(12, 43);
             button3.Name = "button3";
-            button3.Size = new Size(79, 23);
+            button3.Size = new Size(67, 55);
             button3.TabIndex = 19;
             button3.Text = "Start Testing";
             button3.UseVisualStyleBackColor = true;
@@ -182,7 +183,7 @@
             // 
             // blacklistRichTextBox
             // 
-            blacklistRichTextBox.Location = new Point(12, 221);
+            blacklistRichTextBox.Location = new Point(12, 317);
             blacklistRichTextBox.Name = "blacklistRichTextBox";
             blacklistRichTextBox.Size = new Size(68, 36);
             blacklistRichTextBox.TabIndex = 22;
@@ -222,9 +223,9 @@
             // 
             // button1
             // 
-            button1.Location = new Point(214, 85);
+            button1.Location = new Point(214, 43);
             button1.Name = "button1";
-            button1.Size = new Size(79, 23);
+            button1.Size = new Size(60, 55);
             button1.TabIndex = 31;
             button1.Text = "Stop Testing";
             button1.UseVisualStyleBackColor = true;
@@ -294,6 +295,15 @@
             button5.Text = "Save Profile";
             button5.UseVisualStyleBackColor = true;
             // 
+            // button6
+            // 
+            button6.Location = new Point(146, 287);
+            button6.Name = "button6";
+            button6.Size = new Size(57, 52);
+            button6.TabIndex = 35;
+            button6.Text = "Audio Bell";
+            button6.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -301,6 +311,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(button6);
             Controls.Add(button5);
             Controls.Add(button4);
             Controls.Add(listView1);
@@ -359,5 +370,6 @@
         private Label label15;
         private Button button4;
         private Button button5;
+        private Button button6;
     }
 }

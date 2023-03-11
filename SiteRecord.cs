@@ -28,9 +28,9 @@ namespace wp_uptime_alert
 
             // Add the columns to the new DataTable
             newDt.Columns.Add("Site address");
-            newDt.Columns.Add("Domain Status");
-            newDt.Columns.Add("WordPress Status");
-            newDt.Columns.Add("Last Checked Time");
+            newDt.Columns.Add("Server");
+            newDt.Columns.Add("WordPress");
+            newDt.Columns.Add("Last Checked");
 
             // Add columns to the ListView control
             AddColumnNamesInListView(listView);
@@ -54,9 +54,9 @@ namespace wp_uptime_alert
                 {
                     DataRow newRow = newDt.NewRow();
                     newRow["Site address"] = row["site"];
-                    newRow["Domain Status"] = row["domainstatus"];
-                    newRow["WordPress Status"] = row["wordpressstatus"];
-                    newRow["Last Checked Time"] = row["lastcheckedtime"];
+                    newRow["Server"] = row["domainstatus"];
+                    newRow["WordPress"] = row["wordpressstatus"];
+                    newRow["Last Checked"] = row["lastcheckedtime"];
                     newDt.Rows.Add(newRow);
                 }
             }
@@ -71,19 +71,19 @@ namespace wp_uptime_alert
             foreach (DataRow row in newDt.Rows)
             {
                 ListViewItem item = new ListViewItem(row["Site address"].ToString());
-                item.SubItems.Add(row["Domain Status"].ToString());
-                item.SubItems.Add(row["WordPress Status"].ToString());
-                item.SubItems.Add(row["Last Checked Time"].ToString());
+                item.SubItems.Add(row["Server"].ToString());
+                item.SubItems.Add(row["WordPress"].ToString());
+                item.SubItems.Add(row["Last Checked"].ToString());
                 listView.Items.Add(item);
             }
         }
 
         public void AddColumnNamesInListView(ListView listView)
         {
-            listView.Columns.Add("Site address", 265);
-            listView.Columns.Add("Domain", 80);
+            listView.Columns.Add("Site address", 300);
+            listView.Columns.Add("Server", 80);
             listView.Columns.Add("WordPress", 80);
-            listView.Columns.Add("Last Checked Time", 120).Tag = typeof(DateTime);
+            listView.Columns.Add("Last Checked", 95).Tag = typeof(DateTime);
         }
 
         //This extra constructor is required to allow "SiteRecord siteRecord = new SiteRecord();" to work in form.cs
@@ -98,14 +98,14 @@ namespace wp_uptime_alert
         }
 
 
-        public void SetListViewColumns(ListView listView)
-        {
-            // Add columns to the ListView control
-            listView.Columns.Add("Site address", 150);
-            listView.Columns.Add("Domain Status", 150);
-            listView.Columns.Add("WordPress Status", 150);
-            listView.Columns.Add("Last Checked Time", 150);
-        }
+        //public void SetListViewColumns(ListView listView)
+        //{
+        //    // Add columns to the ListView control
+        //    listView.Columns.Add("Site address", 150);
+        //    listView.Columns.Add("Domain Status", 150);
+        //    listView.Columns.Add("WordPress Status", 150);
+        //    listView.Columns.Add("Last Checked", 150);
+        //}
 
 
 
