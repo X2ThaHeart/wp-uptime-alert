@@ -80,10 +80,10 @@ namespace wp_uptime_alert
 
         public void AddColumnNamesInListView(ListView listView)
         {
-            listView.Columns.Add("Site address", 200);
-            listView.Columns.Add("Domain", 100);
-            listView.Columns.Add("WordPress", 100);
-            listView.Columns.Add("Last Checked Time", 150);
+            listView.Columns.Add("Site address", 265);
+            listView.Columns.Add("Domain", 80);
+            listView.Columns.Add("WordPress", 80);
+            listView.Columns.Add("Last Checked Time", 120).Tag = typeof(DateTime);
         }
 
         //This extra constructor is required to allow "SiteRecord siteRecord = new SiteRecord();" to work in form.cs

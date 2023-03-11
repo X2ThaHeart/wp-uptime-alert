@@ -217,13 +217,13 @@ namespace wp_uptime_alert
             //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
 
             await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, siterecord);
-            await action.startTestingEachEntryInBlacklistAsync(dtBlacklist, label7, label11, dt, blacklistRichTextBox, siterecord);
+            //await action.startTestingEachEntryInBlacklistAsync(dtBlacklist, label7, label11, dt, blacklistRichTextBox, siterecord);
 
             action.cleanInputRefreshDataTableAsInput(dt, listView1);
             //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
-            action.updateListViewWithBlackList(dtBlacklist, blacklistRichTextBox, label7);
+            //action.updateListViewWithBlackList(dtBlacklist, blacklistRichTextBox, label7);
             //this makes the whole row a link so not suitable
-            blacklistRichTextBox.DetectUrls = true;
+            //blacklistRichTextBox.DetectUrls = true;
 
 
             action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
@@ -308,6 +308,11 @@ namespace wp_uptime_alert
         {
             action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
+
+        }
+
+        private void label16_Click(object sender, EventArgs e)
+        {
 
         }
     }

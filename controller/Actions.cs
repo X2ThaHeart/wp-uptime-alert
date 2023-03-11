@@ -142,6 +142,7 @@ namespace wp_uptime_alert.controller
                     }
                     string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
 
+
                     // Create a new ListViewItem object with the row data
                     ListViewItem item = new ListViewItem(new string[] { site, domainStatus, wordpressStatus, lastCheckedTimeText });
 
@@ -316,7 +317,7 @@ namespace wp_uptime_alert.controller
                 if (approved_by != "")
                 {
                     string check = (string)row["lastcheckedtime"];
-                    lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                    lastModified = DateTime.ParseExact(check, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -344,12 +345,12 @@ namespace wp_uptime_alert.controller
                     if (UrlValid)
                     {
 
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
                         label11.Text = row["lastcheckedtime"].ToString();
                     }
                     else
                     {
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
 
                     }
                 }
@@ -377,7 +378,7 @@ namespace wp_uptime_alert.controller
                 if (approved_by != "")
                 {
                     string check = (string)row["lastcheckedtime"];
-                    lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                    lastModified = DateTime.ParseExact(check, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 }
                 else
                 {
@@ -407,7 +408,7 @@ namespace wp_uptime_alert.controller
                     if (UrlValid)
                     {
 
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
                         lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
                         
 
