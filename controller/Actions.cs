@@ -109,29 +109,48 @@ namespace wp_uptime_alert.controller
 
         public void cleanInputRefreshDataTableAsInput(DataTable datatable, ListView listView)
         {
+            // Clear the ListView
             listView.Clear();
 
-            foreach (DataRow row in datatable.Rows)
+            // Add column headers
+            listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            listView.View = View.Details;
+
+            SiteRecord siteRecord = new SiteRecord();
+            // Add columns to the ListView control
+            siteRecord.AddColumnNamesInListView(listView);
+
+            if (datatable.Rows.Count == 0)
             {
-                string? site = row.Field<string>("site");
-                string? domainStatus = row.Field<string>("domainstatus");
-                string? wordpressStatus = row.Field<string>("wordpressstatus");
-
-                DateTime lastCheckedTime = DateTime.Now;
-                if (row["lastcheckedtime"] != DBNull.Value)
-                {
-                    lastCheckedTime = Convert.ToDateTime(row["lastcheckedtime"]);
-                }
-                string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
-
-                // Create a new ListViewItem object with the row data
-                ListViewItem item = new ListViewItem(new string[] { site, domainStatus, wordpressStatus, lastCheckedTimeText });
-
-                // Add the new ListViewItem object to the Items collection of the ListView control
+                // Add a single empty row to the ListView
+                ListViewItem item = new ListViewItem(new string[] { "", "", "", "" });
                 listView.Items.Add(item);
+            }
+            else
+            {
+                // Add the rows from the DataTable to the ListView
+                foreach (DataRow row in datatable.Rows)
+                {
+                    string? site = row.Field<string>("site");
+                    string? domainStatus = row.Field<string>("domainstatus");
+                    string? wordpressStatus = row.Field<string>("wordpressstatus");
 
+                    DateTime lastCheckedTime = DateTime.Now;
+                    if (row["lastcheckedtime"] != DBNull.Value)
+                    {
+                        lastCheckedTime = Convert.ToDateTime(row["lastcheckedtime"]);
+                    }
+                    string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
+
+                    // Create a new ListViewItem object with the row data
+                    ListViewItem item = new ListViewItem(new string[] { site, domainStatus, wordpressStatus, lastCheckedTimeText });
+
+                    // Add the new ListViewItem object to the Items collection of the ListView control
+                    listView.Items.Add(item);
+                }
             }
         }
+
 
 
 

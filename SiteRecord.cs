@@ -33,10 +33,7 @@ namespace wp_uptime_alert
             newDt.Columns.Add("Last Checked Time");
 
             // Add columns to the ListView control
-            listView.Columns.Add("Site address", 200);
-            listView.Columns.Add("Domain", 100);
-            listView.Columns.Add("WordPress", 100);
-            listView.Columns.Add("Last Checked Time", 150);
+            AddColumnNamesInListView(listView);
 
             // Add column headers
             listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
@@ -81,6 +78,13 @@ namespace wp_uptime_alert
             }
         }
 
+        public void AddColumnNamesInListView(ListView listView)
+        {
+            listView.Columns.Add("Site address", 200);
+            listView.Columns.Add("Domain", 100);
+            listView.Columns.Add("WordPress", 100);
+            listView.Columns.Add("Last Checked Time", 150);
+        }
 
         //This extra constructor is required to allow "SiteRecord siteRecord = new SiteRecord();" to work in form.cs
         public SiteRecord()
