@@ -55,13 +55,14 @@
             autoErrorRetest = new CheckBox();
             button1 = new Button();
             label13 = new Label();
+            listView1 = new ListView();
             SuspendLayout();
             // 
             // richTextBox1
             // 
             richTextBox1.Location = new Point(13, 54);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(536, 154);
+            richTextBox1.Size = new Size(190, 162);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             richTextBox1.LinkClicked += richTextBox1_LinkClicked;
@@ -80,7 +81,7 @@
             // 
             // clearInput_button
             // 
-            clearInput_button.Location = new Point(676, 147);
+            clearInput_button.Location = new Point(721, 52);
             clearInput_button.Name = "clearInput_button";
             clearInput_button.Size = new Size(69, 23);
             clearInput_button.TabIndex = 3;
@@ -181,7 +182,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(571, 55);
+            label12.Location = new Point(305, 59);
             label12.Name = "label12";
             label12.Padding = new Padding(0, 0, 0, 3);
             label12.Size = new Size(151, 18);
@@ -200,7 +201,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(570, 147);
+            button3.Location = new Point(214, 56);
             button3.Name = "button3";
             button3.Size = new Size(79, 23);
             button3.TabIndex = 19;
@@ -211,7 +212,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(570, 114);
+            label14.Location = new Point(482, 60);
             label14.Name = "label14";
             label14.Size = new Size(99, 15);
             label14.TabIndex = 20;
@@ -219,9 +220,9 @@
             // 
             // blacklistRichTextBox
             // 
-            blacklistRichTextBox.Location = new Point(210, 240);
+            blacklistRichTextBox.Location = new Point(111, 328);
             blacklistRichTextBox.Name = "blacklistRichTextBox";
-            blacklistRichTextBox.Size = new Size(578, 171);
+            blacklistRichTextBox.Size = new Size(47, 78);
             blacklistRichTextBox.TabIndex = 22;
             blacklistRichTextBox.Text = "";
             blacklistRichTextBox.LinkClicked += blacklistRichTextBox_LinkClicked;
@@ -258,7 +259,7 @@
             // activeTestingSite_label
             // 
             activeTestingSite_label.AutoSize = true;
-            activeTestingSite_label.Location = new Point(570, 82);
+            activeTestingSite_label.Location = new Point(305, 86);
             activeTestingSite_label.Name = "activeTestingSite_label";
             activeTestingSite_label.Padding = new Padding(0, 0, 0, 3);
             activeTestingSite_label.Size = new Size(49, 18);
@@ -268,7 +269,7 @@
             // lastCheckedActive_label
             // 
             lastCheckedActive_label.AutoSize = true;
-            lastCheckedActive_label.Location = new Point(676, 114);
+            lastCheckedActive_label.Location = new Point(588, 60);
             lastCheckedActive_label.Name = "lastCheckedActive_label";
             lastCheckedActive_label.Size = new Size(33, 15);
             lastCheckedActive_label.TabIndex = 29;
@@ -288,7 +289,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(570, 183);
+            button1.Location = new Point(214, 85);
             button1.Name = "button1";
             button1.Size = new Size(79, 23);
             button1.TabIndex = 31;
@@ -298,11 +299,19 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(210, 222);
+            label13.Location = new Point(356, 421);
             label13.Name = "label13";
             label13.Size = new Size(211, 15);
             label13.TabIndex = 11;
             label13.Text = "This is the current sites that have errors";
+            // 
+            // listView1
+            // 
+            listView1.Location = new Point(214, 114);
+            listView1.Name = "listView1";
+            listView1.Size = new Size(574, 297);
+            listView1.TabIndex = 32;
+            listView1.UseCompatibleStateImageBehavior = false;
             // 
             // Form1
             // 
@@ -311,6 +320,7 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(listView1);
             Controls.Add(button1);
             Controls.Add(autoErrorRetest);
             Controls.Add(lastCheckedActive_label);
@@ -371,5 +381,6 @@
         private CheckBox autoErrorRetest;
         private Button button1;
         private Label label13;
+        private ListView listView1;
     }
 }

@@ -12,6 +12,8 @@ using static System.Windows.Forms.LinkLabel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
+using DocumentFormat.OpenXml.Spreadsheet;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 
 namespace wp_uptime_alert
 {
@@ -23,19 +25,37 @@ namespace wp_uptime_alert
         [NotNull]
         SiteRecord siterecord;
 
+
+
         public Form1()
         {
             InitializeComponent();
 
-            // Set up the dt DataTable
+
+
+            // Create a new SiteRecord object with the dt DataTable
             dt.Columns.Add("site");
             dt.Columns.Add("domainstatus");
             dt.Columns.Add("wordpressstatus");
             dt.Columns.Add("lastcheckedtime");
 
-            // Create a new SiteRecord object with the dt DataTable
-            siterecord = new SiteRecord(dt);
+            siterecord = new SiteRecord(dt, listView1);
+
+
         }
+
+        public void SetListViewBoxText(string item)
+        {
+            listView1.Items.Add(item);
+        }
+        public void SetListViewItem(string item)
+        {
+            listView1.Items.Add(item);
+        }
+
+
+
+
 
         static bool StringIsNewLine(string s)
         {
@@ -182,52 +202,7 @@ namespace wp_uptime_alert
 
 
 
-            //    //foreach (DataRow row in (await rssFeedActive).AsEnumerable())
-            //    //{
-            //    //    if (row[0].GetType() == typeof(int))
-            //    //    {
-            //    //    }
-            //    //}
 
-            //    //formfields.loadProcessText($"debug: {rssFeedActive}", currentFunction_label);
-            //    rssFeedCount.Content = rssFeedActive.Result.Rows.Count.ToString();
-            //    if (rssFeedActive.Result.Rows.Count == 0)
-            //    {
-
-
-            //        
-
-            //dt.Rows.Add(row);
-
-            //foreach (string check in removeSpacesFirst)
-            //{
-
-
-            //}
-            //string[] inputUrls = richTextBox1.Lines;
-
-
-
-            //string[] lines = inputUrls.Split(
-            //new string[] { Environment.NewLine },
-            //StringSplitOptions.None
-            //) ;
-
-            //string test = "2345\n564532\n345634\n234 234543\n1324 2435\n";
-            //string[] result = inputUrls.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-
-            //var result = inputUrls.Split(new string[] { "\\n" }, StringSplitOptions.None);
-
-
-
-
-
-            //for (int i = 0; i < inputUrls.Length; i++)
-            //{
-            //    row[i] = inputUrls[i];
-
-            //}
 
 
 
@@ -244,7 +219,7 @@ namespace wp_uptime_alert
             await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, siterecord);
             await action.startTestingEachEntryInBlacklistAsync(dtBlacklist, label7, label11, dt, blacklistRichTextBox, siterecord);
 
-            action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
+            action.cleanInputRefreshDataTableAsInput(dt, listView1);
             //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
             action.updateListViewWithBlackList(dtBlacklist, blacklistRichTextBox, label7);
             //this makes the whole row a link so not suitable

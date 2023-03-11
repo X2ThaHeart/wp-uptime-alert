@@ -107,9 +107,9 @@ namespace wp_uptime_alert.controller
 
 
 
-        public void cleanInputRefreshDataTableAsInput(DataTable datatable, RichTextBox richTextBox1_Text)
+        public void cleanInputRefreshDataTableAsInput(DataTable datatable, ListView listView)
         {
-            richTextBox1_Text.Clear();
+            listView.Clear();
 
             foreach (DataRow row in datatable.Rows)
             {
@@ -124,10 +124,12 @@ namespace wp_uptime_alert.controller
                 }
                 string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
 
-                // Add the row data to the RichTextBox
-                string rowText = string.Format("{0,-50} {1,-20} {2,-20} {3}", site, domainStatus, wordpressStatus, lastCheckedTimeText);
-                richTextBox1_Text.AppendText(rowText);
-                richTextBox1_Text.AppendText(Environment.NewLine);
+                // Create a new ListViewItem object with the row data
+                ListViewItem item = new ListViewItem(new string[] { site, domainStatus, wordpressStatus, lastCheckedTimeText });
+
+                // Add the new ListViewItem object to the Items collection of the ListView control
+                listView.Items.Add(item);
+
             }
         }
 
