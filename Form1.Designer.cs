@@ -145,7 +145,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(305, 59);
+            label12.Location = new Point(347, 59);
             label12.Name = "label12";
             label12.Padding = new Padding(0, 0, 0, 3);
             label12.Size = new Size(151, 18);
@@ -164,9 +164,9 @@
             // 
             // button3
             // 
-            button3.Location = new Point(12, 43);
+            button3.Location = new Point(214, 46);
             button3.Name = "button3";
-            button3.Size = new Size(67, 55);
+            button3.Size = new Size(93, 28);
             button3.TabIndex = 19;
             button3.Text = "Start Testing";
             button3.UseVisualStyleBackColor = true;
@@ -175,7 +175,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(482, 60);
+            label14.Location = new Point(518, 60);
             label14.Name = "label14";
             label14.Size = new Size(99, 15);
             label14.TabIndex = 20;
@@ -193,7 +193,7 @@
             // activeTestingSite_label
             // 
             activeTestingSite_label.AutoSize = true;
-            activeTestingSite_label.Location = new Point(313, 87);
+            activeTestingSite_label.Location = new Point(347, 86);
             activeTestingSite_label.Name = "activeTestingSite_label";
             activeTestingSite_label.Padding = new Padding(0, 0, 0, 3);
             activeTestingSite_label.Size = new Size(49, 18);
@@ -203,7 +203,7 @@
             // lastCheckedActive_label
             // 
             lastCheckedActive_label.AutoSize = true;
-            lastCheckedActive_label.Location = new Point(588, 60);
+            lastCheckedActive_label.Location = new Point(623, 60);
             lastCheckedActive_label.Name = "lastCheckedActive_label";
             lastCheckedActive_label.Size = new Size(33, 15);
             lastCheckedActive_label.TabIndex = 29;
@@ -223,9 +223,9 @@
             // 
             // button1
             // 
-            button1.Location = new Point(214, 43);
+            button1.Location = new Point(214, 80);
             button1.Name = "button1";
-            button1.Size = new Size(60, 55);
+            button1.Size = new Size(93, 27);
             button1.TabIndex = 31;
             button1.Text = "Stop Testing";
             button1.UseVisualStyleBackColor = true;

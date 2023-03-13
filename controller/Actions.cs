@@ -76,6 +76,7 @@ namespace wp_uptime_alert.controller
 
 
                 site = uriWithScheme.ToLower();
+                
                 //site = site.Replace("www.", "");
 
                 if (site.EndsWith("/"))
@@ -86,7 +87,7 @@ namespace wp_uptime_alert.controller
 
 
 
-                return site;
+                return outUri.Host;
             }
             else
             {
@@ -403,7 +404,7 @@ namespace wp_uptime_alert.controller
                     if (UrlValid)
                     {
 
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm");
+                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
                         lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
                         
 
