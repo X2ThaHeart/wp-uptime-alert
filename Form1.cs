@@ -315,5 +315,10 @@ namespace wp_uptime_alert
         {
 
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

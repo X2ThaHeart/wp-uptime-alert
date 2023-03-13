@@ -42,7 +42,6 @@
             button2 = new Button();
             button3 = new Button();
             label14 = new Label();
-            blacklistRichTextBox = new RichTextBox();
             activeTestingSite_label = new Label();
             lastCheckedActive_label = new Label();
             autoErrorRetest = new CheckBox();
@@ -69,14 +68,14 @@
             // 
             // label1
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(12, 9);
+            label1.Location = new Point(12, 12);
             label1.Margin = new Padding(3);
             label1.Name = "label1";
             label1.Padding = new Padding(0, 0, 0, 3);
-            label1.Size = new Size(403, 18);
+            label1.Size = new Size(191, 36);
             label1.TabIndex = 2;
-            label1.Text = "Paste your WordPress website URLs into the small box below and click Start";
+            label1.Text = "Paste your website URLs into the small box below and click Start";
+            label1.Click += label1_Click;
             // 
             // clearInput_button
             // 
@@ -91,7 +90,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(452, 9);
+            label2.Location = new Point(347, 9);
             label2.Name = "label2";
             label2.Size = new Size(88, 15);
             label2.TabIndex = 4;
@@ -100,7 +99,7 @@
             // total_websites_label
             // 
             total_websites_label.AutoSize = true;
-            total_websites_label.Location = new Point(556, 9);
+            total_websites_label.Location = new Point(451, 9);
             total_websites_label.Name = "total_websites_label";
             total_websites_label.Size = new Size(51, 15);
             total_websites_label.TabIndex = 5;
@@ -109,7 +108,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(453, 33);
+            label4.Location = new Point(348, 33);
             label4.Name = "label4";
             label4.Size = new Size(96, 15);
             label4.TabIndex = 6;
@@ -118,7 +117,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(556, 33);
+            label5.Location = new Point(451, 33);
             label5.Name = "label5";
             label5.Size = new Size(51, 15);
             label5.TabIndex = 7;
@@ -180,15 +179,6 @@
             label14.Size = new Size(99, 15);
             label14.TabIndex = 20;
             label14.Text = "Last Check Time :";
-            // 
-            // blacklistRichTextBox
-            // 
-            blacklistRichTextBox.Location = new Point(12, 317);
-            blacklistRichTextBox.Name = "blacklistRichTextBox";
-            blacklistRichTextBox.Size = new Size(68, 36);
-            blacklistRichTextBox.TabIndex = 22;
-            blacklistRichTextBox.Text = "";
-            blacklistRichTextBox.LinkClicked += blacklistRichTextBox_LinkClicked;
             // 
             // activeTestingSite_label
             // 
@@ -321,7 +311,6 @@
             Controls.Add(activeTestingSite_label);
             Controls.Add(label16);
             Controls.Add(label15);
-            Controls.Add(blacklistRichTextBox);
             Controls.Add(label14);
             Controls.Add(button3);
             Controls.Add(button2);
@@ -358,7 +347,6 @@
         private Button button2;
         private Button button3;
         private Label label14;
-        private RichTextBox blacklistRichTextBox;
         private Label activeTestingSite_label;
         private Label lastCheckedActive_label;
         private CheckBox autoErrorRetest;
