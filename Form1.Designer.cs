@@ -163,7 +163,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(214, 46);
+            button3.Location = new Point(214, 33);
             button3.Name = "button3";
             button3.Size = new Size(93, 28);
             button3.TabIndex = 19;
@@ -287,9 +287,9 @@
             // 
             // button6
             // 
-            button6.Location = new Point(146, 287);
+            button6.Location = new Point(518, 7);
             button6.Name = "button6";
-            button6.Size = new Size(57, 52);
+            button6.Size = new Size(70, 31);
             button6.TabIndex = 35;
             button6.Text = "Audio Bell";
             button6.UseVisualStyleBackColor = true;

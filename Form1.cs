@@ -141,7 +141,7 @@ namespace wp_uptime_alert
                         if (filteredRows.Length == 0)
                         {
 
-                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, dtBlacklist, siterecord);
+                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, siterecord);
 
                             //if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
                             //{
@@ -160,19 +160,6 @@ namespace wp_uptime_alert
 
                                 }
 
-                                if (action.urlValid == false)
-                                {
-                                    site = action.cleanUrlFinal(site);
-
-
-
-
-                                    blrow["site"] = site;
-                                    dtBlacklist.Rows.Add(blrow);
-                                    label7.Text = dtBlacklist.Rows.Count.ToString();
-                                    //label7.Text = "what is this echo";
-
-                                }
                             }
                             else
                             {
@@ -182,10 +169,27 @@ namespace wp_uptime_alert
 
                         }
 
-                        else
+                        else if (filteredRows.Length == 1)
                         {
-                            MessageBox.Show("Invalid Site Entered - last button click window ", "Error");
+                            MessageBox.Show("Site already exists", "Error");
+                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, siterecord);
 
+                            if (rsswait)
+                            {
+                                if (action.UrlValid == true)
+                                {
+
+                                    //site = action.cleanUrlFinal(site);
+
+
+                                    //row["site"] = site;
+                                    //dt.Rows.Add(row);
+                                    label5.Text = dt.Rows.Count.ToString();
+
+
+                                }
+
+                            }
                         }
                         //}
                         //else

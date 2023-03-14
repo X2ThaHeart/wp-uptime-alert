@@ -87,7 +87,7 @@ namespace wp_uptime_alert.controller
 
 
 
-                return outUri.Host;
+                return site;
             }
             else
             {
@@ -216,7 +216,7 @@ namespace wp_uptime_alert.controller
 
 
         //runs after entry in url box
-        public async Task<bool> GetRssfeedAndCheckAsync(string site, DataTable dt, DataTable dtBlacklist, SiteRecord siteRecord)
+        public async Task<bool> GetRssfeedAndCheckAsync(string site, DataTable dt, SiteRecord siteRecord)
         {
             try
             {
@@ -335,7 +335,7 @@ namespace wp_uptime_alert.controller
                 {
                     //label13.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, dtBlacklist, siteRecord);
+                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, siteRecord);
 
 
                     if (UrlValid)
@@ -398,7 +398,7 @@ namespace wp_uptime_alert.controller
                 {
                     activeTestingSite_label.Text = row["site"].ToString();
                     //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, dtBlacklist, siteRecord);
+                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, siteRecord);
 
 
                     if (UrlValid)
