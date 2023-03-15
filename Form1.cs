@@ -236,6 +236,8 @@ namespace wp_uptime_alert
 
             //total_websites_label.Text = totalwebsites.ToString();
 
+            richTextBox1.Clear();
+
         }
 
         private void blacklistRichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)

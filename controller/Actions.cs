@@ -71,12 +71,17 @@ namespace wp_uptime_alert.controller
             && (outUri.Scheme == Uri.UriSchemeHttp || outUri.Scheme == Uri.UriSchemeHttps))
             {
                 //uriWithoutScheme = outUri.Host + outUri.AbsolutePath;
-                uriWithScheme = outUri.Scheme + "://" + outUri.Host;
+                //uriWithScheme = outUri.Scheme + "://" + outUri.Host;
 
 
 
-                site = uriWithScheme.ToLower();
-                
+                site = outUri.Host.ToLower();
+                if (site.Contains("www."))
+                {
+                    site = site.Substring(4);
+
+                }
+
                 //site = site.Replace("www.", "");
 
                 if (site.EndsWith("/"))
@@ -416,7 +421,7 @@ namespace wp_uptime_alert.controller
                 }
                 else
                 {
-                    //MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
+                   MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
                 }
                 dt.AcceptChanges();
 
