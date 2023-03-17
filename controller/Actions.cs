@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Numerics;
 using System.Reflection.Emit;
 using System.Reflection.Metadata;
@@ -14,9 +15,42 @@ using static System.Windows.Forms.LinkLabel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Label = System.Windows.Forms.Label;
 using ListView = System.Windows.Forms.ListView;
+using System.Drawing;
+using static System.Windows.Forms.ListViewItem;
+using System.Drawing.Imaging;
+using System.Net.Sockets;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace wp_uptime_alert.controller
 {
+    public class HtmlStatusIcon
+    {
+        //private const int IconSize = 30;
+
+        //public static string GetHtml(int responseCode)
+        //{
+        //    Color color;
+        //    switch (responseCode)
+        //    {
+        //        case 200: // Success
+        //            color = Color.Green;
+        //            break;
+        //        case 404: // Not Found
+        //        case 503: // Service Unavailable
+        //            color = Color.Red;
+        //            break;
+        //        default: // Other error codes
+        //            color = Color.Gray;
+        //            break;
+        //    }
+
+        //    string html = $"<div style=\"display: inline-block; width: {IconSize}px; height: {IconSize}px; border-radius: 50%; background-color: {ColorTranslator.ToHtml(color)};\"></div>";
+        //    return html;
+        //}
+    }
+
+
+
     internal class Actions
     {
 
@@ -113,9 +147,12 @@ namespace wp_uptime_alert.controller
             // Clear the ListView
             listView.Clear();
 
+
+
+
             // Add column headers
             listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView.View = View.Details;
+            listView.View = System.Windows.Forms.View.Details;
 
             SiteRecord siteRecord = new SiteRecord();
             // Add columns to the ListView control
@@ -133,7 +170,7 @@ namespace wp_uptime_alert.controller
                 foreach (DataRow row in datatable.Rows)
                 {
                     string? site = row.Field<string>("site");
-                    string? domainStatus = row.Field<string>("domainstatus");
+                    int domainResponseCode = ActivateServerResponse(site);
                     string? wordpressStatus = row.Field<string>("wordpressstatus");
 
                     DateTime lastCheckedTime = DateTime.Now;
@@ -144,14 +181,71 @@ namespace wp_uptime_alert.controller
                     string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
 
 
-                    // Create a new ListViewItem object with the row data
+                    string domainStatus;
+
+                    // Determine the appropriate background color based on the domain response code
+                    System.Drawing.Color backgroundColor;
+                    switch (domainResponseCode)
+                    {
+                        case 200: // Success
+                            domainStatus = "Active".ToString();
+                            backgroundColor = System.Drawing.Color.LightGreen;
+                            break;
+                        case 404: // Not Found
+                            domainStatus = "Error : 404".ToString();
+
+                            backgroundColor = System.Drawing.Color.Red;
+                            break;
+
+                        case 503: // Service Unavailable
+                            domainStatus = "Error : 503".ToString();
+
+                            backgroundColor = System.Drawing.Color.Red;
+                            break;
+                        default: // Other error codes
+                            domainStatus = "Error".ToString();
+
+                            backgroundColor = System.Drawing.Color.Gray;
+                            
+                            break;
+                    }
+
+                    // Create a new ListViewItem object with the row data and set the background color of each subitem
                     ListViewItem item = new ListViewItem(new string[] { site, domainStatus, wordpressStatus, lastCheckedTimeText });
+                    for (int i = 0; i < item.SubItems.Count; i++)
+                    {
+                        item.SubItems[i].BackColor = backgroundColor;
+                    }
 
                     // Add the new ListViewItem object to the Items collection of the ListView control
                     listView.Items.Add(item);
                 }
             }
         }
+
+
+
+        public void listView1_DrawItem(object sender, DrawListViewItemEventArgs e)
+        {
+            // Get the response code from the subitem at index 1
+            int responseCode = int.Parse(e.Item.SubItems[1].Text);
+
+            // Set the background color of the cell based on the response code
+            switch (responseCode)
+            {
+                case 200: // Success
+                    e.Item.BackColor = System.Drawing.Color.LightGreen;
+                    break;
+                case 404: // Not Found
+                case 503: // Service Unavailable
+                    e.Item.BackColor = System.Drawing.Color.LightCoral;
+                    break;
+                default: // Other error codes
+                    e.Item.BackColor = System.Drawing.Color.LightGray;
+                    break;
+            }
+        }
+
 
 
 
@@ -397,41 +491,139 @@ namespace wp_uptime_alert.controller
                 //{
 
                 //}
-
-
-                if (DateTime.Now > lastModified.AddMinutes(5))
+                try
                 {
-                    activeTestingSite_label.Text = row["site"].ToString();
-                    //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, siteRecord);
-
-
-                    if (UrlValid)
+                    IPHostEntry hostEntry = Dns.GetHostEntry(site);
+                    if (hostEntry.AddressList.Length > 0)
                     {
+                        if (DateTime.Now > lastModified.AddMinutes(5))
+                        {
+                            activeTestingSite_label.Text = row["site"].ToString();
+                            //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+                            //check server response status
+                            var serverResponseCode = ActivateServerResponse(site);
 
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
-                        lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
-                        
 
-                    }
-                    else
-                    {
+                            if (serverResponseCode == 200)
+                            {
+                                await GetRssfeedAndCheckAsync(site, dt, siteRecord);
 
+                                row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
+                                lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
+                                //row["domainstatus"] = GetServerStatusIcon(serverResponseCode);
+                                //row["domainstatus"] = 200;
+
+
+                            }
+                            else
+                            {
+                                row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
+                                lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
+                                row["serverstatus"] = "Error : " + serverResponseCode.ToString();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
+                        }
+                        dt.AcceptChanges();
+
+                        activeTestingSite_label.Text = row["site"].ToString();
                     }
                 }
-                else
+                catch (SocketException ex)
                 {
-                   MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
+                    if (ex.SocketErrorCode == SocketError.HostNotFound)
+                    {
+                        MessageBox.Show("The domain " + site + " you entered is invalid, please check the spelling and try again", "Error");
+                    }
                 }
-                dt.AcceptChanges();
 
-                activeTestingSite_label.Text = row["site"].ToString();
+
+              
 
                 
 
             }
             
 
+        }
+
+        public int ActivateServerResponse(string serverUrl)
+        {
+            UriBuilder uriBuilder = new UriBuilder(serverUrl);
+            if (uriBuilder.Scheme == "")
+            {
+                uriBuilder.Scheme = "http"; // default to http if no scheme is provided
+            }
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
+            request.Timeout = 5000; // 5 seconds timeout
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                return (int)response.StatusCode;
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response is HttpWebResponse errorResponse)
+                {
+                    return (int)errorResponse.StatusCode;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        private byte[] GetServerStatusIcon(int responseCode)
+        {
+            // Create circle image
+            using (Bitmap image = new Bitmap(30, 30))
+            {
+                using (Graphics g = Graphics.FromImage(image))
+                {
+                    g.Clear(System.Drawing.Color.Transparent);
+                    using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Gray))
+                    {
+                        switch (responseCode)
+                        {
+                            case 200: // Success
+                                brush.Color = System.Drawing.Color.Green;
+                                break;
+                            case 404: // Not Found
+                            case 503: // Service Unavailable
+                                brush.Color = System.Drawing.Color.Red;
+                                break;
+                        }
+                        g.FillEllipse(brush, new Rectangle(0, 0, 30, 30));
+                    }
+                }
+
+                // Convert the Bitmap image to a byte array
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    image.Save(ms, ImageFormat.Png);
+                    return ms.ToArray();
+                }
+            }
+        }
+
+
+
+
+        private Bitmap GetCircleImage(int diameter, System.Drawing.Color color)
+        {
+            Bitmap image = new Bitmap(diameter, diameter);
+            using (Graphics g = Graphics.FromImage(image))
+            {
+                g.Clear(System.Drawing.Color.Transparent);
+                using (SolidBrush brush = new SolidBrush(color))
+                {
+                    g.FillEllipse(brush, new Rectangle(0, 0, diameter, diameter));
+                }
+            }
+            return image;
         }
 
 

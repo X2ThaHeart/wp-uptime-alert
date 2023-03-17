@@ -14,9 +14,13 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using DocumentFormat.OpenXml.Spreadsheet;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+using System.Net.Sockets;
+using System.Net;
 
 namespace wp_uptime_alert
 {
+    public delegate void DrawListViewItemEventHandler(object sender, DrawListViewItemEventArgs e);
+
     public partial class Form1 : Form
     {
         DataTable dt = new DataTable();
@@ -31,6 +35,7 @@ namespace wp_uptime_alert
         {
             InitializeComponent();
 
+            listView1.DrawItem += (sender, e) => action.listView1_DrawItem(sender, e);
 
 
             // Create a new SiteRecord object with the dt DataTable
@@ -123,7 +128,28 @@ namespace wp_uptime_alert
 
                     //successfully add item to datatable
                     DataRow row = dt.NewRow();
-                    DataRow blrow = dtBlacklist.NewRow();
+                    try
+                    {
+                        IPHostEntry hostEntry = Dns.GetHostEntry(site);
+                        if (hostEntry.AddressList.Length > 0)
+                        {
+                            // Domain exists and is valid
+                        }
+                    }
+                    catch (SocketException ex)
+                    {
+                        if (ex.SocketErrorCode == SocketError.HostNotFound)
+                        {
+                            MessageBox.Show("Error with domain : " + site + " check the spelling and try again", "Error");
+                            richTextBox1.Clear();
+
+                            return;
+                        }
+                    }
+
+
+
+                    //DataRow blrow = dtBlacklist.NewRow();
                     if (site == null)
                     {
                         //site = action.FirstCleanRssUrl(site);
@@ -145,27 +171,24 @@ namespace wp_uptime_alert
 
                             //if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
                             //{
-                            if (rsswait)
+                            
+                               
+                                if (rsswait)
                             {
-                                if (action.UrlValid == true)
-                                {
 
-                                    site = action.cleanUrlFinal(site);
+                                site = action.cleanUrlFinal(site);
 
 
-                                    row["site"] = site;
-                                    dt.Rows.Add(row);
-                                    label5.Text = dt.Rows.Count.ToString();
-
-
-                                }
+                                row["site"] = site;
+                                dt.Rows.Add(row);
+                                label5.Text = dt.Rows.Count.ToString();
 
                             }
-                            else
-                            {
-                                MessageBox.Show("Waiting on RSS feed was invalid ", "Error");
 
-                            }
+
+                                
+
+                          
 
                         }
 
