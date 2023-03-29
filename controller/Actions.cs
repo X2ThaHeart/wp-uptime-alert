@@ -142,7 +142,7 @@ namespace wp_uptime_alert.controller
 
 
 
-        public void cleanInputRefreshDataTableAsInput(DataTable datatable, ListView listView)
+        public async void cleanInputRefreshDataTableAsInput(DataTable datatable, ListView listView)
         {
             // Clear the ListView
             listView.Clear();
@@ -163,6 +163,8 @@ namespace wp_uptime_alert.controller
                 // Add a single empty row to the ListView
                 ListViewItem item = new ListViewItem(new string[] { "", "", "", "" });
                 listView.Items.Add(item);
+
+                // alert for no data has been entered
             }
             else
             {
@@ -171,7 +173,7 @@ namespace wp_uptime_alert.controller
                 {
                     string? site = row.Field<string>("site");
                     int domainResponseCode = ActivateServerResponse(site);
-                    string? wordpressStatus = row.Field<string>("wordpressstatus");
+                    //string? wordpressStatus = row.Field<string>("wordpressstatus");
 
                     DateTime lastCheckedTime = DateTime.Now;
                     if (row["lastcheckedtime"] != DBNull.Value)
@@ -210,6 +212,29 @@ namespace wp_uptime_alert.controller
                             break;
                     }
 
+                    var rssFeedCheck = await GetRssfeedAndCheckAsync(site, datatable, siteRecord);
+                    var wordpressStatus = "";
+                    switch (rssFeedCheck)
+                    {
+                        case true:
+                            wordpressStatus = "Active";
+                            backgroundColor = System.Drawing.Color.LightGreen;
+
+                            break;
+                        case false:
+                            wordpressStatus = "Error";
+                            backgroundColor = System.Drawing.Color.Red;
+
+                            break;
+                        default: // Other error codes
+                            wordpressStatus = "Error".ToString();
+
+                            backgroundColor = System.Drawing.Color.Gray;
+
+                            break;
+
+
+                    }
                     // Create a new ListViewItem object with the row data and set the background color of each subitem
                     ListViewItem item = new ListViewItem(new string[] { site, domainStatus, wordpressStatus, lastCheckedTimeText });
                     for (int i = 0; i < item.SubItems.Count; i++)
