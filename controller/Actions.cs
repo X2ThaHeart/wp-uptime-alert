@@ -142,29 +142,45 @@ namespace wp_uptime_alert.controller
 
 
 
-        public async void cleanInputRefreshDataTableAsInput(DataTable datatable, ListView listView)
+        public async Task cleanInputRefreshDataTableAsInput(DataTable datatable, DataGridView dataGridView)
         {
+
+
             // Clear the ListView
-            listView.Clear();
+            //listView.Clear();
 
+            //listView.OwnerDraw = true;
+            //listView.DrawSubItem += YourListView_DrawSubItem;
+            //listView.DrawColumnHeader += YourListView_DrawColumnHeader;
+            //this didn't work trying datagrid
 
+            // Clear the DataGridView
+            dataGridView.Rows.Clear();
+            dataGridView.Columns.Clear();
+
+            // Remove the extra row at the bottom
+            dataGridView.AllowUserToAddRows = true;
 
 
             // Add column headers
-            listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView.View = System.Windows.Forms.View.Details;
+            //listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            //listView.View = System.Windows.Forms.View.Details;
 
             SiteRecord siteRecord = new SiteRecord();
             // Add columns to the ListView control
-            siteRecord.AddColumnNamesInListView(listView);
+            //siteRecord.AddColumnNamesInListView(listView);
+
+            siteRecord.AddColumnNamesInDataGridView(dataGridView);
+
+
 
             if (datatable.Rows.Count == 0)
             {
-                // Add a single empty row to the ListView
-                ListViewItem item = new ListViewItem(new string[] { "", "", "", "" });
-                listView.Items.Add(item);
+                // Add a single empty row to the DataGridView
+                dataGridView.Rows.Add("", "", "", "");
 
-                // alert for no data has been entered
+                //alert if blank?
+
             }
             else
             {
@@ -218,12 +234,12 @@ namespace wp_uptime_alert.controller
                     {
                         case true:
                             wordpressStatus = "Active";
-                            backgroundColor = System.Drawing.Color.LightGreen;
+                            //backgroundColor = System.Drawing.Color.LightGreen;
 
                             break;
                         case false:
                             wordpressStatus = "Error";
-                            backgroundColor = System.Drawing.Color.Red;
+                            //backgroundColor = System.Drawing.Color.Red;
 
                             break;
                         default: // Other error codes
@@ -235,18 +251,113 @@ namespace wp_uptime_alert.controller
 
 
                     }
-                    // Create a new ListViewItem object with the row data and set the background color of each subitem
-                    ListViewItem item = new ListViewItem(new string[] { site, domainStatus, wordpressStatus, lastCheckedTimeText });
-                    for (int i = 0; i < item.SubItems.Count; i++)
+                    // Create a new ListViewItem object with the row data
+                    dataGridView.Rows.Add(site, domainStatus, wordpressStatus, lastCheckedTimeText);
+
+                    // Add the new DataGridViewRow object to the Rows collection of the DataGridView control
+                    int rowIndex = dataGridView.Rows.Count - 1;
+                    dataGridView.Rows[rowIndex].Cells[0].Style.BackColor = System.Drawing.Color.LightGreen;
+                    dataGridView.Rows[rowIndex].Cells[1].Style.BackColor = backgroundColor;
+
+                    if (wordpressStatus == "Error")
                     {
-                        item.SubItems[i].BackColor = backgroundColor;
+                        dataGridView.Rows[rowIndex].Cells[2].Style.BackColor = System.Drawing.Color.Red;
+                    }
+                    else
+                    {
+                        dataGridView.Rows[rowIndex].Cells[2].Style.BackColor = System.Drawing.Color.LightGreen;
                     }
 
-                    // Add the new ListViewItem object to the Items collection of the ListView control
-                    listView.Items.Add(item);
+                    dataGridView.Rows[rowIndex].Cells[3].Style.BackColor = System.Drawing.Color.LightGreen;
+
+                    // Set the SelectionBackColor for each cell
+                    for (int i = 0; i < dataGridView.ColumnCount; i++)
+                    {
+                        dataGridView.Rows[rowIndex].Cells[i].Style.SelectionBackColor = dataGridView.Rows[rowIndex].Cells[i].Style.BackColor;
+                        dataGridView.Rows[rowIndex].Cells[i].Style.SelectionForeColor = System.Drawing.Color.Black;
+                    }
+                    dataGridView.CellFormatting += DataGridView_CellFormatting;
+
+                    dataGridView.Refresh();
+                    dataGridView.AllowUserToAddRows = false;
+
+
                 }
             }
         }
+
+
+        private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DataGridView dataGridView = sender as DataGridView;
+
+            if (dataGridView != null && e.RowIndex >= 0)
+            {
+                if (e.ColumnIndex == 1) // Domain status column
+                {
+                    string? domainStatus = dataGridView.Rows[e.RowIndex].Cells[1].Value?.ToString() ?? "";
+
+                    if (domainStatus.Contains("Error"))
+                    {
+                        e.CellStyle.BackColor = System.Drawing.Color.Red;
+                    }
+                    else
+                    {
+                        e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+                    }
+                }
+                else if (e.ColumnIndex == 2) // WordPress status column
+                {
+                    string wordpressStatus = dataGridView.Rows[e.RowIndex].Cells[2].Value?.ToString() ?? "";
+
+                    if (wordpressStatus == "Error")
+                    {
+                        e.CellStyle.BackColor = System.Drawing.Color.Red;
+                    }
+                    else
+                    {
+                        e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+                    }
+                }
+                else if (e.ColumnIndex == 0 || e.ColumnIndex == 3) // Other columns
+                {
+                    e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+                }
+            }
+        }
+
+
+
+
+        private void YourListView_DrawSubItem(object? sender, DrawListViewSubItemEventArgs e)
+        {
+            // Set the text color
+            e.Item.UseItemStyleForSubItems = false;
+            e.SubItem.ForeColor = e.Item.ForeColor;
+
+            // Draw the background color
+            using (SolidBrush backgroundBrush = new SolidBrush(e.SubItem.BackColor))
+            {
+                e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+            }
+
+            // Draw the text
+            TextFormatFlags flags = TextFormatFlags.Left | TextFormatFlags.VerticalCenter;
+            TextRenderer.DrawText(e.Graphics, e.SubItem.Text, e.SubItem.Font, e.Bounds, e.SubItem.ForeColor, flags);
+        }
+
+        private void YourListView_DrawColumnHeader(object sender, DrawListViewColumnHeaderEventArgs e)
+        {
+            e.DrawDefault = true;
+        }
+
+
+
+
+
+
+
+
 
 
 

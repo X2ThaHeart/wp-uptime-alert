@@ -46,7 +46,6 @@
             lastCheckedActive_label = new Label();
             autoErrorRetest = new CheckBox();
             button1 = new Button();
-            listView1 = new ListView();
             label16 = new Label();
             label9 = new Label();
             label8 = new Label();
@@ -54,6 +53,8 @@
             button4 = new Button();
             button5 = new Button();
             button6 = new Button();
+            dataGridView1 = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // richTextBox1
@@ -79,7 +80,7 @@
             // 
             // clearInput_button
             // 
-            clearInput_button.Location = new Point(720, 59);
+            clearInput_button.Location = new Point(715, 59);
             clearInput_button.Name = "clearInput_button";
             clearInput_button.Size = new Size(69, 23);
             clearInput_button.TabIndex = 3;
@@ -126,7 +127,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(636, 9);
+            label6.Location = new Point(631, 9);
             label6.Name = "label6";
             label6.Size = new Size(88, 15);
             label6.TabIndex = 8;
@@ -135,7 +136,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(739, 9);
+            label7.Location = new Point(734, 9);
             label7.Name = "label7";
             label7.Size = new Size(51, 15);
             label7.TabIndex = 9;
@@ -220,15 +221,6 @@
             button1.Text = "Stop Testing";
             button1.UseVisualStyleBackColor = true;
             // 
-            // listView1
-            // 
-            listView1.Location = new Point(214, 114);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(574, 297);
-            listView1.Sorting = SortOrder.Ascending;
-            listView1.TabIndex = 32;
-            listView1.UseCompatibleStateImageBehavior = false;
-            // 
             // label16
             // 
             label16.AutoSize = true;
@@ -269,7 +261,7 @@
             // 
             // button4
             // 
-            button4.Location = new Point(702, 86);
+            button4.Location = new Point(697, 86);
             button4.Name = "button4";
             button4.Size = new Size(87, 23);
             button4.TabIndex = 33;
@@ -278,7 +270,7 @@
             // 
             // button5
             // 
-            button5.Location = new Point(610, 86);
+            button5.Location = new Point(605, 86);
             button5.Name = "button5";
             button5.Size = new Size(86, 23);
             button5.TabIndex = 34;
@@ -294,6 +286,15 @@
             button6.Text = "Audio Bell";
             button6.UseVisualStyleBackColor = true;
             // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(214, 113);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(572, 296);
+            dataGridView1.TabIndex = 36;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -301,10 +302,10 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(dataGridView1);
             Controls.Add(button6);
             Controls.Add(button5);
             Controls.Add(button4);
-            Controls.Add(listView1);
             Controls.Add(button1);
             Controls.Add(autoErrorRetest);
             Controls.Add(lastCheckedActive_label);
@@ -328,6 +329,7 @@
             Controls.Add(richTextBox1);
             Name = "Form1";
             Text = "Wp Uptime Alert";
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -351,7 +353,6 @@
         private Label lastCheckedActive_label;
         private CheckBox autoErrorRetest;
         private Button button1;
-        private ListView listView1;
         private Label label16;
         private Label label9;
         private Label label8;
@@ -359,5 +360,6 @@
         private Button button4;
         private Button button5;
         private Button button6;
+        private DataGridView dataGridView1;
     }
 }

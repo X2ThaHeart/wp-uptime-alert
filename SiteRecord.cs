@@ -21,7 +21,7 @@ namespace wp_uptime_alert
         public string WpStatus { get => wpStatus; set => wpStatus = value; }
         public string LastCheckedTime { get => lastcheckedtime.ToString(); set => lastcheckedtime.ToString(); }
 
-        public SiteRecord(DataTable list, ListView listView)
+        public SiteRecord(DataTable list, DataGridView dataGridView)
         {
             // Create a new DataTable with the desired schema
             DataTable newDt = new DataTable();
@@ -33,11 +33,11 @@ namespace wp_uptime_alert
             newDt.Columns.Add("Last Checked");
 
             // Add columns to the ListView control
-            AddColumnNamesInListView(listView);
+            //AddColumnNamesInListView(listView);
 
             // Add column headers
-            listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            listView.View = View.Details;
+            //listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            //listView.View = View.Details;
 
 
 
@@ -74,7 +74,7 @@ namespace wp_uptime_alert
                 item.SubItems.Add(row["Server"].ToString());
                 item.SubItems.Add(row["WordPress"].ToString());
                 item.SubItems.Add(row["Last Checked"].ToString());
-                listView.Items.Add(item);
+                //listView.Items.Add(item);
             }
         }
 
@@ -127,6 +127,70 @@ namespace wp_uptime_alert
 
             return list;
         }
+
+
+
+
+        //public void AddColumnNamesInDataGridView(DataGridView dataGridView)
+        //{
+        //    dataGridView.Columns.Add("site", "Site");
+        //    dataGridView.Columns.Add("domainstatus", "Domain Status");
+        //    dataGridView.Columns.Add("wordpressstatus", "WordPress Status");
+        //    dataGridView.Columns.Add("lastcheckedtime", "Last Checked Time");
+        //}
+
+
+        public void AddColumnNamesInDataGridView(DataGridView dataGridView)
+        {
+            // Create and configure columns
+            DataGridViewColumn siteColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "site",
+                HeaderText = "Site",
+                Width = 270, // Set the width of the 'Site' column
+            };
+
+            DataGridViewColumn domainStatusColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "domainstatus",
+                HeaderText = "Domain Status",
+                Width = 80, // Set the width of the 'Domain Status' column
+            };
+
+            DataGridViewColumn wordpressstatusColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "wordpressstatus",
+                HeaderText = "WordPress Status",
+                Width = 80, // Set the width of the 'Domain Status' column
+            };
+
+            DataGridViewColumn checkedtimeColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "lastcheckedtime",
+                HeaderText = "Last Checked Time",
+                Width = 95, // Set the width of the 'Domain Status' column
+            };
+
+
+            // Add more columns similarly
+
+            // Add the columns to the DataGridView
+            dataGridView.Columns.Add(siteColumn);
+            dataGridView.Columns.Add(domainStatusColumn);
+            dataGridView.Columns.Add(wordpressstatusColumn);
+
+            dataGridView.Columns.Add(checkedtimeColumn);
+
+            // Add more columns to the DataGridView
+        }
+
+
+
+
     }
+
+
+
+
 
 }

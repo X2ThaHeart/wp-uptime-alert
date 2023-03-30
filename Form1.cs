@@ -35,7 +35,7 @@ namespace wp_uptime_alert
         {
             InitializeComponent();
 
-            listView1.DrawItem += (sender, e) => action.listView1_DrawItem(sender, e);
+            //listView1.DrawItem += (sender, e) => action.listView1_DrawItem(sender, e);
 
 
             // Create a new SiteRecord object with the dt DataTable
@@ -44,18 +44,18 @@ namespace wp_uptime_alert
             dt.Columns.Add("wordpressstatus");
             dt.Columns.Add("lastcheckedtime");
 
-            siterecord = new SiteRecord(dt, listView1);
+            siterecord = new SiteRecord(dt, dataGridView1);
 
 
         }
 
         public void SetListViewBoxText(string item)
         {
-            listView1.Items.Add(item);
+            //listView1.Items.Add(item);
         }
         public void SetListViewItem(string item)
         {
-            listView1.Items.Add(item);
+            //listView1.Items.Add(item);
         }
 
 
@@ -167,28 +167,28 @@ namespace wp_uptime_alert
                         if (filteredRows.Length == 0)
                         {
 
-                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, siterecord);
+                            //var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, siterecord);
 
                             //if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
                             //{
-                            
-                               
-                                if (rsswait)
-                            {
-
-                                site = action.cleanUrlFinal(site);
 
 
-                                row["site"] = site;
-                                dt.Rows.Add(row);
-                                label5.Text = dt.Rows.Count.ToString();
+                            //if (rsswait)
+                            //{
 
-                            }
+                            site = action.cleanUrlFinal(site);
 
 
-                                
+                            row["site"] = site;
+                            dt.Rows.Add(row);
+                            label5.Text = dt.Rows.Count.ToString();
 
-                          
+                            // }
+
+
+
+
+
 
                         }
 
@@ -246,7 +246,7 @@ namespace wp_uptime_alert
             await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, siterecord);
             //await action.startTestingEachEntryInBlacklistAsync(dtBlacklist, label7, label11, dt, blacklistRichTextBox, siterecord);
 
-            action.cleanInputRefreshDataTableAsInput(dt, listView1);
+            action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
             //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
             //action.updateListViewWithBlackList(dtBlacklist, blacklistRichTextBox, label7);
             //this makes the whole row a link so not suitable
