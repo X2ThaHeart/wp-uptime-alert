@@ -16,6 +16,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using System.Net.Sockets;
 using System.Net;
+using wp_uptime_alert.model;
 
 namespace wp_uptime_alert
 {

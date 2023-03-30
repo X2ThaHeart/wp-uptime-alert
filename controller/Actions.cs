@@ -20,6 +20,7 @@ using static System.Windows.Forms.ListViewItem;
 using System.Drawing.Imaging;
 using System.Net.Sockets;
 using DocumentFormat.OpenXml.Wordprocessing;
+using wp_uptime_alert.model;
 
 namespace wp_uptime_alert.controller
 {
