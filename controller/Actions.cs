@@ -21,6 +21,7 @@ using System.Drawing.Imaging;
 using System.Net.Sockets;
 using DocumentFormat.OpenXml.Wordprocessing;
 using wp_uptime_alert.model;
+using DocumentFormat.OpenXml.Presentation;
 
 namespace wp_uptime_alert.controller
 {
@@ -48,6 +49,25 @@ namespace wp_uptime_alert.controller
         //    string html = $"<div style=\"display: inline-block; width: {IconSize}px; height: {IconSize}px; border-radius: 50%; background-color: {ColorTranslator.ToHtml(color)};\"></div>";
         //    return html;
         //}
+
+
+        public DataGridView MyDataGridView { get; }
+
+        public HtmlStatusIcon(DataGridView dataGridView)
+        {
+            MyDataGridView = dataGridView;
+        }
+
+
+
+
+        public SiteRecord SiteRecord { get; set;}
+
+        public HtmlStatusIcon(SiteRecord siteRecord)
+        {
+            SiteRecord = siteRecord;
+        }
+
     }
 
 
@@ -80,18 +100,27 @@ namespace wp_uptime_alert.controller
         {
             urlToCheck = urlToCheck + "/feed/";
             DataTable dataTable = new DataTable();
-            var feed = await FeedReader.ReadAsync(urlToCheck);
-
-
-
-            if (feed.Items.Count > 0)
+            try
             {
-                return feed.Items.Count;
+                var feed = await FeedReader.ReadAsync(urlToCheck);
+                if (feed.Items.Count > 0)
+                {
+                    return feed.Items.Count;
+                }
+                else
+                {
+                    return 0;
+                }
+
             }
-            else
+
+            catch
             {
                 return 0;
             }
+
+
+           
         }
 
 
@@ -156,8 +185,9 @@ namespace wp_uptime_alert.controller
             //this didn't work trying datagrid
 
             // Clear the DataGridView
-            dataGridView.Rows.Clear();
-            dataGridView.Columns.Clear();
+            //dataGridView.Rows.Clear();
+            //dataGridView.Rows.Clear();
+            //dataGridView.Columns.Clear();
 
             // Remove the extra row at the bottom
             dataGridView.AllowUserToAddRows = true;
@@ -171,9 +201,8 @@ namespace wp_uptime_alert.controller
             // Add columns to the ListView control
             //siteRecord.AddColumnNamesInListView(listView);
 
-            siteRecord.AddColumnNamesInDataGridView(dataGridView);
 
-
+            siteRecord.InitializeDataGridViewColumns(dataGridView);
 
             if (datatable.Rows.Count == 0)
             {
@@ -185,10 +214,13 @@ namespace wp_uptime_alert.controller
             }
             else
             {
+                //shuld i really remove this?
+                //dataGridView.CellFormatting += DataGridView_CellFormatting;
+
                 // Add the rows from the DataTable to the ListView
                 foreach (DataRow row in datatable.Rows)
                 {
-                    string? site = row.Field<string>("site");
+                    string? site = row.Field<string?>("site");
                     int domainResponseCode = ActivateServerResponse(site);
                     //string? wordpressStatus = row.Field<string>("wordpressstatus");
 
@@ -208,18 +240,18 @@ namespace wp_uptime_alert.controller
                     {
                         case 200: // Success
                             domainStatus = "Active".ToString();
-                            backgroundColor = System.Drawing.Color.LightGreen;
+                            //backgroundColor = System.Drawing.Color.LightGreen;
                             break;
                         case 404: // Not Found
                             domainStatus = "Error : 404".ToString();
 
-                            backgroundColor = System.Drawing.Color.Red;
+                            //backgroundColor = System.Drawing.Color.Red;
                             break;
 
                         case 503: // Service Unavailable
                             domainStatus = "Error : 503".ToString();
 
-                            backgroundColor = System.Drawing.Color.Red;
+                            //backgroundColor = System.Drawing.Color.Red;
                             break;
                         default: // Other error codes
                             domainStatus = "Error".ToString();
@@ -252,9 +284,15 @@ namespace wp_uptime_alert.controller
 
 
                     }
-                    // Create a new ListViewItem object with the row data
-                    dataGridView.Rows.Add(site, domainStatus, wordpressStatus, lastCheckedTimeText);
+                    // Update the DataRow with the new values
+                    row["site"] = site;
+                    siteRecord.DomainStatus = domainStatus;
+                    row["wordpressstatus"] = wordpressStatus;
+                    row["lastcheckedtime"] = lastCheckedTimeText;
 
+
+
+                    /*
                     // Add the new DataGridViewRow object to the Rows collection of the DataGridView control
                     int rowIndex = dataGridView.Rows.Count - 1;
                     dataGridView.Rows[rowIndex].Cells[0].Style.BackColor = System.Drawing.Color.LightGreen;
@@ -277,15 +315,53 @@ namespace wp_uptime_alert.controller
                         dataGridView.Rows[rowIndex].Cells[i].Style.SelectionBackColor = dataGridView.Rows[rowIndex].Cells[i].Style.BackColor;
                         dataGridView.Rows[rowIndex].Cells[i].Style.SelectionForeColor = System.Drawing.Color.Black;
                     }
-                    dataGridView.CellFormatting += DataGridView_CellFormatting;
 
                     dataGridView.Refresh();
                     dataGridView.AllowUserToAddRows = false;
 
-
+                    */
                 }
             }
         }
+
+
+        public void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DataGridView gridView = sender as DataGridView;
+
+            if (gridView != null)
+            {
+                // Check if the current cell belongs to the "domainstatus" or "wordpressstatus" column
+                if (e.ColumnIndex == gridView.Columns["domainstatus"].Index || e.ColumnIndex == gridView.Columns["wordpressstatus"].Index)
+                {
+                    // Get the cell value
+                    string status = e.Value as string;
+
+                    if (status != null)
+                    {
+                        // Set the cell background color based on the status value
+                        if (status == "Active")
+                        {
+                            e.CellStyle.BackColor = System.Drawing.Color.LightGreen;
+                        }
+                        else if (status.StartsWith("Error"))
+                        {
+                            e.CellStyle.BackColor = System.Drawing.Color.Red;
+                        }
+                        else
+                        {
+                            e.CellStyle.BackColor = System.Drawing.Color.Gray;
+                        }
+
+                        // Set the SelectionBackColor and SelectionForeColor
+                        e.CellStyle.SelectionBackColor = e.CellStyle.BackColor;
+                        e.CellStyle.SelectionForeColor = System.Drawing.Color.Black;
+                    }
+                }
+            }
+        }
+
+
 
 
         private void DataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -594,17 +670,18 @@ namespace wp_uptime_alert.controller
 
             }
         }
-        public async Task startTestingEachEntryInDataTableAsync(DataTable dt,  Label lastCheckedActive_label, Label activeTestingSite_label, RichTextBox richTextBox1, DataTable dtBlacklist, SiteRecord siteRecord) 
+        public async Task startTestingEachEntryInDataTableAsync(DataTable dt, Label lastCheckedActive_label, Label activeTestingSite_label, RichTextBox richTextBox1, DataTable dtBlacklist, SiteRecord siteRecord)
         {
-            
+
             foreach (DataRow row in dt.Rows)
             {
                 string site = row["site"].ToString();
                 DateTime lastModified = new DateTime();
                 //lastModified  = DateTime.UtcNow;
                 //bool alreadyChecked = (bool)row["lastcheckedtime"] ? string.Empty : (string)row["lastcheckedtime"]))
-                
+
                 //in the row check to see if lastcheckedtime var is avaiable, if not
+                
                 var approved_by = (row["lastcheckedtime"].ToString() ?? "");
 
                 if (approved_by != "")
@@ -635,6 +712,7 @@ namespace wp_uptime_alert.controller
                     {
                         if (DateTime.Now > lastModified.AddMinutes(5))
                         {
+
                             activeTestingSite_label.Text = row["site"].ToString();
                             //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
                             //check server response status
@@ -655,17 +733,21 @@ namespace wp_uptime_alert.controller
                             else
                             {
                                 row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
-                                lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
+                                lastCheckedActive_label.Text = "Last Checked Time";
                                 row["serverstatus"] = "Error : " + serverResponseCode.ToString();
                             }
                         }
                         else
                         {
-                            MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
+
+                            //put in a status message flash 
+
+                            //MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
                         }
                         dt.AcceptChanges();
 
                         activeTestingSite_label.Text = row["site"].ToString();
+
                     }
                 }
                 catch (SocketException ex)
@@ -694,7 +776,7 @@ namespace wp_uptime_alert.controller
                 uriBuilder.Scheme = "http"; // default to http if no scheme is provided
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
-            request.Timeout = 5000; // 5 seconds timeout
+            request.Timeout = 10000; // 5 seconds timeout
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();

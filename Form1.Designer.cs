@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             richTextBox1 = new RichTextBox();
             label1 = new Label();
@@ -54,7 +55,11 @@
             button5 = new Button();
             button6 = new Button();
             dataGridView1 = new DataGridView();
+            siteRecordBindingSource1 = new BindingSource(components);
+            siteRecordBindingSource = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).BeginInit();
             SuspendLayout();
             // 
             // richTextBox1
@@ -288,12 +293,23 @@
             // 
             // dataGridView1
             // 
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AllowUserToOrderColumns = true;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Location = new Point(214, 113);
             dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(572, 296);
             dataGridView1.TabIndex = 36;
+            // 
+            // siteRecordBindingSource1
+            // 
+            siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
+            // 
+            // siteRecordBindingSource
+            // 
+            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
             // 
             // Form1
             // 
@@ -330,6 +346,8 @@
             Name = "Form1";
             Text = "Wp Uptime Alert";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -361,5 +379,7 @@
         private Button button5;
         private Button button6;
         private DataGridView dataGridView1;
+        private BindingSource siteRecordBindingSource;
+        private BindingSource siteRecordBindingSource1;
     }
 }

@@ -17,6 +17,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
 using System.Net.Sockets;
 using System.Net;
 using wp_uptime_alert.model;
+using System.Collections.Concurrent;
+using System.ComponentModel;
 
 namespace wp_uptime_alert
 {
@@ -28,7 +30,12 @@ namespace wp_uptime_alert
         DataTable dtBlacklist = new DataTable();
         Actions action = new Actions();
         [NotNull]
-        SiteRecord siterecord;
+        //SiteRecord siterecord = new SiteRecord();
+        private BindingSource _bindingSource = new BindingSource();
+        private HtmlStatusIcon _myClassInstance;
+
+
+        public SiteRecord SiteRecord { get; set; } // Property for SiteRecord
 
 
 
@@ -40,15 +47,43 @@ namespace wp_uptime_alert
 
 
             // Create a new SiteRecord object with the dt DataTable
+
             dt.Columns.Add("site");
             dt.Columns.Add("domainstatus");
             dt.Columns.Add("wordpressstatus");
             dt.Columns.Add("lastcheckedtime");
 
-            siterecord = new SiteRecord(dt, dataGridView1);
+            SiteRecord = new SiteRecord(); // Create an instance of SiteRecord here
 
+            // ai recmd remove this
+            //siterecord = new SiteRecord( dataGridView1);
+
+            // Bind the DataTable to the BindingSource
+            _bindingSource.DataSource = dt;
+
+            // Set the DataGridView's DataSource to the BindingSource
+            dataGridView1.DataSource = _bindingSource;
+
+
+            _myClassInstance = new HtmlStatusIcon(dataGridView1);
+            _myClassInstance.MyDataGridView.CellFormatting += action.dataGridView_CellFormatting;
+
+            //SiteRecord.InitializeDataGridViewColumns(dataGridView1);
 
         }
+
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            dataGridView1.AutoGenerateColumns = false;
+            
+            //dataGridView1.DataSource = _bindingSource;
+        }
+
+
+
+
+
 
         public void SetListViewBoxText(string item)
         {
@@ -80,43 +115,41 @@ namespace wp_uptime_alert
 
         }
 
+        private BackgroundWorker _worker = new BackgroundWorker();
 
+        private BlockingCollection<string> _dataQueue = new BlockingCollection<string>();
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cts;
+
+
+
+        private string site;
 
 
         //main start testing button
         private async void button3_Click(object sender, EventArgs e)
         {
+            //List<SiteRecord> siteRecords = new List<SiteRecord>();
+
             var site = "";
             string[] removeSpacesFirst = richTextBox1.Lines;
 
+            /*
             if (!dt.Columns.Contains("site"))
             {
                 //test if this clears the whole box each time a new site isn't found of already existing ones.
                 dt.Clear();
 
-                //DataTable dt = new DataTable();
-                //dt.Columns.Add("site");
-                //dt.Columns.Add("status");
-                //dt.Columns.Add("lastcheckedtime");
+
 
             }
 
-            if (!dtBlacklist.Columns.Contains("site"))
-            {
-                dtBlacklist.Clear();
-
-                //DataTable dt = new DataTable();
-                //dtBlacklist.Columns.Add("site");
-                //dtBlacklist.Columns.Add("status");
-                //dtBlacklist.Columns.Add("lastcheckedtime");
-
-            }
+            */
 
 
 
             for (int i = 0; i < removeSpacesFirst.Length; i++)
             {
-                //if (!StringIsNewLine(removeSpacesFirst[i]))
 
                 if (removeSpacesFirst[i] == "\r\n" || removeSpacesFirst[i] == " " || removeSpacesFirst[i] == null || removeSpacesFirst[i].Length == 0)
                 {
@@ -150,17 +183,18 @@ namespace wp_uptime_alert
 
 
 
-                    //DataRow blrow = dtBlacklist.NewRow();
                     if (site == null)
                     {
-                        //site = action.FirstCleanRssUrl(site);
 
                         MessageBox.Show("site entered is null ", "Error");
 
                     }
                     else
                     {
+                        
                         site = action.FirstCleanRssUrl(site);
+                        //dt.Columns.Add("site");
+
 
                         DataRow[] filteredRows =
                         dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site));
@@ -168,27 +202,25 @@ namespace wp_uptime_alert
                         if (filteredRows.Length == 0)
                         {
 
-                            //var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, siterecord);
 
-                            //if (await Task.WhenAny(rsswait, Task.Delay(10000)) == rsswait)
-                            //{
-
-
-                            //if (rsswait)
-                            //{
 
                             site = action.cleanUrlFinal(site);
 
-
                             row["site"] = site;
+
+
                             dt.Rows.Add(row);
                             label5.Text = dt.Rows.Count.ToString();
 
-                            // }
+                          
 
+                            richTextBox1.Clear();
 
+                            // Initialize the CancellationTokenSource
+                            _cts = new CancellationTokenSource();
 
-
+                            // Pass the CancellationToken to the PerformSiteCheckAsync method
+                            await PerformSiteCheckAsync(site, _cts.Token);
 
 
                         }
@@ -196,18 +228,13 @@ namespace wp_uptime_alert
                         else if (filteredRows.Length == 1)
                         {
                             MessageBox.Show("Site already exists", "Error");
-                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, siterecord);
+                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
 
                             if (rsswait)
                             {
                                 if (action.UrlValid == true)
                                 {
 
-                                    //site = action.cleanUrlFinal(site);
-
-
-                                    //row["site"] = site;
-                                    //dt.Rows.Add(row);
                                     label5.Text = dt.Rows.Count.ToString();
 
 
@@ -215,12 +242,7 @@ namespace wp_uptime_alert
 
                             }
                         }
-                        //}
-                        //else
-                        //{
-                        //    MessageBox.Show("Site already exists in table " + (site), "Error");
 
-                        //}
 
                     }
 
@@ -229,40 +251,99 @@ namespace wp_uptime_alert
             }
 
 
-
-
-
-
-
-
-            MessageBoxWithDetails messageboxwithdetails = new MessageBoxWithDetails();
-
-            //messageboxwithdetails.DialogBoxPopup(dt.Rows[1].ToString());
-
-
-            //total_websites_label.Text = dt.Rows.Count.ToString();
-
-            //action.cleanInputRefreshDataTableAsInput(dt, richTextBox1);
-
-            await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, siterecord);
-            //await action.startTestingEachEntryInBlacklistAsync(dtBlacklist, label7, label11, dt, blacklistRichTextBox, siterecord);
-
-            action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
-            //action.cleanBlacklistViewUpdateInput(dtBlacklist, blacklistView);
-            //action.updateListViewWithBlackList(dtBlacklist, blacklistRichTextBox, label7);
-            //this makes the whole row a link so not suitable
-            //blacklistRichTextBox.DetectUrls = true;
-
-
-            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
-
-            //int totalwebsites = action.calculateTotalWebsites(dt, dtBlacklist);
-
-            //total_websites_label.Text = totalwebsites.ToString();
-
-            richTextBox1.Clear();
-
         }
+
+
+
+        private async Task PerformSiteCheckAsync(string site, CancellationToken ct)
+        {
+            while (!ct.IsCancellationRequested)
+            {
+                // Your code to run continuously goes here
+                await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
+
+                await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, SiteRecord);
+
+                await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
+
+
+                DataRow row = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site)).FirstOrDefault();
+                if (row != null)
+                {
+                    row["domainstatus"] = SiteRecord.DomainStatus; // Get the value from the siterecord
+                    row["wordpressstatus"] = SiteRecord.WpStatus; // Get the value from the siterecord
+
+                    action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
+                }
+
+
+                action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+
+                // This line will delay the loop for a certain period (e.g., 5000 milliseconds or 5 seconds)
+                await Task.Delay(TimeSpan.FromMinutes(5), ct);
+            }
+        }
+
+
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            if (_cts != null)
+            {
+                _cts.Cancel();
+            }
+        }
+
+
+
+
+
+
+        private async Task ProcessDataLoopAsync(CancellationToken cancellationToken, Action updateUI)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Run(async () =>
+                {
+                    await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, SiteRecord);
+
+                    // Call updateUI action here
+                    Invoke((MethodInvoker)delegate
+                    {
+                        updateUI();
+                    });
+
+                    action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
+                    action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+                });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //private void cancelButton_Click(object sender, EventArgs e)
+        //{
+        //    if (_cancellationTokenSource != null)
+        //    {
+        //        _cancellationTokenSource.Cancel();
+        //        _cancellationTokenSource = null;
+        //    }
+        //}
+
+
+
+
+
 
         private void blacklistRichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)
         {
