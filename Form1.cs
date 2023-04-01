@@ -100,6 +100,7 @@ namespace wp_uptime_alert
             bindingSource.DataSource = updatedDataTable;
 
 
+            dataGridView1.AllowUserToAddRows = false;
 
 
 
@@ -203,104 +204,80 @@ namespace wp_uptime_alert
         //main start testing button
         private async void button3_Click(object sender, EventArgs e)
         {
-            var site = "";
             string[] removeSpacesFirst = richTextBox1.Lines;
 
-            bool hasData = false;
-            foreach (DataRow row in dt.Rows)
-            {
-                if (!row.IsNull("site") && !string.IsNullOrWhiteSpace(row["site"].ToString()))
-                {
-                    hasData = true;
-                    await PerformSiteCheckAsync(site, _cts.Token);
-
-                    
-                }
-            }
-
-            if (!hasData && removeSpacesFirst.Length == 0)
+            // Check if the rich text box is empty and there are no existing table entries
+            if (removeSpacesFirst.Length == 0 && dt.Rows.Count == 0)
             {
                 MessageBox.Show("Please enter a site to check.", "Error");
                 return;
             }
 
+            // Check for new entries in the rich text box
             for (int i = 0; i < removeSpacesFirst.Length; i++)
             {
-                if (removeSpacesFirst[i] == "\r\n" || removeSpacesFirst[i] == " " || removeSpacesFirst[i] == null || removeSpacesFirst[i].Length == 0)
+                string site = removeSpacesFirst[i];
+
+                if (string.IsNullOrWhiteSpace(site))
                 {
                     continue;
                 }
-                else
+
+                try
                 {
-                    site = removeSpacesFirst[i];
-
-                    try
+                    IPHostEntry hostEntry = Dns.GetHostEntry(site);
+                    if (hostEntry.AddressList.Length > 0)
                     {
-                        IPHostEntry hostEntry = Dns.GetHostEntry(site);
-                        if (hostEntry.AddressList.Length > 0)
-                        {
-                            // Domain exists and is valid
-                        }
+                        // Domain exists and is valid
+                        Debug.WriteLine("Domain is valid.");
                     }
-                    catch (SocketException ex)
+                }
+                catch (SocketException ex)
+                {
+                    if (ex.SocketErrorCode == SocketError.HostNotFound)
                     {
-                        if (ex.SocketErrorCode == SocketError.HostNotFound)
-                        {
-                            MessageBox.Show("Error with domain : " + site + " check the spelling and try again", "Error");
-                            richTextBox1.Clear();
-                            return;
-                        }
+                        MessageBox.Show("Error with domain : " + site + " check the spelling and try again", "Error");
+                        richTextBox1.Clear();
+                        return;
                     }
+                }
 
-                    if (site == null)
-                    {
-                        MessageBox.Show("site entered is null ", "Error");
-                    }
-                    else
-                    {
-                        site = action.FirstCleanRssUrl(site);
+                site = action.FirstCleanRssUrl(site);
 
-                        DataRow[] filteredRows = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site));
-                        if (filteredRows.Length == 0)
-                        {
-                            site = action.cleanUrlFinal(site);
+                DataRow[] filteredRows = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site));
+                if (filteredRows.Length == 0)
+                {
+                    // Add the new site to the DataTable
+                    site = action.cleanUrlFinal(site);
 
-                            DataRow row = dt.NewRow();
-                            row["site"] = site;
-                            dt.Rows.Add(row);
+                    DataRow row = dt.NewRow();
+                    row["site"] = site;
+                    dt.Rows.Add(row);
 
-                            label5.Text = dt.Rows.Count.ToString();
-                            richTextBox1.Clear();
+                    label5.Text = dt.Rows.Count.ToString();
+                    richTextBox1.Clear();
 
-                            // Refresh the DataGridView using the updated DataTable
-                            var updatedDataTable = await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                    // Refresh the DataGridView using the updated DataTable
+                    var updatedDataTable = await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                }
+            }
 
-                            await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
+            // Initialize the CancellationTokenSource
+            _cts = new CancellationTokenSource();
 
-                            // Initialize the CancellationTokenSource
-                            _cts = new CancellationTokenSource();
-
-                            // Pass the CancellationToken to the PerformSiteCheckAsync method
-                            await PerformSiteCheckAsync(site, _cts.Token);
-
-                        }
-                        else if (filteredRows.Length == 1)
-                        {
-                            MessageBox.Show("Site already exists", "Error");
-                            var rsswait = await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
-
-                            if (rsswait)
-                            {
-                                if (action.UrlValid == true)
-                                {
-                                    label5.Text = dt.Rows.Count.ToString();
-                                }
-                            }
-                        }
-                    }
+            // Check for existing table entries and start the background worker
+            foreach (DataRow row in dt.Rows)
+            {
+                if (!row.IsNull("site") && !string.IsNullOrWhiteSpace(row["site"].ToString()))
+                {
+                    await PerformSiteCheckAsync(_cts.Token);
                 }
             }
         }
+
+
+
+
 
 
 
@@ -318,16 +295,22 @@ namespace wp_uptime_alert
                 _cts?.Cancel();
 
                 // Create a new CancellationTokenSource if it doesn't exist
-                
+                // Wait for a short delay to allow cancellation to propagate (optional)
+                await Task.Delay(100);
+
+                // Dispose the current CancellationTokenSource and create a new one
+
 
                 // Perform the site check with the CancellationToken
-               
+
 
                 // Handle cancellation here (optional)
                 if (_cts.IsCancellationRequested)
                 {
                     Debug.WriteLine("Task cancelled.");
-                    await PerformSiteCheckAsync(SiteRecord.SiteAddress, _cts.Token);
+                    await PerformSiteCheckAsync(_cts.Token);
+                    _cts?.Dispose();
+                    _cts = new CancellationTokenSource();
                 }
             }
             catch (OperationCanceledException)
@@ -344,91 +327,37 @@ namespace wp_uptime_alert
 
 
 
-        private async Task PerformSiteCheckAsync(string site, CancellationToken ct)
+        private async Task PerformSiteCheckAsync(CancellationToken ct)
         {
             try
             {
                 while (!ct.IsCancellationRequested)
                 {
-                    DateTime lastCheckedTime = DateTime.MinValue;
+                    ct.ThrowIfCancellationRequested();
 
-                    // Call the GetRssfeedAndCheckAsync method outside the while loop
-                    await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
-
-                    // Check if the last checked time for any site is over 5 minutes ago
-                    bool isOver5MinAgo = false;
-
+                    // Iterate through all the sites in the DataTable
                     foreach (DataRow row in dt.Rows)
                     {
                         ct.ThrowIfCancellationRequested();
 
+                        string site = row.Field<string>("site");
+
                         string lastCheckedTimeString = row.Field<string>("lastcheckedtime");
+                        DateTime lastChecked = string.IsNullOrEmpty(lastCheckedTimeString)
+                            ? DateTime.MinValue
+                            : DateTime.ParseExact(lastCheckedTimeString, "HH:mm:ss", CultureInfo.InvariantCulture);
 
-                        if (!string.IsNullOrEmpty(lastCheckedTimeString))
+                        // Check if 5 minutes have passed since the last update
+                        if (DateTime.Now.Subtract(lastChecked).TotalMinutes >= 5)
                         {
-                            DateTime lastChecked = DateTime.ParseExact(lastCheckedTimeString, "HH:mm:ss", CultureInfo.InvariantCulture);
+                            // Call the GetRssfeedAndCheckAsync method for each site
+                            (DateTime updatedLastCheckedTime, bool isValid) = await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
 
-                            if (DateTime.Now.Subtract(lastChecked).TotalMinutes > 5)
-                            {
-                                await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                            // Update the lastcheckedtime field with the new value
+                            row["lastcheckedtime"] = updatedLastCheckedTime.ToString("HH:mm:ss");
 
-                                await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
-
-                                isOver5MinAgo = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    // If no site has been checked for over 5 minutes, wait for 10 seconds and check again
-                    if (!isOver5MinAgo)
-                    {
-                        await Task.Delay(TimeSpan.FromSeconds(10), ct);
-                        continue;
-                    }
-
-                    // If at least one site has been checked for over 5 minutes, perform the checks
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        ct.ThrowIfCancellationRequested();
-
-                        string rowSite = row.Field<string>("site");
-                        string lastCheckedTimeString = row.Field<string>("lastcheckedtime");
-
-                        if (rowSite == site && !string.IsNullOrEmpty(lastCheckedTimeString))
-                        {
-                            DateTime lastChecked = DateTime.ParseExact(lastCheckedTimeString, "HH:mm:ss", CultureInfo.InvariantCulture);
-
-                            // Check if the site has been checked over 5 minutes ago
-                            if (DateTime.Now.Subtract(lastChecked).TotalMinutes > 5)
-                            {
-                                // Perform the site checks
-                                SiteRecord.LastCheckedTime = DateTime.Now.ToString("HH:mm:ss");
-
-                                DataRow updatedRow = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site)).FirstOrDefault();
-                                if (updatedRow != null)
-                                {
-                                    updatedRow["domainstatus"] = SiteRecord.DomainStatus;
-                                    updatedRow["wordpressstatus"] = SiteRecord.WpStatus;
-                                    updatedRow["lastcheckedtime"] = SiteRecord.LastCheckedTime;
-
-                                    try
-                                    {
-                                        Invoke((MethodInvoker)delegate
-                                        {
-                                            action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
-                                        });
-                                    }
-                                    catch
-                                    {
-
-                                    }
-                                }
-
-                                action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
-
-                                break;
-                            }
+                            // Refresh the DataGridView using the updated DataTable
+                            await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
                         }
                     }
 
@@ -447,6 +376,9 @@ namespace wp_uptime_alert
                 Debug.WriteLine("Exception thrown: " + ex.Message);
             }
         }
+
+
+
 
 
 
@@ -609,6 +541,6 @@ namespace wp_uptime_alert
 
         }
 
-       
+
     }
 }

@@ -41,12 +41,10 @@
             label6 = new Label();
             label7 = new Label();
             label12 = new Label();
-            button2 = new Button();
             button3 = new Button();
             label14 = new Label();
             activeTestingSite_label = new Label();
             lastCheckedActive_label = new Label();
-            autoErrorRetest = new CheckBox();
             button1 = new Button();
             label16 = new Label();
             label9 = new Label();
@@ -162,16 +160,6 @@
             label12.TabIndex = 16;
             label12.Text = "Testing Current Active Site :";
             // 
-            // button2
-            // 
-            button2.Location = new Point(623, 417);
-            button2.Name = "button2";
-            button2.Size = new Size(163, 23);
-            button2.TabIndex = 18;
-            button2.Text = "Re-test Error Sites";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
-            // 
             // button3
             // 
             button3.Location = new Point(214, 33);
@@ -210,18 +198,6 @@
             lastCheckedActive_label.TabIndex = 29;
             lastCheckedActive_label.Text = "Time";
             // 
-            // autoErrorRetest
-            // 
-            autoErrorRetest.AutoSize = true;
-            autoErrorRetest.Checked = true;
-            autoErrorRetest.CheckState = CheckState.Checked;
-            autoErrorRetest.Location = new Point(497, 419);
-            autoErrorRetest.Name = "autoErrorRetest";
-            autoErrorRetest.Size = new Size(120, 19);
-            autoErrorRetest.TabIndex = 30;
-            autoErrorRetest.Text = "Auto Retest Errors";
-            autoErrorRetest.UseVisualStyleBackColor = true;
-            // 
             // button1
             // 
             button1.Location = new Point(214, 80);
@@ -235,7 +211,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(13, 393);
+            label16.Location = new Point(215, 423);
             label16.Name = "label16";
             label16.Padding = new Padding(0, 0, 0, 3);
             label16.Size = new Size(92, 18);
@@ -246,7 +222,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(324, 421);
+            label9.Location = new Point(697, 423);
             label9.Name = "label9";
             label9.Size = new Size(83, 15);
             label9.TabIndex = 13;
@@ -255,7 +231,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(216, 421);
+            label8.Location = new Point(589, 423);
             label8.Name = "label8";
             label8.Size = new Size(92, 15);
             label8.TabIndex = 12;
@@ -264,7 +240,7 @@
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new Point(12, 368);
+            label15.Location = new Point(60, 423);
             label15.Name = "label15";
             label15.Size = new Size(143, 15);
             label15.TabIndex = 24;
@@ -312,15 +288,16 @@
             // 
             dataGridViewTextBoxColumn1.HeaderText = "Site";
             dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.Width = 225;
             // 
             // serverstatus
             // 
-            serverstatus.HeaderText = "serverstatus";
+            serverstatus.HeaderText = "Server Status";
             serverstatus.Name = "serverstatus";
             // 
             // wpstatus
             // 
-            wpstatus.HeaderText = "wpstatus";
+            wpstatus.HeaderText = "WordPress Status";
             wpstatus.Name = "wpstatus";
             // 
             // lastmodified
@@ -328,7 +305,7 @@
             dataGridViewCellStyle1.Format = "T";
             dataGridViewCellStyle1.NullValue = null;
             lastmodified.DefaultCellStyle = dataGridViewCellStyle1;
-            lastmodified.HeaderText = "lastmodified";
+            lastmodified.HeaderText = "Last Checked";
             lastmodified.Name = "lastmodified";
             // 
             // siteRecordBindingSource
@@ -352,14 +329,12 @@
             Controls.Add(button5);
             Controls.Add(button4);
             Controls.Add(button1);
-            Controls.Add(autoErrorRetest);
             Controls.Add(lastCheckedActive_label);
             Controls.Add(activeTestingSite_label);
             Controls.Add(label16);
             Controls.Add(label15);
             Controls.Add(label14);
             Controls.Add(button3);
-            Controls.Add(button2);
             Controls.Add(label12);
             Controls.Add(label9);
             Controls.Add(label8);
@@ -393,12 +368,10 @@
         private Label label6;
         private Label label7;
         private Label label12;
-        private Button button2;
         private Button button3;
         private Label label14;
         private Label activeTestingSite_label;
         private Label lastCheckedActive_label;
-        private CheckBox autoErrorRetest;
         private Button button1;
         private Label label16;
         private Label label9;

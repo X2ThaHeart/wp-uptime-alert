@@ -23,6 +23,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using wp_uptime_alert.model;
 using DocumentFormat.OpenXml.Presentation;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace wp_uptime_alert.controller
 {
@@ -201,14 +202,16 @@ namespace wp_uptime_alert.controller
                 var wordpressStatus = "";
                 switch (rssFeedCheck)
                 {
-                    case true:
+                    case (DateTime, true):
                         wordpressStatus = "Active";
                         break;
-                    case false:
+
+                    case (DateTime, false):
                         wordpressStatus = "Error";
                         break;
-                    default: // Other error codes
-                        wordpressStatus = "Error".ToString();
+
+                    default:
+                        wordpressStatus = "Unknown";
                         break;
                 }
 
@@ -415,12 +418,11 @@ namespace wp_uptime_alert.controller
         }
 
 
-        //runs after entry in url box
-        public async Task<bool> GetRssfeedAndCheckAsync(string site, DataTable dt, SiteRecord siteRecord)
+        public async Task<(DateTime LastCheckedTime, bool IsValid)> GetRssfeedAndCheckAsync(string site, DataTable dt, SiteRecord SiteRecord)
         {
             try
             {
-                UrlValid = false;
+                bool UrlValid = false;
 
                 // Call checkRssFeed asynchronously
                 int rssFeedResult = await checkRssFeed(site);
@@ -428,7 +430,7 @@ namespace wp_uptime_alert.controller
                 if (rssFeedResult == 0)
                 {
                     // No RSS feed found, mark the URL as invalid
-                    siteRecord.SiteAddress = site;
+                    SiteRecord.SiteAddress = site;
                     UrlValid = false;
                 }
                 else if (dt.Columns.Contains("site"))
@@ -442,21 +444,27 @@ namespace wp_uptime_alert.controller
                     UrlValid = false;
                 }
 
-                return UrlValid;
+                // Perform other operations if required (e.g., updating the SiteRecord)
+
+                // Return the tuple with updated lastcheckedtime and the UrlValid flag
+                return (DateTime.Now, UrlValid);
             }
             catch (Exception ex)
             {
                 // Log or display the error message
-                Console.WriteLine("Error in getRssfeedAndCheckAsync: " + ex.Message);
-                return false;
+                Debug.WriteLine("Error in getRssfeedAndCheckAsync: " + ex.Message);
+
+                // Return the minimum DateTime value and false in case of an error
+                return (DateTime.MinValue, false);
             }
         }
 
 
-       
 
 
-        
+
+
+
         public async Task startTestingEachEntryInDataTableAsync(DataTable dt, Label lastCheckedActive_label, Label activeTestingSite_label, SiteRecord siteRecord)
         {
 
