@@ -31,6 +31,8 @@ namespace wp_uptime_alert.model
 
 
 
+
+
         public SiteRecord()
         {
             // Create a new DataTable with the desired schema

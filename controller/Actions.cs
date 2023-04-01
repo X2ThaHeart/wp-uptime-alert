@@ -155,7 +155,6 @@ namespace wp_uptime_alert.controller
         public async Task<DataTable> cleanInputRefreshDataTableAsInput(DataTable datatable, DataGridView dataGridView, BindingSource bindingSource)
         {
             SiteRecord siteRecord = new SiteRecord();
-            siteRecord.InitializeDataGridViewColumns(dataGridView);
 
             foreach (DataRow row in datatable.Rows)
             {
@@ -163,6 +162,7 @@ namespace wp_uptime_alert.controller
                 int domainResponseCode = ActivateServerResponse(site);
 
                 string? lastCheckedTimeString = row.Field<string?>("lastcheckedtime");
+
                 DateTime lastCheckedTime;
 
                 if (lastCheckedTimeString != null)
@@ -173,6 +173,10 @@ namespace wp_uptime_alert.controller
                 {
                     lastCheckedTime = DateTime.Now;
                 }
+
+                // Convert the DateTime value to a formatted time string
+                string formattedTime = lastCheckedTime.ToString("HH:mm:ss");
+
                 //string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
 
                 string domainStatus;
@@ -209,14 +213,14 @@ namespace wp_uptime_alert.controller
 
                 row["domainstatus"] = domainStatus;
                 row["wordpressstatus"] = wordpressStatus;
-                row["lastcheckedtime"] = lastCheckedTime; // format the datetime as string
+                row["lastcheckedtime"] = formattedTime; // format the datetime as string
             }
 
 
 
 
 
-            siteRecord.InitializeDataGridViewColumns(dataGridView);
+            //siteRecord.InitializeDataGridViewColumns(dataGridView);
             //dataGridView.DataSource = bindingSource;
 
             dataGridView.DataSource = datatable;
@@ -497,7 +501,7 @@ namespace wp_uptime_alert.controller
                             {
                                 await GetRssfeedAndCheckAsync(site, dt, siteRecord);
 
-                                siteRecord.LastCheckedTime = DateTime.Now.ToString("HH:mm:ss");
+                                siteRecord.LastCheckedTime = DateTime.Now.ToShortTimeString();
                                 lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
                                 //row["domainstatus"] = GetServerStatusIcon(serverResponseCode);
                                 //row["domainstatus"] = 200;
@@ -506,7 +510,7 @@ namespace wp_uptime_alert.controller
                             }
                             else
                             {
-                                siteRecord.LastCheckedTime = DateTime.Now.ToString("HH:mm:ss");
+                                siteRecord.LastCheckedTime = DateTime.Now.ToShortTimeString();
                                 lastCheckedActive_label.Text = "Last Checked Time";
                                 siteRecord.DomainStatus = "Error : " + serverResponseCode.ToString();
                             }

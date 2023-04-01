@@ -76,6 +76,8 @@ namespace wp_uptime_alert
             dataGridView1.Columns[3].DataPropertyName = "lastcheckedtime";
             dataGridView1.Columns[3].DefaultCellStyle.Format = "t";
 
+            var lastCheckedTimeColumn = dataGridView1.Columns["lastCheckedTimeColumn"];
+            lastCheckedTimeColumn.DefaultCellStyle.Format = "t";
 
 
             // Set up the column headers in dataGridView1
@@ -254,6 +256,9 @@ namespace wp_uptime_alert
                             // Refresh the DataGridView using the updated DataTable
                             var updatedDataTable = await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
                             //bindingSource.DataSource = updatedDataTable;
+
+
+                            await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
 
                             // Initialize the CancellationTokenSource
                             _cts = new CancellationTokenSource();
