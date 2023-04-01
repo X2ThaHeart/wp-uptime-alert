@@ -74,7 +74,7 @@ namespace wp_uptime_alert
 
             dataGridView1.Columns[3].Name = "lastCheckedTimeColumn";
             dataGridView1.Columns[3].DataPropertyName = "lastcheckedtime";
-
+            dataGridView1.Columns[3].DefaultCellStyle.Format = "t";
 
 
 
@@ -95,6 +95,10 @@ namespace wp_uptime_alert
             // Call the cleanInputRefreshDataTableAsInput method and bind the DataGridView to the updated DataTable
             var updatedDataTable = action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
             bindingSource.DataSource = updatedDataTable;
+
+
+
+           
 
         }
 
@@ -249,13 +253,18 @@ namespace wp_uptime_alert
 
                             // Refresh the DataGridView using the updated DataTable
                             var updatedDataTable = await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
-                            bindingSource.DataSource = updatedDataTable;
+                            //bindingSource.DataSource = updatedDataTable;
 
                             // Initialize the CancellationTokenSource
                             _cts = new CancellationTokenSource();
 
                             // Pass the CancellationToken to the PerformSiteCheckAsync method
                             await PerformSiteCheckAsync(site, _cts.Token);
+
+
+                        
+
+
                         }
                         else if (filteredRows.Length == 1)
                         {
@@ -280,40 +289,49 @@ namespace wp_uptime_alert
 
         private async Task PerformSiteCheckAsync(string site, CancellationToken ct)
         {
-            while (!ct.IsCancellationRequested)
+
+
+
+
+
+
+            if (!true)
             {
-                // Your code to run continuously goes here
-                await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
-
-                await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
-
-                await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
-
-                // Update the lastcheckedtime column for this particular website
-                //SiteRecord.LastCheckedTime = DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss");
-
-
-                DataRow row = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site)).FirstOrDefault();
-                if (row != null)
+                while (!ct.IsCancellationRequested)
                 {
-                    row["domainstatus"] = SiteRecord.DomainStatus; // Get the value from the siterecord
-                    row["wordpressstatus"] = SiteRecord.WpStatus; // Get the value from the siterecord
-                    row["lastcheckedtime"] = SiteRecord.LastCheckedTime; // Update the lastcheckedtime column for this particular website
+                    // Your code to run continuously goes here
+                    await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
 
-                    //row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss"); // Update the lastcheckedtime column for this particular website
-                    // Use Invoke to update the DataGridView on the UI thread
-                    Invoke((MethodInvoker)delegate
+                    await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
+
+                    await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
+
+                    // Update the lastcheckedtime column for this particular website
+                    //SiteRecord.LastCheckedTime = DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss");
+
+
+                    DataRow row = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site)).FirstOrDefault();
+                    if (row != null)
                     {
-                        action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
-                    });
+                        row["domainstatus"] = SiteRecord.DomainStatus; // Get the value from the siterecord
+                        row["wordpressstatus"] = SiteRecord.WpStatus; // Get the value from the siterecord
+                        row["lastcheckedtime"] = SiteRecord.LastCheckedTime; // Update the lastcheckedtime column for this particular website
+
+                        //row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss"); // Update the lastcheckedtime column for this particular website
+                        // Use Invoke to update the DataGridView on the UI thread
+                        Invoke((MethodInvoker)delegate
+                        {
+                            action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                        });
+                    }
+
+
+
+                    action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+
+                    // This line will delay the loop for a certain period (e.g., 5000 milliseconds or 5 seconds)
+                    await Task.Delay(TimeSpan.FromMinutes(5), ct);
                 }
-
-
-
-                action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
-
-                // This line will delay the loop for a certain period (e.g., 5000 milliseconds or 5 seconds)
-                await Task.Delay(TimeSpan.FromMinutes(5), ct);
             }
         }
 
@@ -463,6 +481,11 @@ namespace wp_uptime_alert
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void siteRecordBindingSource1_CurrentChanged(object sender, EventArgs e)
         {
 
         }

@@ -24,8 +24,10 @@ namespace wp_uptime_alert.model
         public string LastCheckedTime
         {
             get => lastcheckedtime.ToString("HH:mm:ss");
-            set => lastcheckedtime = DateTime.ParseExact(value, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            set => lastcheckedtime = DateTime.ParseExact(value, "HH:mm:ss", CultureInfo.InvariantCulture);
         }
+
+
 
 
 

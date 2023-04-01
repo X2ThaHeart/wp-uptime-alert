@@ -22,6 +22,7 @@ using System.Net.Sockets;
 using DocumentFormat.OpenXml.Wordprocessing;
 using wp_uptime_alert.model;
 using DocumentFormat.OpenXml.Presentation;
+using System.Globalization;
 
 namespace wp_uptime_alert.controller
 {
@@ -161,10 +162,16 @@ namespace wp_uptime_alert.controller
                 string? site = row.Field<string?>("site");
                 int domainResponseCode = ActivateServerResponse(site);
 
-                DateTime lastCheckedTime = DateTime.Now;
-                if (row["lastcheckedtime"] != DBNull.Value)
+                string? lastCheckedTimeString = row.Field<string?>("lastcheckedtime");
+                DateTime lastCheckedTime;
+
+                if (lastCheckedTimeString != null)
                 {
-                    lastCheckedTime = Convert.ToDateTime(row["lastcheckedtime"]);
+                    lastCheckedTime = DateTime.ParseExact(lastCheckedTimeString, "HH:mm:ss", CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    lastCheckedTime = DateTime.Now;
                 }
                 //string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
 
@@ -205,6 +212,15 @@ namespace wp_uptime_alert.controller
                 row["lastcheckedtime"] = lastCheckedTime; // format the datetime as string
             }
 
+
+
+
+
+            siteRecord.InitializeDataGridViewColumns(dataGridView);
+            //dataGridView.DataSource = bindingSource;
+
+            dataGridView.DataSource = datatable;
+
             // Refresh the DataGridView using the updated DataTable
             dataGridView.Refresh();
 
@@ -212,6 +228,16 @@ namespace wp_uptime_alert.controller
         }
 
 
+        public void InitializeDataGridViewColumns(DataGridView dataGridView)
+        {
+            dataGridView.Columns.Add("siteColumn", "Site");
+            dataGridView.Columns.Add("domainStatusColumn", "Domain Status");
+            dataGridView.Columns.Add("wordpressStatusColumn", "WordPress Status");
+            dataGridView.Columns.Add("lastCheckedTimeColumn", "Last Checked Time");
+
+            // Set the format of the "lastcheckedtime" column to show only the time part
+            dataGridView.Columns["lastCheckedTimeColumn"].DefaultCellStyle.Format = "t";
+        }
 
 
         private DataRow CreateNewDataRow(DataTable table, string site, string domainStatus, string wordpressStatus, DateTime lastCheckedTime)
@@ -440,7 +466,7 @@ namespace wp_uptime_alert.controller
                 if (approved_by != "")
                 {
                     string check = (string)row["lastcheckedtime"];
-                    lastModified = DateTime.ParseExact(check, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    lastModified = DateTime.ParseExact(check, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
 
 
                 }
@@ -471,7 +497,7 @@ namespace wp_uptime_alert.controller
                             {
                                 await GetRssfeedAndCheckAsync(site, dt, siteRecord);
 
-                                siteRecord.LastCheckedTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                                siteRecord.LastCheckedTime = DateTime.Now.ToString("HH:mm:ss");
                                 lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
                                 //row["domainstatus"] = GetServerStatusIcon(serverResponseCode);
                                 //row["domainstatus"] = 200;
@@ -480,7 +506,7 @@ namespace wp_uptime_alert.controller
                             }
                             else
                             {
-                                siteRecord.LastCheckedTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                                siteRecord.LastCheckedTime = DateTime.Now.ToString("HH:mm:ss");
                                 lastCheckedActive_label.Text = "Last Checked Time";
                                 siteRecord.DomainStatus = "Error : " + serverResponseCode.ToString();
                             }
