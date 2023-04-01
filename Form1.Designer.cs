@@ -56,12 +56,12 @@
             button5 = new Button();
             button6 = new Button();
             dataGridView1 = new DataGridView();
-            siteRecordBindingSource = new BindingSource(components);
-            siteRecordBindingSource1 = new BindingSource(components);
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             serverstatus = new DataGridViewTextBoxColumn();
             wpstatus = new DataGridViewTextBoxColumn();
             lastmodified = new DataGridViewTextBoxColumn();
+            siteRecordBindingSource = new BindingSource(components);
+            siteRecordBindingSource1 = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).BeginInit();
@@ -230,6 +230,7 @@
             button1.TabIndex = 31;
             button1.Text = "Stop Testing";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // label16
             // 
@@ -307,15 +308,6 @@
             dataGridView1.Size = new Size(570, 296);
             dataGridView1.TabIndex = 36;
             // 
-            // siteRecordBindingSource
-            // 
-            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
-            // 
-            // siteRecordBindingSource1
-            // 
-            siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
-            siteRecordBindingSource1.CurrentChanged += siteRecordBindingSource1_CurrentChanged;
-            // 
             // dataGridViewTextBoxColumn1
             // 
             dataGridViewTextBoxColumn1.HeaderText = "Site";
@@ -338,6 +330,15 @@
             lastmodified.DefaultCellStyle = dataGridViewCellStyle1;
             lastmodified.HeaderText = "lastmodified";
             lastmodified.Name = "lastmodified";
+            // 
+            // siteRecordBindingSource
+            // 
+            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
+            // 
+            // siteRecordBindingSource1
+            // 
+            siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
+            siteRecordBindingSource1.CurrentChanged += siteRecordBindingSource1_CurrentChanged;
             // 
             // Form1
             // 
