@@ -24,6 +24,7 @@ using wp_uptime_alert.model;
 using DocumentFormat.OpenXml.Presentation;
 using System.Globalization;
 using System.Diagnostics;
+using wp_uptime_alert.view;
 
 namespace wp_uptime_alert.controller
 {
@@ -227,7 +228,27 @@ namespace wp_uptime_alert.controller
             //siteRecord.InitializeDataGridViewColumns(dataGridView);
             //dataGridView.DataSource = bindingSource;
 
-            dataGridView.DataSource = datatable;
+            //this was used while working ok
+            //dataGridView.DataSource = datatable;
+
+
+            // Create a DataView from the DataTable
+            DataView dv = new DataView(datatable);
+
+            // Set the sort expression for the DataView
+            dv.Sort = "domainstatus DESC, wordpressstatus DESC, lastcheckedtime ASC";
+
+            // Set the DataGridView's DataSource to the DataView
+            dataGridView.DataSource = dv;
+
+            // Rebind the DataGridView to the updated DataView
+            bindingSource.DataSource = dv;
+            dataGridView.DataSource = bindingSource;
+
+
+
+            //this is new from CustomRowComparer class
+            //dataGridView.Sort(new CustomRowComparer(dataGridView));
 
             // Refresh the DataGridView using the updated DataTable
             dataGridView.Refresh();
