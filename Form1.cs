@@ -20,6 +20,7 @@ using wp_uptime_alert.model;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System.Globalization;
 
 namespace wp_uptime_alert
 {
@@ -294,51 +295,89 @@ namespace wp_uptime_alert
 
         private async Task PerformSiteCheckAsync(string site, CancellationToken ct)
         {
+            DateTime lastCheckedTime = DateTime.MinValue;
 
-
-
-
-
-
-            if (!true)
+            while (!ct.IsCancellationRequested)
             {
-                while (!ct.IsCancellationRequested)
+            
+                //this is already called from within porevious function
+                //await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
+
+                // Check if the last checked time for any site is over 5 minutes ago
+                bool isOver5MinAgo = false;
+
+                foreach (DataRow row in dt.Rows)
                 {
-                    // Your code to run continuously goes here
-                    await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                    string lastCheckedTimeString = row.Field<string>("lastcheckedtime");
 
-                    await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
-
-                    await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
-
-                    // Update the lastcheckedtime column for this particular website
-                    //SiteRecord.LastCheckedTime = DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss");
-
-
-                    DataRow row = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site)).FirstOrDefault();
-                    if (row != null)
+                    if (!string.IsNullOrEmpty(lastCheckedTimeString))
                     {
-                        row["domainstatus"] = SiteRecord.DomainStatus; // Get the value from the siterecord
-                        row["wordpressstatus"] = SiteRecord.WpStatus; // Get the value from the siterecord
-                        row["lastcheckedtime"] = SiteRecord.LastCheckedTime; // Update the lastcheckedtime column for this particular website
+                        DateTime lastChecked = DateTime.ParseExact(lastCheckedTimeString, "HH:mm:ss", CultureInfo.InvariantCulture);
 
-                        //row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss"); // Update the lastcheckedtime column for this particular website
-                        // Use Invoke to update the DataGridView on the UI thread
-                        Invoke((MethodInvoker)delegate
+                        if (DateTime.Now.Subtract(lastChecked).TotalMinutes > 2)
                         {
-                            action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
-                        });
+                            await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+
+                            await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
+
+                            isOver5MinAgo = true;
+                            break;
+                        }
                     }
-
-
-
-                    action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
-
-                    // This line will delay the loop for a certain period (e.g., 5000 milliseconds or 5 seconds)
-                    await Task.Delay(TimeSpan.FromMinutes(5), ct);
                 }
+
+                // If no site has been checked for over 5 minutes, wait for 10 seconds and check again
+                if (!isOver5MinAgo)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(10), ct);
+                    continue;
+                }
+
+                // If at least one site has been checked for over 5 minutes, perform the checks
+                foreach (DataRow row in dt.Rows)
+                {
+                    string rowSite = row.Field<string>("site");
+                    string lastCheckedTimeString = row.Field<string>("lastcheckedtime");
+
+                    if (rowSite == site && !string.IsNullOrEmpty(lastCheckedTimeString))
+                    {
+                        DateTime lastChecked = DateTime.ParseExact(lastCheckedTimeString, "HH:mm:ss", CultureInfo.InvariantCulture);
+
+                        // Check if the site has been checked over 5 minutes ago
+                        if (DateTime.Now.Subtract(lastChecked).TotalMinutes > 5)
+                        {
+                            // Perform the site checks
+                            SiteRecord.LastCheckedTime = DateTime.Now.ToString("HH:mm:ss");
+
+                            //await action.GetSiteAvailabilityAsync(site, SiteRecord);
+                            //await action.CheckWordPressVersionAsync(site, SiteRecord);
+                            //await action.CheckSSLExpirationAsync(site, SiteRecord);
+
+                            DataRow updatedRow = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site)).FirstOrDefault();
+                            if (updatedRow != null)
+                            {
+                                updatedRow["domainstatus"] = SiteRecord.DomainStatus;
+                                updatedRow["wordpressstatus"] = SiteRecord.WpStatus;
+                                updatedRow["lastcheckedtime"] = SiteRecord.LastCheckedTime;
+
+                                Invoke((MethodInvoker)delegate
+                                {
+                                    action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                                });
+                            }
+
+                            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+
+                            break;
+                        }
+                    }
+                }
+
+                // This line will delay the loop for a certain period (e.g., 5000 milliseconds or 5 seconds)
+                await Task.Delay(TimeSpan.FromSeconds(5), ct);
             }
         }
+
 
 
 

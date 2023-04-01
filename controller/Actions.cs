@@ -171,7 +171,8 @@ namespace wp_uptime_alert.controller
                 }
                 else
                 {
-                    lastCheckedTime = DateTime.Now;
+                    //change made
+                    lastCheckedTime = DateTime.ParseExact(DateTime.Now.ToString("HH:mm:ss"), "HH:mm:ss", CultureInfo.InvariantCulture);
                 }
 
                 // Convert the DateTime value to a formatted time string
@@ -488,45 +489,38 @@ namespace wp_uptime_alert.controller
                     IPHostEntry hostEntry = Dns.GetHostEntry(site);
                     if (hostEntry.AddressList.Length > 0)
                     {
-                        if (DateTime.Now > lastModified.AddMinutes(5))
+
+
+                        activeTestingSite_label.Text = row["site"].ToString();
+                        //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
+                        //check server response status
+                        var serverResponseCode = ActivateServerResponse(site);
+
+
+                        if (serverResponseCode == 200)
                         {
+                            await GetRssfeedAndCheckAsync(site, dt, siteRecord);
 
-                            activeTestingSite_label.Text = row["site"].ToString();
-                            //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                            //check server response status
-                            var serverResponseCode = ActivateServerResponse(site);
-
-
-                            if (serverResponseCode == 200)
-                            {
-                                await GetRssfeedAndCheckAsync(site, dt, siteRecord);
-
-                                siteRecord.LastCheckedTime = DateTime.Now.ToShortTimeString();
-                                lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
-                                //row["domainstatus"] = GetServerStatusIcon(serverResponseCode);
-                                //row["domainstatus"] = 200;
+                            siteRecord.LastCheckedTime = DateTime.Now.ToLongTimeString();
+                            lastCheckedActive_label.Text = siteRecord.LastCheckedTime.ToString();
+                            //row["domainstatus"] = GetServerStatusIcon(serverResponseCode);
+                            //row["domainstatus"] = 200;
 
 
-                            }
-                            else
-                            {
-                                siteRecord.LastCheckedTime = DateTime.Now.ToShortTimeString();
-                                lastCheckedActive_label.Text = "Last Checked Time";
-                                siteRecord.DomainStatus = "Error : " + serverResponseCode.ToString();
-                            }
                         }
                         else
                         {
-
-                            //put in a status message flash 
-
-                            //MessageBox.Show("Waiting for 5 minutes between tests ", "Checking");
+                            siteRecord.LastCheckedTime = DateTime.Now.ToLongTimeString();
+                            lastCheckedActive_label.Text = "Last Checked Time";
+                            siteRecord.DomainStatus = "Error : " + serverResponseCode.ToString();
                         }
-                        dt.AcceptChanges();
+
+                    }
+                        //dt.AcceptChanges();
 
                         activeTestingSite_label.Text = row["site"].ToString();
 
-                    }
+                    
                 }
                 catch (SocketException ex)
                 {
@@ -691,5 +685,9 @@ namespace wp_uptime_alert.controller
 
 
         }
+
+
+
+
     }
 }
