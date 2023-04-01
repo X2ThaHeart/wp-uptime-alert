@@ -19,6 +19,7 @@ using System.Net;
 using wp_uptime_alert.model;
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace wp_uptime_alert
 {
@@ -37,17 +38,14 @@ namespace wp_uptime_alert
 
         public SiteRecord SiteRecord { get; set; } // Property for SiteRecord
 
+        private BindingSource bindingSource = new BindingSource();
 
 
         public Form1()
         {
             InitializeComponent();
 
-            //listView1.DrawItem += (sender, e) => action.listView1_DrawItem(sender, e);
-
-
             // Create a new SiteRecord object with the dt DataTable
-
             dt.Columns.Add("site");
             dt.Columns.Add("domainstatus");
             dt.Columns.Add("wordpressstatus");
@@ -55,31 +53,100 @@ namespace wp_uptime_alert
 
             SiteRecord = new SiteRecord(); // Create an instance of SiteRecord here
 
-            // ai recmd remove this
-            //siterecord = new SiteRecord( dataGridView1);
+            // Set AutoGenerateColumns to false before setting up the column headers
+            dataGridView1.AutoGenerateColumns = false;
+
+            dataGridView1.DataSource = bindingSource;
+
+
+            // Set the BindingSource to the DataTable
+            bindingSource.DataSource = dt;
+
+
+            dataGridView1.Columns[0].Name = "siteColumn";
+            dataGridView1.Columns[0].DataPropertyName = "site";
+
+            dataGridView1.Columns[1].Name = "domainStatusColumn";
+            dataGridView1.Columns[1].DataPropertyName = "domainstatus";
+
+            dataGridView1.Columns[2].Name = "wordpressStatusColumn";
+            dataGridView1.Columns[2].DataPropertyName = "wordpressstatus";
+
+            dataGridView1.Columns[3].Name = "lastCheckedTimeColumn";
+            dataGridView1.Columns[3].DataPropertyName = "lastcheckedtime";
+
+
+
+
+            // Set up the column headers in dataGridView1
+            //InitializeDataGridViewColumns(dataGridView1);
 
             // Bind the DataTable to the BindingSource
-            _bindingSource.DataSource = dt;
+            //_bindingSource.DataSource = dt;
 
             // Set the DataGridView's DataSource to the BindingSource
-            dataGridView1.DataSource = _bindingSource;
-
+            //dataGridView1.DataSource = _bindingSource;
 
             _myClassInstance = new HtmlStatusIcon(dataGridView1);
             _myClassInstance.MyDataGridView.CellFormatting += action.dataGridView_CellFormatting;
 
-            //SiteRecord.InitializeDataGridViewColumns(dataGridView1);
+            //dataGridView1.DataSource = bindingSource;
+
+            // Call the cleanInputRefreshDataTableAsInput method and bind the DataGridView to the updated DataTable
+            var updatedDataTable = action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+            bindingSource.DataSource = updatedDataTable;
 
         }
 
+        /*
 
+        public void InitializeDataGridViewColumns(DataGridView dataGridView1)
+        {
+            // Create and configure columns
+            DataGridViewColumn siteColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "site", // Make sure the Name property matches the DataTable column name
+                HeaderText = "Site",
+                Width = 270, // Set the width of the 'Site' column
+            };
+
+            DataGridViewColumn domainStatusColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "domainstatus", // Make sure the Name property matches the DataTable column name
+                HeaderText = "Domain Status",
+                Width = 80, // Set the width of the 'Domain Status' column
+            };
+
+            DataGridViewColumn wordpressstatusColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "wordpressstatus", // Make sure the Name property matches the DataTable column name
+                HeaderText = "WordPress Status",
+                Width = 80, // Set the width of the 'Domain Status' column
+            };
+
+            DataGridViewColumn checkedtimeColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "lastcheckedtime", // Make sure the Name property matches the DataTable column name
+                HeaderText = "Last Checked Time",
+                Width = 95, // Set the width of the 'Domain Status' column
+            };
+
+            // Add the columns to the DataGridView
+            dataGridView1.Columns.Add(siteColumn);
+            dataGridView1.Columns.Add(domainStatusColumn);
+            dataGridView1.Columns.Add(wordpressstatusColumn);
+            dataGridView1.Columns.Add(checkedtimeColumn);
+        }
+
+        */
+
+        /*
         private void Form1_Load(object sender, EventArgs e)
         {
-            dataGridView1.AutoGenerateColumns = false;
-            
-            //dataGridView1.DataSource = _bindingSource;
-        }
 
+            dataGridView1.DataSource = bindingSource;
+        }
+        */
 
 
 
@@ -129,39 +196,19 @@ namespace wp_uptime_alert
         //main start testing button
         private async void button3_Click(object sender, EventArgs e)
         {
-            //List<SiteRecord> siteRecords = new List<SiteRecord>();
-
             var site = "";
             string[] removeSpacesFirst = richTextBox1.Lines;
 
-            /*
-            if (!dt.Columns.Contains("site"))
-            {
-                //test if this clears the whole box each time a new site isn't found of already existing ones.
-                dt.Clear();
-
-
-
-            }
-
-            */
-
-
-
             for (int i = 0; i < removeSpacesFirst.Length; i++)
             {
-
                 if (removeSpacesFirst[i] == "\r\n" || removeSpacesFirst[i] == " " || removeSpacesFirst[i] == null || removeSpacesFirst[i].Length == 0)
                 {
-
-
+                    continue;
                 }
                 else
                 {
                     site = removeSpacesFirst[i];
 
-                    //successfully add item to datatable
-                    DataRow row = dt.NewRow();
                     try
                     {
                         IPHostEntry hostEntry = Dns.GetHostEntry(site);
@@ -176,55 +223,40 @@ namespace wp_uptime_alert
                         {
                             MessageBox.Show("Error with domain : " + site + " check the spelling and try again", "Error");
                             richTextBox1.Clear();
-
                             return;
                         }
                     }
 
-
-
                     if (site == null)
                     {
-
                         MessageBox.Show("site entered is null ", "Error");
-
                     }
                     else
                     {
-                        
                         site = action.FirstCleanRssUrl(site);
-                        //dt.Columns.Add("site");
 
-
-                        DataRow[] filteredRows =
-                        dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site));
-
+                        DataRow[] filteredRows = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site));
                         if (filteredRows.Length == 0)
                         {
-
-
-
                             site = action.cleanUrlFinal(site);
 
+                            DataRow row = dt.NewRow();
                             row["site"] = site;
-
-
                             dt.Rows.Add(row);
+
                             label5.Text = dt.Rows.Count.ToString();
-
-                          
-
                             richTextBox1.Clear();
+
+                            // Refresh the DataGridView using the updated DataTable
+                            var updatedDataTable = await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                            bindingSource.DataSource = updatedDataTable;
 
                             // Initialize the CancellationTokenSource
                             _cts = new CancellationTokenSource();
 
                             // Pass the CancellationToken to the PerformSiteCheckAsync method
                             await PerformSiteCheckAsync(site, _cts.Token);
-
-
                         }
-
                         else if (filteredRows.Length == 1)
                         {
                             MessageBox.Show("Site already exists", "Error");
@@ -234,24 +266,15 @@ namespace wp_uptime_alert
                             {
                                 if (action.UrlValid == true)
                                 {
-
                                     label5.Text = dt.Rows.Count.ToString();
-
-
                                 }
-
                             }
                         }
-
-
                     }
-
                 }
-
             }
-
-
         }
+
 
 
 
@@ -260,11 +283,14 @@ namespace wp_uptime_alert
             while (!ct.IsCancellationRequested)
             {
                 // Your code to run continuously goes here
-                await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
+                await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
 
-                await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, SiteRecord);
+                await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
 
                 await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
+
+                // Update the lastcheckedtime column for this particular website
+                //SiteRecord.LastCheckedTime = DateTime.Now.TimeOfDay.ToString("hh\\:mm\\:ss");
 
 
                 DataRow row = dt.Select(string.Format("{0} LIKE '%{1}%'", "site", site)).FirstOrDefault();
@@ -272,9 +298,16 @@ namespace wp_uptime_alert
                 {
                     row["domainstatus"] = SiteRecord.DomainStatus; // Get the value from the siterecord
                     row["wordpressstatus"] = SiteRecord.WpStatus; // Get the value from the siterecord
+                    row["lastcheckedtime"] = SiteRecord.LastCheckedTime; // Update the lastcheckedtime column for this particular website
 
-                    action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
+                    //row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss"); // Update the lastcheckedtime column for this particular website
+                    // Use Invoke to update the DataGridView on the UI thread
+                    Invoke((MethodInvoker)delegate
+                    {
+                        action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                    });
                 }
+
 
 
                 action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
@@ -283,6 +316,8 @@ namespace wp_uptime_alert
                 await Task.Delay(TimeSpan.FromMinutes(5), ct);
             }
         }
+
+
 
 
 
@@ -305,7 +340,7 @@ namespace wp_uptime_alert
             {
                 await Task.Run(async () =>
                 {
-                    await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, richTextBox1, dtBlacklist, SiteRecord);
+                    await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
 
                     // Call updateUI action here
                     Invoke((MethodInvoker)delegate
@@ -313,7 +348,7 @@ namespace wp_uptime_alert
                         updateUI();
                     });
 
-                    action.cleanInputRefreshDataTableAsInput(dt, dataGridView1);
+                    action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
                     action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
                 });
             }

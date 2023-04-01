@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             richTextBox1 = new RichTextBox();
             label1 = new Label();
@@ -55,11 +57,15 @@
             button5 = new Button();
             button6 = new Button();
             dataGridView1 = new DataGridView();
-            siteRecordBindingSource1 = new BindingSource(components);
             siteRecordBindingSource = new BindingSource(components);
+            siteRecordBindingSource1 = new BindingSource(components);
+            siteAddressDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            domainStatusDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            wpStatusDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            lastCheckedTimeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).BeginInit();
             SuspendLayout();
             // 
             // richTextBox1
@@ -293,23 +299,58 @@
             // 
             // dataGridView1
             // 
-            dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.AllowUserToOrderColumns = true;
+            dataGridView1.AutoGenerateColumns = false;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { siteAddressDataGridViewTextBoxColumn, domainStatusDataGridViewTextBoxColumn, wpStatusDataGridViewTextBoxColumn, lastCheckedTimeDataGridViewTextBoxColumn });
+            dataGridView1.DataSource = siteRecordBindingSource;
             dataGridView1.Location = new Point(214, 113);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.ReadOnly = true;
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(572, 296);
+            dataGridView1.Size = new Size(570, 296);
             dataGridView1.TabIndex = 36;
+            // 
+            // siteRecordBindingSource
+            // 
+            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
             // 
             // siteRecordBindingSource1
             // 
             siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
             // 
-            // siteRecordBindingSource
+            // siteAddressDataGridViewTextBoxColumn
             // 
-            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
+            siteAddressDataGridViewTextBoxColumn.DataPropertyName = "SiteAddress";
+            siteAddressDataGridViewTextBoxColumn.HeaderText = "Site Address";
+            siteAddressDataGridViewTextBoxColumn.Name = "siteAddressDataGridViewTextBoxColumn";
+            siteAddressDataGridViewTextBoxColumn.ReadOnly = true;
+            siteAddressDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.False;
+            siteAddressDataGridViewTextBoxColumn.Width = 230;
+            // 
+            // domainStatusDataGridViewTextBoxColumn
+            // 
+            domainStatusDataGridViewTextBoxColumn.DataPropertyName = "DomainStatus";
+            domainStatusDataGridViewTextBoxColumn.HeaderText = "Domain Status";
+            domainStatusDataGridViewTextBoxColumn.Name = "domainStatusDataGridViewTextBoxColumn";
+            // 
+            // wpStatusDataGridViewTextBoxColumn
+            // 
+            wpStatusDataGridViewTextBoxColumn.DataPropertyName = "WpStatus";
+            dataGridViewCellStyle1.Format = "T";
+            dataGridViewCellStyle1.NullValue = null;
+            wpStatusDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            wpStatusDataGridViewTextBoxColumn.HeaderText = "WordPress Status";
+            wpStatusDataGridViewTextBoxColumn.Name = "wpStatusDataGridViewTextBoxColumn";
+            // 
+            // lastCheckedTimeDataGridViewTextBoxColumn
+            // 
+            lastCheckedTimeDataGridViewTextBoxColumn.DataPropertyName = "LastCheckedTime";
+            dataGridViewCellStyle2.Format = "G";
+            dataGridViewCellStyle2.NullValue = null;
+            lastCheckedTimeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            lastCheckedTimeDataGridViewTextBoxColumn.HeaderText = "Last Checked Time";
+            lastCheckedTimeDataGridViewTextBoxColumn.Name = "lastCheckedTimeDataGridViewTextBoxColumn";
+            lastCheckedTimeDataGridViewTextBoxColumn.Width = 95;
             // 
             // Form1
             // 
@@ -346,8 +387,8 @@
             Name = "Form1";
             Text = "Wp Uptime Alert";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).EndInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -381,5 +422,9 @@
         private DataGridView dataGridView1;
         private BindingSource siteRecordBindingSource;
         private BindingSource siteRecordBindingSource1;
+        private DataGridViewTextBoxColumn siteAddressDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn domainStatusDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn wpStatusDataGridViewTextBoxColumn;
+        private DataGridViewTextBoxColumn lastCheckedTimeDataGridViewTextBoxColumn;
     }
 }

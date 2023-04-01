@@ -27,28 +27,7 @@ namespace wp_uptime_alert.controller
 {
     public class HtmlStatusIcon
     {
-        //private const int IconSize = 30;
-
-        //public static string GetHtml(int responseCode)
-        //{
-        //    Color color;
-        //    switch (responseCode)
-        //    {
-        //        case 200: // Success
-        //            color = Color.Green;
-        //            break;
-        //        case 404: // Not Found
-        //        case 503: // Service Unavailable
-        //            color = Color.Red;
-        //            break;
-        //        default: // Other error codes
-        //            color = Color.Gray;
-        //            break;
-        //    }
-
-        //    string html = $"<div style=\"display: inline-block; width: {IconSize}px; height: {IconSize}px; border-radius: 50%; background-color: {ColorTranslator.ToHtml(color)};\"></div>";
-        //    return html;
-        //}
+       
 
 
         public DataGridView MyDataGridView { get; }
@@ -172,157 +151,81 @@ namespace wp_uptime_alert.controller
 
 
 
-        public async Task cleanInputRefreshDataTableAsInput(DataTable datatable, DataGridView dataGridView)
+        public async Task<DataTable> cleanInputRefreshDataTableAsInput(DataTable datatable, DataGridView dataGridView, BindingSource bindingSource)
         {
-
-
-            // Clear the ListView
-            //listView.Clear();
-
-            //listView.OwnerDraw = true;
-            //listView.DrawSubItem += YourListView_DrawSubItem;
-            //listView.DrawColumnHeader += YourListView_DrawColumnHeader;
-            //this didn't work trying datagrid
-
-            // Clear the DataGridView
-            //dataGridView.Rows.Clear();
-            //dataGridView.Rows.Clear();
-            //dataGridView.Columns.Clear();
-
-            // Remove the extra row at the bottom
-            dataGridView.AllowUserToAddRows = true;
-
-
-            // Add column headers
-            //listView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            //listView.View = System.Windows.Forms.View.Details;
-
             SiteRecord siteRecord = new SiteRecord();
-            // Add columns to the ListView control
-            //siteRecord.AddColumnNamesInListView(listView);
-
-
             siteRecord.InitializeDataGridViewColumns(dataGridView);
 
-            if (datatable.Rows.Count == 0)
+            foreach (DataRow row in datatable.Rows)
             {
-                // Add a single empty row to the DataGridView
-                dataGridView.Rows.Add("", "", "", "");
+                string? site = row.Field<string?>("site");
+                int domainResponseCode = ActivateServerResponse(site);
 
-                //alert if blank?
-
-            }
-            else
-            {
-                //shuld i really remove this?
-                //dataGridView.CellFormatting += DataGridView_CellFormatting;
-
-                // Add the rows from the DataTable to the ListView
-                foreach (DataRow row in datatable.Rows)
+                DateTime lastCheckedTime = DateTime.Now;
+                if (row["lastcheckedtime"] != DBNull.Value)
                 {
-                    string? site = row.Field<string?>("site");
-                    int domainResponseCode = ActivateServerResponse(site);
-                    //string? wordpressStatus = row.Field<string>("wordpressstatus");
-
-                    DateTime lastCheckedTime = DateTime.Now;
-                    if (row["lastcheckedtime"] != DBNull.Value)
-                    {
-                        lastCheckedTime = Convert.ToDateTime(row["lastcheckedtime"]);
-                    }
-                    string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
-
-
-                    string domainStatus;
-
-                    // Determine the appropriate background color based on the domain response code
-                    System.Drawing.Color backgroundColor;
-                    switch (domainResponseCode)
-                    {
-                        case 200: // Success
-                            domainStatus = "Active".ToString();
-                            //backgroundColor = System.Drawing.Color.LightGreen;
-                            break;
-                        case 404: // Not Found
-                            domainStatus = "Error : 404".ToString();
-
-                            //backgroundColor = System.Drawing.Color.Red;
-                            break;
-
-                        case 503: // Service Unavailable
-                            domainStatus = "Error : 503".ToString();
-
-                            //backgroundColor = System.Drawing.Color.Red;
-                            break;
-                        default: // Other error codes
-                            domainStatus = "Error".ToString();
-
-                            backgroundColor = System.Drawing.Color.Gray;
-                            
-                            break;
-                    }
-
-                    var rssFeedCheck = await GetRssfeedAndCheckAsync(site, datatable, siteRecord);
-                    var wordpressStatus = "";
-                    switch (rssFeedCheck)
-                    {
-                        case true:
-                            wordpressStatus = "Active";
-                            //backgroundColor = System.Drawing.Color.LightGreen;
-
-                            break;
-                        case false:
-                            wordpressStatus = "Error";
-                            //backgroundColor = System.Drawing.Color.Red;
-
-                            break;
-                        default: // Other error codes
-                            wordpressStatus = "Error".ToString();
-
-                            backgroundColor = System.Drawing.Color.Gray;
-
-                            break;
-
-
-                    }
-                    // Update the DataRow with the new values
-                    row["site"] = site;
-                    siteRecord.DomainStatus = domainStatus;
-                    row["wordpressstatus"] = wordpressStatus;
-                    row["lastcheckedtime"] = lastCheckedTimeText;
-
-
-
-                    /*
-                    // Add the new DataGridViewRow object to the Rows collection of the DataGridView control
-                    int rowIndex = dataGridView.Rows.Count - 1;
-                    dataGridView.Rows[rowIndex].Cells[0].Style.BackColor = System.Drawing.Color.LightGreen;
-                    dataGridView.Rows[rowIndex].Cells[1].Style.BackColor = backgroundColor;
-
-                    if (wordpressStatus == "Error")
-                    {
-                        dataGridView.Rows[rowIndex].Cells[2].Style.BackColor = System.Drawing.Color.Red;
-                    }
-                    else
-                    {
-                        dataGridView.Rows[rowIndex].Cells[2].Style.BackColor = System.Drawing.Color.LightGreen;
-                    }
-
-                    dataGridView.Rows[rowIndex].Cells[3].Style.BackColor = System.Drawing.Color.LightGreen;
-
-                    // Set the SelectionBackColor for each cell
-                    for (int i = 0; i < dataGridView.ColumnCount; i++)
-                    {
-                        dataGridView.Rows[rowIndex].Cells[i].Style.SelectionBackColor = dataGridView.Rows[rowIndex].Cells[i].Style.BackColor;
-                        dataGridView.Rows[rowIndex].Cells[i].Style.SelectionForeColor = System.Drawing.Color.Black;
-                    }
-
-                    dataGridView.Refresh();
-                    dataGridView.AllowUserToAddRows = false;
-
-                    */
+                    lastCheckedTime = Convert.ToDateTime(row["lastcheckedtime"]);
                 }
+                //string lastCheckedTimeText = lastCheckedTime.ToString("HH:mm:ss");
+
+                string domainStatus;
+                switch (domainResponseCode)
+                {
+                    case 200: // Success
+                        domainStatus = "Active".ToString();
+                        break;
+                    case 404: // Not Found
+                        domainStatus = "Error : 404".ToString();
+                        break;
+                    case 503: // Service Unavailable
+                        domainStatus = "Error : 503".ToString();
+                        break;
+                    default: // Other error codes
+                        domainStatus = "Error".ToString();
+                        break;
+                }
+
+                var rssFeedCheck = await GetRssfeedAndCheckAsync(site, datatable, siteRecord);
+                var wordpressStatus = "";
+                switch (rssFeedCheck)
+                {
+                    case true:
+                        wordpressStatus = "Active";
+                        break;
+                    case false:
+                        wordpressStatus = "Error";
+                        break;
+                    default: // Other error codes
+                        wordpressStatus = "Error".ToString();
+                        break;
+                }
+
+                row["domainstatus"] = domainStatus;
+                row["wordpressstatus"] = wordpressStatus;
+                row["lastcheckedtime"] = lastCheckedTime; // format the datetime as string
             }
+
+            // Refresh the DataGridView using the updated DataTable
+            dataGridView.Refresh();
+
+            return datatable;
         }
+
+
+
+
+        private DataRow CreateNewDataRow(DataTable table, string site, string domainStatus, string wordpressStatus, DateTime lastCheckedTime)
+        {
+            DataRow row = table.NewRow();
+            row["site"] = site;
+            row["domainstatus"] = domainStatus;
+            row["wordpressstatus"] = wordpressStatus;
+            row["lastcheckedtime"] = lastCheckedTime; // format the datetime as string
+            return row;
+        }
+
+
+
 
 
         public void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -332,7 +235,7 @@ namespace wp_uptime_alert.controller
             if (gridView != null)
             {
                 // Check if the current cell belongs to the "domainstatus" or "wordpressstatus" column
-                if (e.ColumnIndex == gridView.Columns["domainstatus"].Index || e.ColumnIndex == gridView.Columns["wordpressstatus"].Index)
+                if (e.ColumnIndex == gridView.Columns[1].Index || e.ColumnIndex == gridView.Columns[2].Index)
                 {
                     // Get the cell value
                     string status = e.Value as string;
@@ -464,56 +367,10 @@ namespace wp_uptime_alert.controller
 
 
 
-        void outToLog2(string output, string? v, RichTextBox richTextBox1_Text)
-        {
-            //richTextBox1_Text.AppendText(output + "\r\n");
-            if (output.Length > 0)
-            {
-                richTextBox1_Text.AppendText(output + " : " + v + "\r\n");
-                richTextBox1_Text.ScrollToCaret();
-            }
 
 
 
-
-            //ListViewItem site = new ListViewItem(row[0].ToString(), row[1].ToString());
-
-
-            //for (int i = 1; i < dtBlacklist.Columns.Count; i++)
-            //{
-            //    site.SubItems.Add(row[i].ToString());
-
-            //    // item.Text = row[i].ToString();
-            //}
-            //blacklistView.Items.Add(site);
-
-
-
-
-        }
-
-
-
-        //not required really
-        public void cleanBlacklistViewUpdateInput(DataTable dtBlacklist, ListView blacklistView)
-        {
-            
-
-
-            
-
-
-
-
-            //for (int i = 0; i < dtBlacklist.Rows.Count; i++)
-            //{
-                
-            //    blacklistView.Items[i] = dtBlacklist.Rows[i][1].ToString();
-            //}
-                
-
-
-        }
+       
 
         void outToLog(string output, string? v, RichTextBox richTextBox1_Text )
         {
@@ -565,145 +422,36 @@ namespace wp_uptime_alert.controller
         }
 
 
-        public void updateListViewWithBlackList(DataTable dtBlacklist, RichTextBox blacklistRichTextBox, Label label7)
-        {
-
-            blacklistRichTextBox.Clear();
-
-            foreach (DataRow row in dtBlacklist.Rows)
-            {
-                outToLog(row[0].ToString(), row[1].ToString(), blacklistRichTextBox);
-
-                //foreach (DataColumn column in datatable.Columns)
-                //{
-                //    outToLog(row[0].ToString(), row[1].ToString(), richTextBox1_Text);
-                //}
-                blacklistRichTextBox.Rtf = blacklistRichTextBox.Rtf.Replace("@@@", row[0].ToString());
-
-            }
+       
 
 
-            blacklistRichTextBox.ReadOnly = true;
-
-
-
-
-
-            //blacklistView.Items.Clear();
-
-            //string[] Str = new string[2];
-            //ListViewItem newItm;
-            //foreach (DataRow dataRow in dtBlacklist.Rows)
-            //{
-            //    Str[0] = dataRow["site"].ToString();
-            //    Str[1] = dataRow["lastcheckedtime"].ToString();
-            //    //Str[1] = dataRow["lastcheckeddate"].ToString();
-            //    //Str[2] = dataRow["Mobile"].ToString();
-            //    //newItm = new ListViewItem(Str);
-            //    blacklistView.Items.Add(Str[0] + " : " + Str[1]);
-            //    label7.Text = dtBlacklist.Rows.Count.ToString();
-
-
-            //    blacklistView.HotTracking = true;
-
-
-
-            //}
-        }
-
-
-        public async Task startTestingEachEntryInBlacklistAsync(DataTable dtBlacklist, Label label7, Label label11, DataTable dt, RichTextBox blacklistRichTextBox, SiteRecord siteRecord)
-        {
-            foreach (DataRow row in dtBlacklist.Rows)
-            {
-                string site = row["site"].ToString();
-                DateTime lastModified = new DateTime();
-                //lastModified  = DateTime.UtcNow;
-                //bool alreadyChecked = (bool)row["lastcheckedtime"] ? string.Empty : (string)row["lastcheckedtime"]))
-                var approved_by = (row["lastcheckedtime"].ToString() ?? row["lastcheckedtime"]);
-
-                if (approved_by != "")
-                {
-                    string check = (string)row["lastcheckedtime"];
-                    lastModified = DateTime.ParseExact(check, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    
-
-                }
-
-
-                //if (dt.AsEnumerable().Any(row => (DateTime)row["lastcheckedtime"] ?? row.Field<DateTime>("lastcheckedtime"))){
-                //    lastModified = (DateTime)row["lastcheckedtime"];
-                //}
-                //else
-                //{
-
-                //}
-
-
-                if (DateTime.Now > lastModified.AddMinutes(5))
-                {
-                    //label13.Text = row["site"].ToString();
-                    //_ = getRssfeedAndCheckAsync(site, label7, dtBlacklist, blacklistView);
-                    var UrlValid = await GetRssfeedAndCheckAsync(site, dt, siteRecord);
-
-
-                    if (UrlValid)
-                    {
-
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
-                        label11.Text = row["lastcheckedtime"].ToString();
-                    }
-                    else
-                    {
-                        row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
-
-                    }
-                }
-                else
-                {
-                    //MessageBox.Show("Waiting for 5 minutes between tests for error sites ", "Checking");
-                    
-                }
-
-            }
-        }
-        public async Task startTestingEachEntryInDataTableAsync(DataTable dt, Label lastCheckedActive_label, Label activeTestingSite_label, RichTextBox richTextBox1, DataTable dtBlacklist, SiteRecord siteRecord)
+        
+        public async Task startTestingEachEntryInDataTableAsync(DataTable dt, Label lastCheckedActive_label, Label activeTestingSite_label, SiteRecord siteRecord)
         {
 
             foreach (DataRow row in dt.Rows)
             {
                 string site = row["site"].ToString();
                 DateTime lastModified = new DateTime();
-                //lastModified  = DateTime.UtcNow;
-                //bool alreadyChecked = (bool)row["lastcheckedtime"] ? string.Empty : (string)row["lastcheckedtime"]))
-
-                //in the row check to see if lastcheckedtime var is avaiable, if not
+          
                 
                 var approved_by = (row["lastcheckedtime"].ToString() ?? "");
 
                 if (approved_by != "")
                 {
                     string check = (string)row["lastcheckedtime"];
-                    lastModified = DateTime.ParseExact(check, "HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                    lastModified = DateTime.ParseExact(check, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+
+
                 }
                 else
                 {
-                    //lastModified = DateTime.ParseExact(DateTime.Now.ToString("HH:mm"), "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
-
-                    //lastModified = DateTime.ParseExact(check, "HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                 
 
                 }
 
 
-                //if (dt.AsEnumerable().Any(row => (DateTime)row["lastcheckedtime"] ?? row.Field<DateTime>("lastcheckedtime"))){
-                //    lastModified = (DateTime)row["lastcheckedtime"];
-                //}
-                //else
-                //{
-
+           
                 //}
                 try
                 {
@@ -723,7 +471,7 @@ namespace wp_uptime_alert.controller
                             {
                                 await GetRssfeedAndCheckAsync(site, dt, siteRecord);
 
-                                row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
+                                siteRecord.LastCheckedTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                                 lastCheckedActive_label.Text = row["lastcheckedtime"].ToString();
                                 //row["domainstatus"] = GetServerStatusIcon(serverResponseCode);
                                 //row["domainstatus"] = 200;
@@ -732,9 +480,9 @@ namespace wp_uptime_alert.controller
                             }
                             else
                             {
-                                row["lastcheckedtime"] = DateTime.Now.ToString("HH:mm:ss");
+                                siteRecord.LastCheckedTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                                 lastCheckedActive_label.Text = "Last Checked Time";
-                                row["serverstatus"] = "Error : " + serverResponseCode.ToString();
+                                siteRecord.DomainStatus = "Error : " + serverResponseCode.ToString();
                             }
                         }
                         else

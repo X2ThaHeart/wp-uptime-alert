@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -20,7 +21,13 @@ namespace wp_uptime_alert.model
         public string SiteAddress { get => siteaddress; set => siteaddress = value; }
         public string DomainStatus { get => domainStatus; set => domainStatus = value; }
         public string WpStatus { get => wpStatus; set => wpStatus = value; }
-        public string LastCheckedTime { get => lastcheckedtime.ToString(); set => lastcheckedtime.ToString(); }
+        public string LastCheckedTime
+        {
+            get => lastcheckedtime.ToString("HH:mm:ss");
+            set => lastcheckedtime = DateTime.ParseExact(value, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+
 
         public SiteRecord()
         {
