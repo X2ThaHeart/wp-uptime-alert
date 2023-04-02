@@ -576,10 +576,11 @@ namespace wp_uptime_alert.controller
             {
                 uriBuilder.Scheme = "http"; // default to http if no scheme is provided
             }
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
-            request.Timeout = 10000; // 5 seconds timeout
+          
             try
             {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
+                request.Timeout = 10000; // 5 seconds timeout
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 return (int)response.StatusCode;
             }
@@ -587,10 +588,13 @@ namespace wp_uptime_alert.controller
             {
                 if (ex.Response is HttpWebResponse errorResponse)
                 {
+                    Debug.WriteLine("error caught inside ActivateServerresponse WebException error");
+
                     return (int)errorResponse.StatusCode;
                 }
                 else
                 {
+                    Debug.WriteLine("error caught inside ActivateServerresponse but not http response error");
                     throw;
                 }
             }
