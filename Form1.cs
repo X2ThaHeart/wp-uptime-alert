@@ -318,6 +318,7 @@ namespace wp_uptime_alert
                         }
 
                         dataGridView1.ClearSelection();
+                        LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, label9, label16, dt, dtBlacklist);
 
                     }
 
@@ -405,25 +406,15 @@ namespace wp_uptime_alert
             }
 
 
-            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, label9, label16, dt, dtBlacklist);
 
 
         }
 
 
-        //retest error sites second main button
-        private void button2_Click(object sender, EventArgs e)
-        {
-            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
-
-        }
-
-        private void clearBlacklist_button_Click(object sender, EventArgs e)
-        {
-            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
 
-        }
+
 
         private void label16_Click(object sender, EventArgs e)
         {

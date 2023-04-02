@@ -50,16 +50,13 @@
             label9 = new Label();
             label8 = new Label();
             label15 = new Label();
-            button4 = new Button();
-            button5 = new Button();
-            button6 = new Button();
             dataGridView1 = new DataGridView();
-            siteRecordBindingSource = new BindingSource(components);
-            siteRecordBindingSource1 = new BindingSource(components);
             dataGridViewTextBoxColumn1 = new DataGridViewLinkColumn();
             serverstatus = new DataGridViewTextBoxColumn();
             wpstatus = new DataGridViewTextBoxColumn();
             lastmodified = new DataGridViewTextBoxColumn();
+            siteRecordBindingSource = new BindingSource(components);
+            siteRecordBindingSource1 = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).BeginInit();
@@ -88,7 +85,7 @@
             // 
             // clearInput_button
             // 
-            clearInput_button.Location = new Point(715, 59);
+            clearInput_button.Location = new Point(711, 80);
             clearInput_button.Name = "clearInput_button";
             clearInput_button.Size = new Size(69, 23);
             clearInput_button.TabIndex = 3;
@@ -135,7 +132,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(631, 9);
+            label6.Location = new Point(520, 9);
             label6.Name = "label6";
             label6.Size = new Size(88, 15);
             label6.TabIndex = 8;
@@ -144,7 +141,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(734, 9);
+            label7.Location = new Point(623, 9);
             label7.Name = "label7";
             label7.Size = new Size(51, 15);
             label7.TabIndex = 9;
@@ -246,33 +243,6 @@
             label15.TabIndex = 24;
             label15.Text = "Error Testing Current Site :";
             // 
-            // button4
-            // 
-            button4.Location = new Point(697, 86);
-            button4.Name = "button4";
-            button4.Size = new Size(87, 23);
-            button4.TabIndex = 33;
-            button4.Text = "Load Profile";
-            button4.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            button5.Location = new Point(605, 86);
-            button5.Name = "button5";
-            button5.Size = new Size(86, 23);
-            button5.TabIndex = 34;
-            button5.Text = "Save Profile";
-            button5.UseVisualStyleBackColor = true;
-            // 
-            // button6
-            // 
-            button6.Location = new Point(518, 7);
-            button6.Name = "button6";
-            button6.Size = new Size(70, 31);
-            button6.TabIndex = 35;
-            button6.Text = "Audio Bell";
-            button6.UseVisualStyleBackColor = true;
-            // 
             // dataGridView1
             // 
             dataGridView1.AllowUserToOrderColumns = true;
@@ -283,15 +253,6 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(570, 296);
             dataGridView1.TabIndex = 36;
-            // 
-            // siteRecordBindingSource
-            // 
-            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
-            // 
-            // siteRecordBindingSource1
-            // 
-            siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
-            siteRecordBindingSource1.CurrentChanged += siteRecordBindingSource1_CurrentChanged;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -320,6 +281,15 @@
             lastmodified.HeaderText = "Last Checked";
             lastmodified.Name = "lastmodified";
             // 
+            // siteRecordBindingSource
+            // 
+            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
+            // 
+            // siteRecordBindingSource1
+            // 
+            siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
+            siteRecordBindingSource1.CurrentChanged += siteRecordBindingSource1_CurrentChanged;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -328,9 +298,6 @@
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
             Controls.Add(dataGridView1);
-            Controls.Add(button6);
-            Controls.Add(button5);
-            Controls.Add(button4);
             Controls.Add(button1);
             Controls.Add(lastCheckedActive_label);
             Controls.Add(activeTestingSite_label);
@@ -380,9 +347,6 @@
         private Label label9;
         private Label label8;
         private Label label15;
-        private Button button4;
-        private Button button5;
-        private Button button6;
         private DataGridView dataGridView1;
         private BindingSource siteRecordBindingSource;
         private BindingSource siteRecordBindingSource1;
