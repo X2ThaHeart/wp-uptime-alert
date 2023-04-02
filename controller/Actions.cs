@@ -286,6 +286,11 @@ namespace wp_uptime_alert.controller
         public void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             DataGridView gridView = sender as DataGridView;
+            // Check if it's the first cell (column index 0 and row index 0)
+            if (e.ColumnIndex == 0 && e.RowIndex == 0)
+            {
+                e.CellStyle.BackColor = System.Drawing.Color.White;
+            }
 
             if (gridView != null)
             {

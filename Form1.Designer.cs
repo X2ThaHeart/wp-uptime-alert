@@ -54,12 +54,12 @@
             button5 = new Button();
             button6 = new Button();
             dataGridView1 = new DataGridView();
-            dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
+            siteRecordBindingSource = new BindingSource(components);
+            siteRecordBindingSource1 = new BindingSource(components);
+            dataGridViewTextBoxColumn1 = new DataGridViewLinkColumn();
             serverstatus = new DataGridViewTextBoxColumn();
             wpstatus = new DataGridViewTextBoxColumn();
             lastmodified = new DataGridViewTextBoxColumn();
-            siteRecordBindingSource = new BindingSource(components);
-            siteRecordBindingSource1 = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).BeginInit();
@@ -284,10 +284,22 @@
             dataGridView1.Size = new Size(570, 296);
             dataGridView1.TabIndex = 36;
             // 
+            // siteRecordBindingSource
+            // 
+            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
+            // 
+            // siteRecordBindingSource1
+            // 
+            siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
+            siteRecordBindingSource1.CurrentChanged += siteRecordBindingSource1_CurrentChanged;
+            // 
             // dataGridViewTextBoxColumn1
             // 
             dataGridViewTextBoxColumn1.HeaderText = "Site";
             dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.ReadOnly = true;
+            dataGridViewTextBoxColumn1.Resizable = DataGridViewTriState.True;
+            dataGridViewTextBoxColumn1.SortMode = DataGridViewColumnSortMode.Automatic;
             dataGridViewTextBoxColumn1.Width = 225;
             // 
             // serverstatus
@@ -307,15 +319,6 @@
             lastmodified.DefaultCellStyle = dataGridViewCellStyle1;
             lastmodified.HeaderText = "Last Checked";
             lastmodified.Name = "lastmodified";
-            // 
-            // siteRecordBindingSource
-            // 
-            siteRecordBindingSource.DataSource = typeof(model.SiteRecord);
-            // 
-            // siteRecordBindingSource1
-            // 
-            siteRecordBindingSource1.DataSource = typeof(model.SiteRecord);
-            siteRecordBindingSource1.CurrentChanged += siteRecordBindingSource1_CurrentChanged;
             // 
             // Form1
             // 
@@ -383,7 +386,7 @@
         private DataGridView dataGridView1;
         private BindingSource siteRecordBindingSource;
         private BindingSource siteRecordBindingSource1;
-        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridViewLinkColumn dataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn serverstatus;
         private DataGridViewTextBoxColumn wpstatus;
         private DataGridViewTextBoxColumn lastmodified;

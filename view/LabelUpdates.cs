@@ -26,8 +26,13 @@ namespace wp_uptime_alert.view
             label5.Text = action.calculateActiveWebsites(dt).ToString();
 
 
+
         }
 
+        public void UpdateErrorLabels(Label websiteErrors, Label firstTimeError, Label errorWebsite )
+        {
+
+        }
 
 
     }

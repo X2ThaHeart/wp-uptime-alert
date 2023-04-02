@@ -44,7 +44,7 @@ namespace wp_uptime_alert
 
         private BindingSource bindingSource = new BindingSource();
 
-       
+
 
 
         public Form1()
@@ -90,7 +90,7 @@ namespace wp_uptime_alert
             _myClassInstance = new HtmlStatusIcon(dataGridView1);
             _myClassInstance.MyDataGridView.CellFormatting += action.dataGridView_CellFormatting;
 
-          
+
 
             // Call the cleanInputRefreshDataTableAsInput method and bind the DataGridView to the updated DataTable
             var updatedDataTable = action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
@@ -100,11 +100,20 @@ namespace wp_uptime_alert
             dataGridView1.AllowUserToAddRows = false;
 
 
+            dataGridView1.CellContentClick += DataGridView1_CellContentClick;
 
         }
 
 
 
+        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0 && e.RowIndex >= 0) // Assuming the link is in the first column
+            {
+                string url = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                OpenUrl(url);
+            }
+        }
 
 
 
@@ -207,6 +216,9 @@ namespace wp_uptime_alert
 
                     // Refresh the DataGridView using the updated DataTable
                     var updatedDataTable = await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+
+                    dataGridView1.ClearSelection();
+
                 }
             }
 
@@ -246,7 +258,7 @@ namespace wp_uptime_alert
                 // Wait for a short delay to allow cancellation to propagate (optional)
                 await Task.Delay(100);
 
-            
+
 
 
                 // Handle cancellation here (optional)
@@ -304,6 +316,9 @@ namespace wp_uptime_alert
                             // Refresh the DataGridView using the updated DataTable
                             await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
                         }
+
+                        dataGridView1.ClearSelection();
+
                     }
 
                     // This line will delay the loop for a certain period (e.g., 5000 milliseconds or 5 seconds)
@@ -326,15 +341,6 @@ namespace wp_uptime_alert
 
 
 
-
-
-
-
-
-
-
-
-
         private void cancelButton_Click(object sender, EventArgs e)
         {
             if (_cts != null)
@@ -342,32 +348,6 @@ namespace wp_uptime_alert
                 _cts.Cancel();
             }
         }
-
-
-
-
-
-
-        private async Task ProcessDataLoopAsync(CancellationToken cancellationToken, Action updateUI)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Run(async () =>
-                {
-                    await action.startTestingEachEntryInDataTableAsync(dt, lastCheckedActive_label, activeTestingSite_label, SiteRecord);
-
-                    // Call updateUI action here
-                    Invoke((MethodInvoker)delegate
-                    {
-                        updateUI();
-                    });
-
-                    action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
-                    LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
-                });
-            }
-        }
-
 
 
 
@@ -382,32 +362,28 @@ namespace wp_uptime_alert
 
         private void OpenUrl(string url)
         {
+            Debug.WriteLine("inside open url function");
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+            {
+                url = "http://" + url;
+            }
+
             try
             {
-                Process.Start(url);
+                var psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
             }
-            catch
+            catch (Exception ex)
             {
-                // hack because of this: https://github.com/dotnet/corefx/issues/10361
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    Process.Start("xdg-open", url);
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    Process.Start("open", url);
-                }
-                else
-                {
-                    throw;
-                }
+                MessageBox.Show($"An error occurred while opening the URL: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
         {
