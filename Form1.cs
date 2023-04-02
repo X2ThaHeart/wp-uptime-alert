@@ -21,6 +21,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Globalization;
+using wp_uptime_alert.view;
 
 namespace wp_uptime_alert
 {
@@ -31,6 +32,8 @@ namespace wp_uptime_alert
         DataTable dt = new DataTable();
         DataTable dtBlacklist = new DataTable();
         Actions action = new Actions();
+        LabelUpdates LabelUpdates = new LabelUpdates(); // Create a private instance of the Actions class
+
         [NotNull]
         //SiteRecord siterecord = new SiteRecord();
         private BindingSource _bindingSource = new BindingSource();
@@ -40,6 +43,8 @@ namespace wp_uptime_alert
         public SiteRecord SiteRecord { get; set; } // Property for SiteRecord
 
         private BindingSource bindingSource = new BindingSource();
+
+       
 
 
         public Form1()
@@ -81,19 +86,11 @@ namespace wp_uptime_alert
             lastCheckedTimeColumn.DefaultCellStyle.Format = "t";
 
 
-            // Set up the column headers in dataGridView1
-            //InitializeDataGridViewColumns(dataGridView1);
-
-            // Bind the DataTable to the BindingSource
-            //_bindingSource.DataSource = dt;
-
-            // Set the DataGridView's DataSource to the BindingSource
-            //dataGridView1.DataSource = _bindingSource;
 
             _myClassInstance = new HtmlStatusIcon(dataGridView1);
             _myClassInstance.MyDataGridView.CellFormatting += action.dataGridView_CellFormatting;
 
-            //dataGridView1.DataSource = bindingSource;
+          
 
             // Call the cleanInputRefreshDataTableAsInput method and bind the DataGridView to the updated DataTable
             var updatedDataTable = action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
@@ -106,55 +103,6 @@ namespace wp_uptime_alert
 
         }
 
-        /*
-
-        public void InitializeDataGridViewColumns(DataGridView dataGridView1)
-        {
-            // Create and configure columns
-            DataGridViewColumn siteColumn = new DataGridViewTextBoxColumn
-            {
-                Name = "site", // Make sure the Name property matches the DataTable column name
-                HeaderText = "Site",
-                Width = 270, // Set the width of the 'Site' column
-            };
-
-            DataGridViewColumn domainStatusColumn = new DataGridViewTextBoxColumn
-            {
-                Name = "domainstatus", // Make sure the Name property matches the DataTable column name
-                HeaderText = "Domain Status",
-                Width = 80, // Set the width of the 'Domain Status' column
-            };
-
-            DataGridViewColumn wordpressstatusColumn = new DataGridViewTextBoxColumn
-            {
-                Name = "wordpressstatus", // Make sure the Name property matches the DataTable column name
-                HeaderText = "WordPress Status",
-                Width = 80, // Set the width of the 'Domain Status' column
-            };
-
-            DataGridViewColumn checkedtimeColumn = new DataGridViewTextBoxColumn
-            {
-                Name = "lastcheckedtime", // Make sure the Name property matches the DataTable column name
-                HeaderText = "Last Checked Time",
-                Width = 95, // Set the width of the 'Domain Status' column
-            };
-
-            // Add the columns to the DataGridView
-            dataGridView1.Columns.Add(siteColumn);
-            dataGridView1.Columns.Add(domainStatusColumn);
-            dataGridView1.Columns.Add(wordpressstatusColumn);
-            dataGridView1.Columns.Add(checkedtimeColumn);
-        }
-
-        */
-
-        /*
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-            dataGridView1.DataSource = bindingSource;
-        }
-        */
 
 
 
@@ -298,10 +246,7 @@ namespace wp_uptime_alert
                 // Wait for a short delay to allow cancellation to propagate (optional)
                 await Task.Delay(100);
 
-                // Dispose the current CancellationTokenSource and create a new one
-
-
-                // Perform the site check with the CancellationToken
+            
 
 
                 // Handle cancellation here (optional)
@@ -418,32 +363,10 @@ namespace wp_uptime_alert
                     });
 
                     action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
-                    action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+                    LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
                 });
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //private void cancelButton_Click(object sender, EventArgs e)
-        //{
-        //    if (_cancellationTokenSource != null)
-        //    {
-        //        _cancellationTokenSource.Cancel();
-        //        _cancellationTokenSource = null;
-        //    }
-        //}
-
 
 
 
@@ -506,7 +429,7 @@ namespace wp_uptime_alert
             }
 
 
-            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
 
         }
@@ -515,13 +438,13 @@ namespace wp_uptime_alert
         //retest error sites second main button
         private void button2_Click(object sender, EventArgs e)
         {
-            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
         }
 
         private void clearBlacklist_button_Click(object sender, EventArgs e)
         {
-            action.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
+            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dt, dtBlacklist);
 
 
         }

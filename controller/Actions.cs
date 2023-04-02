@@ -580,7 +580,7 @@ namespace wp_uptime_alert.controller
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
-                request.Timeout = 10000; // 5 seconds timeout
+                request.Timeout = 5000; // 5 seconds timeout
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 return (int)response.StatusCode;
             }
@@ -600,55 +600,10 @@ namespace wp_uptime_alert.controller
             }
         }
 
-        private byte[] GetServerStatusIcon(int responseCode)
-        {
-            // Create circle image
-            using (Bitmap image = new Bitmap(30, 30))
-            {
-                using (Graphics g = Graphics.FromImage(image))
-                {
-                    g.Clear(System.Drawing.Color.Transparent);
-                    using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Gray))
-                    {
-                        switch (responseCode)
-                        {
-                            case 200: // Success
-                                brush.Color = System.Drawing.Color.Green;
-                                break;
-                            case 404: // Not Found
-                            case 503: // Service Unavailable
-                                brush.Color = System.Drawing.Color.Red;
-                                break;
-                        }
-                        g.FillEllipse(brush, new Rectangle(0, 0, 30, 30));
-                    }
-                }
-
-                // Convert the Bitmap image to a byte array
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    image.Save(ms, ImageFormat.Png);
-                    return ms.ToArray();
-                }
-            }
-        }
+      
 
 
-
-
-        private Bitmap GetCircleImage(int diameter, System.Drawing.Color color)
-        {
-            Bitmap image = new Bitmap(diameter, diameter);
-            using (Graphics g = Graphics.FromImage(image))
-            {
-                g.Clear(System.Drawing.Color.Transparent);
-                using (SolidBrush brush = new SolidBrush(color))
-                {
-                    g.FillEllipse(brush, new Rectangle(0, 0, diameter, diameter));
-                }
-            }
-            return image;
-        }
+      
 
 
         public void wait(int milliseconds)
@@ -710,14 +665,7 @@ namespace wp_uptime_alert.controller
 
 
 
-        public void updateWebsiteLabels(Label total_websites_label, Label label5, Label label7, DataTable dt, DataTable dtBlacklist)
-        {
-            total_websites_label.Text = calculateTotalWebsites(dt, dtBlacklist).ToString();
-            label7.Text = calculateErrorWebsites(dtBlacklist).ToString();
-            label5.Text = calculateActiveWebsites(dt).ToString();
-
-
-        }
+       
 
 
 
