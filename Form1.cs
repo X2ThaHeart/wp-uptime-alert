@@ -433,17 +433,21 @@ namespace wp_uptime_alert
             {
                 richTextBox1.Clear();
                 dt.Rows.Clear();
+
+                // Refresh the DataGridView
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = dt;
+                dataGridView1.Refresh();
             }
             else if (dialogResult == DialogResult.No)
             {
                 //do something else
             }
 
-
-            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7,  dt, dtBlacklist);
-
-
+            LabelUpdates labelUpdates = new LabelUpdates();
+            labelUpdates.updateWebsiteLabels(total_websites_label, label5, label7,  dt, dtBlacklist);
         }
+
 
 
 
