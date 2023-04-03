@@ -44,6 +44,7 @@ namespace wp_uptime_alert
 
         private BindingSource bindingSource = new BindingSource();
 
+        private readonly object dtlock = new object();
 
 
 
@@ -51,11 +52,15 @@ namespace wp_uptime_alert
         {
             InitializeComponent();
 
-            // Create a new SiteRecord object with the dt DataTable
-            dt.Columns.Add("site");
-            dt.Columns.Add("domainstatus");
-            dt.Columns.Add("wordpressstatus");
-            dt.Columns.Add("lastcheckedtime");
+            lock (dtlock)
+            {
+                // Create a new SiteRecord object with the dt DataTable
+                dt.Columns.Add("site");
+                dt.Columns.Add("domainstatus");
+                dt.Columns.Add("wordpressstatus");
+                dt.Columns.Add("lastcheckedtime");
+            }
+
 
             SiteRecord = new SiteRecord(); // Create an instance of SiteRecord here
 
@@ -207,9 +212,13 @@ namespace wp_uptime_alert
                     // Add the new site to the DataTable
                     site = action.cleanUrlFinal(site);
 
-                    DataRow row = dt.NewRow();
-                    row["site"] = site;
-                    dt.Rows.Add(row);
+                    lock (dtlock)
+                    {
+                        DataRow row = dt.NewRow();
+                        row["site"] = site;
+                        dt.Rows.Add(row);
+                    }
+
 
                     label5.Text = dt.Rows.Count.ToString();
                     richTextBox1.Clear();
@@ -225,8 +234,16 @@ namespace wp_uptime_alert
             // Initialize the CancellationTokenSource
             _cts = new CancellationTokenSource();
 
+
+            DataTable dtCopy;
+
+            lock (dtlock)
+            {
+                dtCopy = dt.Copy();
+            }
+
             // Check for existing table entries and start the background worker
-            foreach (DataRow row in dt.Rows)
+            foreach (DataRow row in dtCopy.Rows)
             {
                 if (!row.IsNull("site") && !string.IsNullOrWhiteSpace(row["site"].ToString()))
                 {
@@ -293,7 +310,14 @@ namespace wp_uptime_alert
                     ct.ThrowIfCancellationRequested();
 
                     // Iterate through all the sites in the DataTable
-                    foreach (DataRow row in dt.Rows)
+                    DataTable dtCopy;
+
+                    lock (dtlock)
+                    {
+                        dtCopy = dt.Copy();
+                    }
+                    DataTable dtFinal = dt.Copy();
+                    foreach (DataRow row in dtCopy.Rows)
                     {
                         ct.ThrowIfCancellationRequested();
 
@@ -310,17 +334,27 @@ namespace wp_uptime_alert
                             // Call the GetRssfeedAndCheckAsync method for each site
                             (DateTime updatedLastCheckedTime, bool isValid) = await action.GetRssfeedAndCheckAsync(site, dt, SiteRecord);
 
-                            // Update the lastcheckedtime field with the new value
-                            row["lastcheckedtime"] = updatedLastCheckedTime.ToString("HH:mm:ss");
+                            lock (dtlock)
+                            {
+                                // Find the corresponding row in the original DataTable
+                                DataRow originalRow = dt.Rows.Cast<DataRow>().FirstOrDefault(r => r.Field<string>("site") == site);
+
+                                // Update the lastcheckedtime field with the new value
+                                if (originalRow != null)
+                                {
+                                    originalRow["lastcheckedtime"] = updatedLastCheckedTime.ToString("HH:mm:ss");
+                                }
+                            }
 
                             // Refresh the DataGridView using the updated DataTable
-                            await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
+                            dtFinal = await action.cleanInputRefreshDataTableAsInput(dt, dataGridView1, bindingSource);
                         }
 
                         dataGridView1.ClearSelection();
-                        LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, label9, label16, dt, dtBlacklist);
-
+                        LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, dtFinal, dtBlacklist);
+                        dt = dtFinal;
                     }
+
 
                     // This line will delay the loop for a certain period (e.g., 5000 milliseconds or 5 seconds)
                     await Task.Delay(TimeSpan.FromSeconds(5), ct);
@@ -406,7 +440,7 @@ namespace wp_uptime_alert
             }
 
 
-            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7, label9, label16, dt, dtBlacklist);
+            LabelUpdates.updateWebsiteLabels(total_websites_label, label5, label7,  dt, dtBlacklist);
 
 
         }
@@ -431,6 +465,9 @@ namespace wp_uptime_alert
 
         }
 
+        private void label14_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }

@@ -18,24 +18,47 @@ namespace wp_uptime_alert.view
             action = new Actions(); // Initialize the Actions instance in the constructor
         }
 
+        private static readonly object dtLock = new object();
 
-        public void updateWebsiteLabels(Label total_websites_label, Label label5, Label label7, Label label9, Label label16, DataTable dt, DataTable dtBlacklist)
+        public void updateWebsiteLabels(Label total_websites_label, Label label5, Label label7, DataTable dt, DataTable dtBlacklist)
         {
             total_websites_label.Text = action.calculateTotalWebsites(dt, dtBlacklist).ToString();
             
             label5.Text = action.calculateActiveWebsites(dt).ToString();
 
-            UpdateErrorLabels(label7, label9, label16, dt);
+            UpdateErrorLabels(label7,  dt);
 
+            //DataTable dtCopy;
+            //lock (dtLock)
+            //{
+            //    dtCopy = dt.Copy();
+            //}
+
+            //List<DateTime> lastCheckedTimes = new List<DateTime>();
+
+            //foreach (DataRow row in dtCopy.Rows)
+            //{
+            //    DateTime lastCheckedTime = DateTime.Parse(row.Field<string>("lastcheckedtime"));
+            //    lastCheckedTimes.Add(lastCheckedTime);
+            //}
+
+            //DateTime lastChecked = lastCheckedTimes.Max();
+            //lastCheckedActive_label.Text = lastChecked.ToString("HH:mm:ss");
 
 
         }
 
-        public void UpdateErrorLabels(Label websiteErrors, Label firstTimeError, Label errorWebsite, DataTable dt)
+        public void UpdateErrorLabels(Label websiteErrors, DataTable dt)
         {
-            
+            DataTable dtCopy;
+            lock (dtLock)
+            {
+                dtCopy = dt.Copy();
+            }
+
             // Filter the DataTable rows based on the "Error" condition
-            var errorRows = dt.AsEnumerable().Where(row => row.Field<string>("domainstatus") == "Error" || row.Field<string>("wordpressstatus") == "Error");
+            var errorRows = dtCopy.AsEnumerable().Where(row => row.Field<string>("domainstatus") == "Error" || row.Field<string>("wordpressstatus") == "Error");
+
 
             // Count the number of filtered rows
             int errorCount = errorRows.Count();

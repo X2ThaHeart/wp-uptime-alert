@@ -40,16 +40,8 @@
             label5 = new Label();
             label6 = new Label();
             label7 = new Label();
-            label12 = new Label();
             button3 = new Button();
-            label14 = new Label();
-            activeTestingSite_label = new Label();
-            lastCheckedActive_label = new Label();
             button1 = new Button();
-            label16 = new Label();
-            label9 = new Label();
-            label8 = new Label();
-            label15 = new Label();
             dataGridView1 = new DataGridView();
             dataGridViewTextBoxColumn1 = new DataGridViewLinkColumn();
             serverstatus = new DataGridViewTextBoxColumn();
@@ -66,7 +58,7 @@
             // 
             richTextBox1.Location = new Point(13, 114);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(190, 156);
+            richTextBox1.Size = new Size(190, 178);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             richTextBox1.LinkClicked += richTextBox1_LinkClicked;
@@ -96,7 +88,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(347, 9);
+            label2.Location = new Point(348, 9);
             label2.Name = "label2";
             label2.Size = new Size(88, 15);
             label2.TabIndex = 4;
@@ -114,7 +106,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(348, 33);
+            label4.Location = new Point(348, 40);
             label4.Name = "label4";
             label4.Size = new Size(96, 15);
             label4.TabIndex = 6;
@@ -123,7 +115,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(451, 33);
+            label5.Location = new Point(451, 40);
             label5.Name = "label5";
             label5.Size = new Size(51, 15);
             label5.TabIndex = 7;
@@ -132,7 +124,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(520, 9);
+            label6.Location = new Point(346, 70);
             label6.Name = "label6";
             label6.Size = new Size(88, 15);
             label6.TabIndex = 8;
@@ -141,21 +133,11 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(623, 9);
+            label7.Location = new Point(451, 70);
             label7.Name = "label7";
             label7.Size = new Size(51, 15);
             label7.TabIndex = 9;
             label7.Text = "Number";
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Location = new Point(347, 59);
-            label12.Name = "label12";
-            label12.Padding = new Padding(0, 0, 0, 3);
-            label12.Size = new Size(151, 18);
-            label12.TabIndex = 16;
-            label12.Text = "Testing Current Active Site :";
             // 
             // button3
             // 
@@ -167,34 +149,6 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.Location = new Point(518, 60);
-            label14.Name = "label14";
-            label14.Size = new Size(99, 15);
-            label14.TabIndex = 20;
-            label14.Text = "Last Check Time :";
-            // 
-            // activeTestingSite_label
-            // 
-            activeTestingSite_label.AutoSize = true;
-            activeTestingSite_label.Location = new Point(347, 86);
-            activeTestingSite_label.Name = "activeTestingSite_label";
-            activeTestingSite_label.Padding = new Padding(0, 0, 0, 3);
-            activeTestingSite_label.Size = new Size(49, 18);
-            activeTestingSite_label.TabIndex = 28;
-            activeTestingSite_label.Text = "Website";
-            // 
-            // lastCheckedActive_label
-            // 
-            lastCheckedActive_label.AutoSize = true;
-            lastCheckedActive_label.Location = new Point(623, 60);
-            lastCheckedActive_label.Name = "lastCheckedActive_label";
-            lastCheckedActive_label.Size = new Size(33, 15);
-            lastCheckedActive_label.TabIndex = 29;
-            lastCheckedActive_label.Text = "Time";
-            // 
             // button1
             // 
             button1.Location = new Point(214, 80);
@@ -205,44 +159,6 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // label16
-            // 
-            label16.AutoSize = true;
-            label16.Location = new Point(215, 423);
-            label16.Name = "label16";
-            label16.Padding = new Padding(0, 0, 0, 3);
-            label16.Size = new Size(92, 18);
-            label16.TabIndex = 25;
-            label16.Text = "Website address";
-            label16.Click += label16_Click;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(697, 423);
-            label9.Name = "label9";
-            label9.Size = new Size(83, 15);
-            label9.TabIndex = 13;
-            label9.Text = "Date and Time";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Location = new Point(589, 423);
-            label8.Name = "label8";
-            label8.Size = new Size(92, 15);
-            label8.TabIndex = 12;
-            label8.Text = "Time First Error :";
-            // 
-            // label15
-            // 
-            label15.AutoSize = true;
-            label15.Location = new Point(60, 423);
-            label15.Name = "label15";
-            label15.Size = new Size(143, 15);
-            label15.TabIndex = 24;
-            label15.Text = "Error Testing Current Site :";
-            // 
             // dataGridView1
             // 
             dataGridView1.AllowUserToOrderColumns = true;
@@ -251,7 +167,7 @@
             dataGridView1.Location = new Point(214, 113);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(570, 296);
+            dataGridView1.Size = new Size(570, 325);
             dataGridView1.TabIndex = 36;
             // 
             // dataGridViewTextBoxColumn1
@@ -299,15 +215,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(dataGridView1);
             Controls.Add(button1);
-            Controls.Add(lastCheckedActive_label);
-            Controls.Add(activeTestingSite_label);
-            Controls.Add(label16);
-            Controls.Add(label15);
-            Controls.Add(label14);
             Controls.Add(button3);
-            Controls.Add(label12);
-            Controls.Add(label9);
-            Controls.Add(label8);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
@@ -318,7 +226,7 @@
             Controls.Add(label1);
             Controls.Add(richTextBox1);
             Name = "Form1";
-            Text = "Wp Uptime Alert";
+            Text = "WP Uptime Alert";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)siteRecordBindingSource1).EndInit();
@@ -337,16 +245,8 @@
         private Label label5;
         private Label label6;
         private Label label7;
-        private Label label12;
         private Button button3;
-        private Label label14;
-        private Label activeTestingSite_label;
-        private Label lastCheckedActive_label;
         private Button button1;
-        private Label label16;
-        private Label label9;
-        private Label label8;
-        private Label label15;
         private DataGridView dataGridView1;
         private BindingSource siteRecordBindingSource;
         private BindingSource siteRecordBindingSource1;

@@ -63,6 +63,9 @@ namespace wp_uptime_alert.controller
         { get { return urlValid; } set { urlValid = value; } }
 
 
+
+        private static readonly object dtLock = new object();
+
         public string cleanUrlFinal(string site)
         {
             Uri outUri;
@@ -158,7 +161,14 @@ namespace wp_uptime_alert.controller
         {
             SiteRecord siteRecord = new SiteRecord();
 
-            foreach (DataRow row in datatable.Rows)
+            DataTable dtCopy;
+            lock (dtLock)
+            {
+                dtCopy = datatable.Copy();
+            }
+
+
+            foreach (DataRow row in dtCopy.Rows)
             {
                 string? site = row.Field<string?>("site");
                 int domainResponseCode = ActivateServerResponse(site);
@@ -222,7 +232,11 @@ namespace wp_uptime_alert.controller
             }
 
 
-
+            // Update the original DataTable with the modified copy
+            lock (dtLock)
+            {
+                datatable = dtCopy.Copy();
+            }
 
 
             //siteRecord.InitializeDataGridViewColumns(dataGridView);
@@ -574,41 +588,60 @@ namespace wp_uptime_alert.controller
 
         }
 
-        public int ActivateServerResponse(string serverUrl)
+
+
+
+        public int ActivateServerResponse(string serverUrl, int maxRetries = 3)
         {
             UriBuilder uriBuilder = new UriBuilder(serverUrl);
             if (uriBuilder.Scheme == "")
             {
                 uriBuilder.Scheme = "http"; // default to http if no scheme is provided
             }
-          
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
-                request.Timeout = 5000; // 5 seconds timeout
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                return (int)response.StatusCode;
-            }
-            catch (WebException ex)
-            {
-                if (ex.Response is HttpWebResponse errorResponse)
-                {
-                    Debug.WriteLine("error caught inside ActivateServerresponse WebException error");
 
-                    return (int)errorResponse.StatusCode;
-                }
-                else
+            int retryCount = 0;
+
+            while (retryCount < maxRetries)
+            {
+                try
                 {
-                    Debug.WriteLine("error caught inside ActivateServerresponse but not http response error");
-                    throw;
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uriBuilder.Uri);
+                    request.Timeout = 5000; // 5 seconds timeout
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    return (int)response.StatusCode;
+                }
+                catch (WebException ex)
+                {
+                    if (ex.Response is HttpWebResponse errorResponse)
+                    {
+                        Debug.WriteLine("error caught inside ActivateServerresponse WebException error");
+                        return (int)errorResponse.StatusCode;
+                    }
+                    else if (ex.Status == WebExceptionStatus.Timeout)
+                    {
+                        // Increment the retry counter
+                        retryCount++;
+
+                        // If we have reached the maximum number of retries, return an error code or throw a custom exception
+                        if (retryCount == maxRetries)
+                        {
+                            // You can either return an error code or throw a custom exception
+                            // Example: return -1 to indicate a timeout error after retries
+                            return -1;
+                        }
+                    }
                 }
             }
+
+            // This should not be reached, but it's included to satisfy the method's return type requirement
+            return -1;
         }
 
-      
 
 
-      
+
+
+
 
 
         public void wait(int milliseconds)
@@ -647,15 +680,7 @@ namespace wp_uptime_alert.controller
 
         }
 
-        public int calculateErrorWebsites(DataTable dtBlacklist) 
-        {
-
-            int totalBlacklistWebsites = 0;
-
-            totalBlacklistWebsites = dtBlacklist.Rows.Count;
-
-            return totalBlacklistWebsites;
-        }
+      
 
 
         public int calculateActiveWebsites(DataTable dt) 
